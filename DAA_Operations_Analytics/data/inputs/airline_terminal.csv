@@ -1,0 +1,36 @@
+airline_code,airline_name,terminal,pier_preference,notes
+FR,Ryanair,T1,Pier 1,T1 optimized for quick turns
+W6,Wizz Air,T1,Pier 1,Low-cost; T1 preferred
+U2,easyJet,T1,Pier 1,Low-cost; T1 preferred
+EI,Aer Lingus,T2,Pier 4,Flag carrier; T2 primary
+BA,British Airways,T2,Pier 3,Formal T2 agreement
+EK,Emirates,T2,Pier 3,Formal T2 agreement
+AA,American Airlines,T2,Pier 4,US preclearance
+DL,Delta Air Lines,T2,Pier 4,US preclearance
+UA,United Airlines,T2,Pier 4,US preclearance
+AC,Air Canada,T2,Pier 4,Canada preclearance
+LH,Lufthansa,T1,Pier 2,T1 carrier
+AF,Air France,T1,Pier 2,T1 carrier
+KL,KLM,T1,Pier 2,T1 carrier
+TK,Turkish Airlines,T1,Pier 2,T1 carrier
+EY,Etihad Airways,T2,Pier 3,Formal T2 agreement
+QR,Qatar Airways,T2,Pier 3,T2 carrier by agreement
+SK,SAS Scandinavian,T1,Pier 1,T1 by default
+AZ,ITA Airways,T1,Pier 1,T1 by default
+TP,TAP Air Portugal,T1,Pier 1,T1 by default
+VY,Vueling,T2,Pier 3,User specified T2 (Iberia Group)
+IB,Iberia,T2,Pier 3,User specified T2 (Iberia Group)
+I2,Iberia Express,T2,Pier 3,User specified T2
+B6,JetBlue,T2,Pier 3,User specified T2
+LY,El Al,T2,Pier 3,User specified T2
+OS,Austrian Airlines,T1,Pier 2,T1
+SN,Brussels Airlines,T1,Pier 2,T1
+LX,Swiss International,T1,Pier 2,T1
+EN,Air Dolomiti,T1,Pier 2,T1
+LO,LOT Polish Airlines,T1,Pier 2,T1
+BT,airBaltic,T1,Pier 1,T1
+FR_CARGO,Ryanair Air Cargo,Cargo,South Apron,Cargo logic
+FX,FedEx,Cargo,South Apron,Cargo logic
+5X,UPS Airlines,Cargo,South Apron,Cargo logic
+DEFAULT_T1,Default T1,T1,Pier 1,Default
+DEFAULT_T2,Default T2,T2,Pier 4,Default

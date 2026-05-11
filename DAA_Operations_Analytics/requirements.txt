@@ -1,0 +1,8 @@
+flask
+pandas
+numpy
+scipy
+python-dotenv
+google-generativeai
+gunicorn
+pulp

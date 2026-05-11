@@ -1,0 +1,9 @@
+sequence,flight_no,airline_name,destination,std,gate,aircraft_type,icao_cat,atd
+1,FR7138,Ryanair,Lisbon (LIS),09:10,103,B38M,C,09:20
+2,AF1617,Air France,Paris (CDG),09:15,224,E190,C,09:37
+3,FR1111,Ryanair,London (LGW),09:25,107,B38M,C,09:30
+4,EA3554,Aer Lingus Regional,Edinburgh (EDI),09:25,332,AT76,B,09:33
+5,AA133,American Airlines,Dallas (DFW),09:30,404,B788,E,09:40
+6,FR16,Ryanair,Newcastle (NCL),09:35,118,B738,C,09:43
+7,IB1882,Iberia Express,Madrid (MAD),09:40,335,A21N,C,10:08
+8,EI204,Aer Lingus,Manchester (MAN),09:45,301,A21N,C,09:54

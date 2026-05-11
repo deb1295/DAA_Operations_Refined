@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dublin Airport — 2026 Simulation Co-pilot</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --navy: #0f2044;
+            --blue: #1d5fd1;
+            --blue-lt: #2d7be5;
+            --sky: #e8f1fd;
+            --sky2: #dbeafe;
+            --white: #ffffff;
+            --offwhite: #f8fafd;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --text2: #334155;
+            --text3: #64748b;
+            --text4: #94a3b8;
+            --teal: #0891b2;
+            --amber: #d97706;
+            --rose: #e11d48;
+            --green: #059669;
+            --purple: #7c3aed;
+            --red: #dc2626;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--offwhite);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* ── NAV BAR ── */
+        .navbar {
+            background: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 52px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .daa-badge {
+            background: var(--blue);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            letter-spacing: .08em;
+        }
+
+        .nav-links {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .sw-btn {
+            width: 230px;
+            flex: 0 0 230px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: transparent;
+            color: rgba(255, 255, 255, .5);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .sw-btn:first-of-type {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .sw-btn:last-of-type {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .sw-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        .sw-btn.active {
+            background: #1d5fd1;
+            color: #fff;
+            border-color: #1d5fd1;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, var(--navy) 0%, #163a7a 60%, #1a4080 100%);
+            padding: 40px 48px 32px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: -120px;
+            top: -80px;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 123, 229, 0.22) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 14px;
+        }
+
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #38d9b4;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .4
+            }
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .hero h1 span {
+            color: #7dd3fc;
+        }
+
+        .hero-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.65);
+            max-width: 560px;
+        }
+
+        /* ── CO-PILOT INPUT STRIP ── */
+        .copilot-strip {
+            background: #fff;
+            border-bottom: 2px solid var(--border);
+            padding: 20px 48px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .copilot-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            white-space: nowrap;
+        }
+
+        .copilot-input {
+            flex-grow: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .copilot-input:focus {
+            border-color: var(--blue);
+        }
+
+        .copilot-input::placeholder {
+            color: var(--text4);
+        }
+
+        .run-btn {
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .run-btn:hover {
+            background: var(--blue-lt);
+        }
+
+        .run-btn:disabled {
+            background: var(--text4);
+            cursor: wait;
+        }
+
+        .run-btn .spinner {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .run-btn.loading .spinner {
+            display: block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── SCENARIO CHIPS ── */
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 48px 16px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chip {
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text3);
+            cursor: pointer;
+            transition: all .2s;
+            background: #fff;
+        }
+
+        .chip:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--sky);
+        }
+
+        /* ── STORY PANEL ── */
+        .story-panel {
+            background: #fff;
+            border-bottom: 2px solid var(--border);
+            padding: 32px 48px;
+            display: none;
+        }
+
+        .story-panel.visible {
+            display: block;
+        }
+
+        .story-headline {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .story-card {
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .story-card-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: 10px;
+        }
+
+        .story-card-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .story-card-text {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        .card-demand {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .card-demand .story-card-label {
+            color: var(--green);
+        }
+
+        .card-demand .story-card-icon {
+            background: #dcfce7;
+        }
+
+        .card-gate {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .card-gate .story-card-label {
+            color: var(--blue);
+        }
+
+        .card-gate .story-card-icon {
+            background: #dbeafe;
+        }
+
+        .card-schedule {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .card-schedule .story-card-label {
+            color: var(--amber);
+        }
+
+        .card-schedule .story-card-icon {
+            background: #ffedd5;
+        }
+
+        .story-rec {
+            background: linear-gradient(135deg, #f8faff, #eef4ff);
+            border: 1px solid #c7d7f5;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .rec-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .rec-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--blue);
+            margin-bottom: 4px;
+        }
+
+        .rec-text {
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        /* ── RISK BADGE ── */
+        .risk-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .risk-badge {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .risk-Low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .risk-Moderate {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .risk-High {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .risk-Critical {
+            background: #fce7f3;
+            color: #9d174d;
+            animation: pulse 1.5s infinite;
+        }
+
+        .risk-label {
+            font-size: 12px;
+            color: var(--text3);
+            font-weight: 600;
+        }
+
+        /* ── KPI STRIP ── */
+        .kpi-strip {
+            background: #fff;
+            padding: 28px 48px;
+            border-bottom: 2px solid var(--border);
+            display: none;
+        }
+
+        .kpi-strip.visible {
+            display: block;
+        }
+
+        .kpi-strip-head {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 20px;
+        }
+
+        .kpi-row {
+            display: flex;
+            gap: 0;
+        }
+
+        .kpi {
+            flex: 1;
+            padding: 0 24px;
+            border-right: 1px solid var(--border);
+        }
+
+        .kpi:first-child {
+            padding-left: 0;
+        }
+
+        .kpi:last-child {
+            border-right: none;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text4);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 4px;
+        }
+
+        .kpi-val {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .kpi-delta {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .up {
+            color: var(--red);
+        }
+
+        .down {
+            color: var(--green);
+        }
+
+        .neutral {
+            color: var(--text3);
+        }
+
+        /* ── CHARTS SECTION ── */
+        .charts-section {
+            padding: 32px 48px;
+            display: none;
+        }
+
+        .charts-section.visible {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 20px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .chart-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+
+        .chart-card-sub {
+            font-size: 11px;
+            color: var(--text4);
+            margin-bottom: 20px;
+        }
+
+        /* ── HISTORY ── */
+        .history-section {
+            padding: 0 48px 32px;
+            display: none;
+        }
+
+        .history-section.visible {
+            display: block;
+        }
+
+        .history-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 14px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color .2s;
+        }
+
+        .history-item:hover {
+            border-color: var(--blue);
+        }
+
+        .history-q {
+            font-size: 13px;
+            color: var(--text2);
+            flex-grow: 1;
+        }
+
+        .history-risk {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* ── IDLE STATE ── */
+        .idle-state {
+            padding: 60px 48px;
+            text-align: center;
+            display: block;
+        }
+
+        .idle-state.hidden {
+            display: none;
+        }
+
+        .idle-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .idle-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        .idle-sub {
+            font-size: 14px;
+            color: var(--text3);
+            margin-bottom: 32px;
+        }
+
+        .sample-qs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .sample-q {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text2);
+            cursor: pointer;
+            transition: all .2s;
+            text-align: left;
+        }
+
+        .sample-q:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--sky);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="nav-brand" href="/">
+            <span class="daa-badge">DAA</span>
+            Strategic Planning Suite
+        </a>
+        <div class="nav-links">
+            <a class="sw-btn" href="/seasonal/plan-ahead">2026 Long Term Plan</a>
+            <a class="sw-btn" href="/3day">3-Day Stand Allocation</a>
+            <a class="sw-btn" href="/intraday">Intra-Day Stand Simulation</a>
+            <a class="sw-btn" href="/passenger">Short Term Passenger Plan</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>2026 <span>Scenario Modelling</span></h1>
+        <p class="hero-desc">Ask a planning question in plain English. The AI translates it into demand, gate, and
+            schedule impact — giving you a real story to act on.</p>
+    </div>
+
+    <!-- Co-pilot Input Strip -->
+    <div class="copilot-strip">
+        <span class="copilot-label">🧠 Ask the Co-pilot</span>
+        <input type="text" class="copilot-input" id="userInput"
+            placeholder="e.g. What if Ryanair grows 15% and Pier B is at 50% capacity all year?" />
+        <button class="run-btn" id="runBtn" onclick="runSimulation()">
+            <span class="spinner"></span>
+            <span class="btn-label">Run Simulation</span>
+        </button>
+    </div>
+
+    <!-- Quick Scenario Chips -->
+    <div class="chip-row">
+        <span class="copilot-label" style="font-size:10px;color:#94a3b8;margin-right:4px;">Try:</span>
+        <span class="chip" onclick="fillAndRun('Ryanair volume grows 15% annually, Aer Lingus stays flat')">Ryanair +15%
+            growth</span>
+        <span class="chip" onclick="fillAndRun('Pier B is at 50% capacity for all of 2026 due to construction')">Pier B
+            at 50% capacity</span>
+        <span class="chip" onclick="fillAndRun('US preclearance traffic surges 30% for the full year')">CBP +30%
+            surge</span>
+        <span class="chip" onclick="fillAndRun('We lose 6 stands airport-wide due to Terminal 1 expansion')">-6 stands
+            T1 expansion</span>
+        <span class="chip" onclick="fillAndRun('All airlines grow 8% for the summer season June to August')">Summer +8%
+            all airlines</span>
+    </div>
+
+    <!-- Idle State -->
+    <div class="idle-state" id="idleState">
+        <div class="idle-icon">✈️</div>
+        <div class="idle-title">Your simulation story will appear here</div>
+        <div class="idle-sub">Type a scenario above and click <strong>Run Simulation</strong> to see demand, gate, and
+            schedule impacts modelled instantly.</div>
+        <div class="sample-qs">
+            <span class="sample-q"
+                onclick="fillAndRun('What happens if Ryanair increases by 10% and we lose Pier A for 3 months?')">What
+                if Ryanair grows and Pier A is offline?</span>
+            <span class="sample-q"
+                onclick="fillAndRun('Simulate a high-stress summer with 20% passenger growth across all airlines')">High-stress
+                summer scenario</span>
+            <span class="sample-q"
+                onclick="fillAndRun('Long-haul widebody traffic increases by 5%, replacing narrowbody slots')">Long-haul
+                widebody pivot</span>
+            <span class="sample-q"
+                onclick="fillAndRun('What if all turnaround times increase by 10 minutes system-wide?')">+10 min
+                turnaround globally</span>
+        </div>
+    </div>
+
+    <!-- Story Panel (populated after simulation) -->
+    <div class="story-panel" id="storyPanel">
+        <div class="risk-bar">
+            <span class="risk-label">Risk Assessment:</span>
+            <span class="risk-badge" id="riskBadge">—</span>
+            <span style="font-size:12px;color:#94a3b8;" id="timelineLabel"></span>
+        </div>
+        <div class="story-headline" id="storyHeadline">—</div>
+        <div class="story-grid">
+            <div class="story-card card-demand">
+                <div class="story-card-label">
+                    <div class="story-card-icon">📈</div>Demand Impact
+                </div>
+                <div class="story-card-text" id="demandImpact">—</div>
+            </div>
+            <div class="story-card card-gate">
+                <div class="story-card-label">
+                    <div class="story-card-icon">🚪</div>Gate & Pier Pressure
+                </div>
+                <div class="story-card-text" id="gateImpact">—</div>
+            </div>
+            <div class="story-card card-schedule">
+                <div class="story-card-label">
+                    <div class="story-card-icon">🕐</div>Schedule Impact
+                </div>
+                <div class="story-card-text" id="scheduleImpact">—</div>
+            </div>
+        </div>
+        <div class="story-rec">
+            <div class="rec-icon">💡</div>
+            <div>
+                <div class="rec-label">Strategic Recommendation</div>
+                <div class="rec-text" id="recommendation">—</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Strip (shown after simulation) -->
+    <div class="kpi-strip" id="kpiStrip">
+        <div class="kpi-strip-head">Simulation Metrics — Delta vs 2026 Baseline</div>
+        <div class="kpi-row">
+            <div class="kpi">
+                <div class="kpi-label">Peak Stand Util.</div>
+                <div class="kpi-val" id="kpiUtil">—</div>
+                <div class="kpi-delta" id="deltaUtil">—</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Utilisation Delta</div>
+                <div class="kpi-val" id="kpiDelta">—</div>
+                <div class="kpi-delta neutral">vs 82.4% baseline</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">CBP Load Change</div>
+                <div class="kpi-val" id="kpiCbp">—</div>
+                <div class="kpi-delta" id="deltaCbp">—</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Stress Level</div>
+                <div class="kpi-val" id="kpiStress" style="font-size:20px;margin-top:4px;">—</div>
+                <div class="kpi-delta neutral">System-wide</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section" id="chartsSection">
+        <div class="section-title">Visual Impact Analysis</div>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-card-title">Monthly Utilisation: Baseline vs Simulated</div>
+                <div class="chart-card-sub">How stand utilisation shifts across the year</div>
+                <canvas id="utilChart" height="220"></canvas>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title">Pier Stress Distribution</div>
+                <div class="chart-card-sub">Load distribution after scenario applied</div>
+                <canvas id="pierChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section" id="historySection">
+        <div class="history-title">Previous Scenarios This Session</div>
+        <div id="historyList"></div>
+    </div>
+
+    <script>
+        const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const BASELINE_UTIL = [74, 76, 80, 84, 88, 91, 93, 92, 85, 82, 78, 72];
+        const BASELINE_PIERS = { 'Pier A': 78, 'Pier B': 88, 'Pier D': 72, 'Remote': 65 };
+        let utilChart, pierChart;
+        let sessionHistory = [];
+
+        function fillAndRun(text) {
+            document.getElementById('userInput').value = text;
+            runSimulation();
+        }
+
+        async function runSimulation() {
+            const input = document.getElementById('userInput');
+            const btn = document.getElementById('runBtn');
+            const message = input.value.trim();
+            if (!message) return;
+
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btn.querySelector('.btn-label').textContent = 'Analysing…';
+
+            try {
+                const res = await fetch('/api/simulate/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert('Error: ' + (data.message || data.error));
+                    return;
+                }
+
+                renderResults(data, message);
+
+            } catch (e) {
+                alert('Connection error: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btn.querySelector('.btn-label').textContent = 'Run Simulation';
+            }
+        }
+
+        function renderResults(data, query) {
+            const { story, metrics, params } = data;
+
+            // Hide idle, show panels
+            document.getElementById('idleState').classList.add('hidden');
+            document.getElementById('storyPanel').classList.add('visible');
+            document.getElementById('kpiStrip').classList.add('visible');
+            document.getElementById('chartsSection').classList.add('visible');
+            document.getElementById('historySection').classList.add('visible');
+
+            // Risk badge
+            const risk = story.risk_level || 'Moderate';
+            const badge = document.getElementById('riskBadge');
+            badge.textContent = risk;
+            badge.className = 'risk-badge risk-' + risk;
+
+            // Timeline label
+            document.getElementById('timelineLabel').textContent =
+                params.active_months ? `Focus: ${params.active_months.join(', ')}` : `Scope: Full Year 2026`;
+
+            // Story narrative
+            document.getElementById('storyHeadline').textContent = story.headline || '';
+            document.getElementById('demandImpact').textContent = story.demand_impact || '';
+            document.getElementById('gateImpact').textContent = story.gate_impact || '';
+            document.getElementById('scheduleImpact').textContent = story.schedule_impact || '';
+            document.getElementById('recommendation').textContent = story.recommendation || '';
+
+            // KPIs
+            const util = metrics.peak_utilization;
+            const delta = metrics.utilization_delta;
+            const cbpD = metrics.cbp_delta;
+
+            document.getElementById('kpiUtil').textContent = util + '%';
+            document.getElementById('kpiDelta').textContent = (delta >= 0 ? '+' : '') + delta + '%';
+            document.getElementById('deltaUtil').textContent = (delta >= 0 ? '▲ Above baseline' : '▼ Below baseline');
+            document.getElementById('deltaUtil').className = 'kpi-delta ' + (delta >= 0 ? 'up' : 'down');
+            document.getElementById('kpiCbp').textContent = (cbpD >= 0 ? '+' : '') + cbpD + '%';
+            document.getElementById('deltaCbp').textContent = cbpD > 0 ? '▲ Increased load' : 'No change';
+            document.getElementById('deltaCbp').className = 'kpi-delta ' + (cbpD > 0 ? 'up' : 'neutral');
+            document.getElementById('kpiStress').textContent = risk;
+
+            // Charts
+            updateCharts(params, metrics);
+
+            // History
+            addToHistory(query, risk, data);
+        }
+
+        function updateCharts(params, metrics) {
+            const simUtil = MONTHS.map((m, i) => {
+                let adj = metrics.utilization_delta;
+                // Weight active months more
+                if (params.active_months && !params.active_months.includes(m)) adj = adj * 0.2;
+                return Math.min(100, Math.max(0, BASELINE_UTIL[i] + adj));
+            });
+
+            // Util Chart
+            if (utilChart) utilChart.destroy();
+            const ctx1 = document.getElementById('utilChart').getContext('2d');
+            utilChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: MONTHS,
+                    datasets: [
+                        { label: 'Baseline 2026', data: BASELINE_UTIL, borderColor: '#94a3b8', borderDash: [5, 4], fill: false, pointRadius: 3, tension: 0.4 },
+                        { label: 'Simulated', data: simUtil, borderColor: '#1d5fd1', backgroundColor: 'rgba(29,95,209,0.08)', fill: true, pointRadius: 4, tension: 0.4, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 } } } },
+                    scales: {
+                        y: { min: 50, max: 100, ticks: { callback: v => v + '%', font: { family: 'Inter', size: 11 } }, grid: { color: '#f1f5f9' } },
+                        x: { ticks: { font: { family: 'Inter', size: 11 } }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Pier chart
+            const pierNames = Object.keys(BASELINE_PIERS);
+            const simPiers = pierNames.map(p => {
+                let base = BASELINE_PIERS[p];
+                const avail = params.asset_availability || {};
+                if (avail[p] !== undefined) base = base / (avail[p] || 0.01);
+                if ((params.carrier_adjustments || []).some(a => a.airline === 'Global')) {
+                    base *= (1 + metrics.utilization_delta / 100);
+                }
+                return Math.min(100, Math.round(base));
+            });
+
+            if (pierChart) pierChart.destroy();
+            const ctx2 = document.getElementById('pierChart').getContext('2d');
+            pierChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: pierNames,
+                    datasets: [
+                        { label: 'Baseline', data: Object.values(BASELINE_PIERS), backgroundColor: '#e2e8f0', borderRadius: 5 },
+                        { label: 'Simulated', data: simPiers, backgroundColor: simPiers.map(v => v > 90 ? '#fee2e2' : v > 80 ? '#fef9c3' : '#dbeafe'), borderRadius: 5, borderColor: simPiers.map(v => v > 90 ? '#dc2626' : v > 80 ? '#d97706' : '#1d5fd1'), borderWidth: 1.5 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', size: 11 } } } },
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { callback: v => v + '%', font: { family: 'Inter', size: 11 } }, grid: { color: '#f1f5f9' } },
+                        x: { ticks: { font: { family: 'Inter', size: 11 } }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function addToHistory(query, risk, data) {
+            sessionHistory.unshift({ query, risk, data });
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            sessionHistory.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `<span class="history-q">${item.query}</span><span class="history-risk risk-badge risk-${item.risk}">${item.risk}</span>`;
+                div.onclick = () => renderResults(item.data, item.query);
+                list.appendChild(div);
+            });
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('userInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') runSimulation();
+        });
+    </script>
+</body>
+
+</html>

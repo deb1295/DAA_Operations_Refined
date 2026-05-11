@@ -1,0 +1,53 @@
+{
+  "_comment": "DAA Stand Allocation — System Constants. These are fixed operational parameters derived from the Dublin Airport Reference Guide. DO NOT store soft priority weights here — those are operator UI inputs.",
+
+  "arrival_offsets_min": {
+    "standard": -8,
+    "widebody_or_cbp": -14,
+    "_note": "Minutes before STA when stand occupancy begins. Derived from 3-day schedule analysis (median early-arrival pattern)."
+  },
+
+  "departure_delay_buffer_min": 24,
+  "_note_dep": "Minutes after STD when stand is released. Derived from mean departure delay in 3-day data.",
+
+  "stand_buffer_min": 10,
+  "_note_buffer": "Minimum gap required between consecutive aircraft on the same contact stand (daa hard rule).",
+
+  "quick_turn_threshold_min": 30,
+  "_note_qt": "Flights with turnaround < this value are Priority 2 (contact stand mandatory — remote bus incompatible).",
+
+  "long_stay_threshold_min": 75,
+  "_note_ls": "Flights with turnaround >= this value are preferentially routed to remote stands.",
+
+  "tow_threshold_min": 120,
+  "_note_tow": "Aircraft remaining on a contact stand > 2 hours after block-in will be towed to remote (daa policy).",
+
+  "turnaround_standard_min": {
+    "B": 25,
+    "C": 35,
+    "D": 55,
+    "E": 90,
+    "_note": "Standard turnaround times by ICAO aircraft category. Used when no airline-specific agreement is recorded."
+  },
+
+  "cbp_stands_total": 14,
+  "_note_cbp": "Total CBP-eligible stands at Dublin Airport (all in Pier 4). Hard capacity ceiling for US preclearance ops.",
+
+  "cascade_max_hops": 3,
+  "_note_cascade": "Maximum depth of conflict cascade tracing in Live Ops incremental reallocation.",
+
+  "live_ops_decision_window_min": 60,
+  "_note_live": "Minutes ahead of NOW that constitute the HAPPENING decision queue.",
+
+  "upcoming_warning_threshold_min": 20,
+  "_note_warn": "If a flight's predecessor is delayed by more than this many minutes, flag downstream flights as AT RISK.",
+
+  "time_bucket_min": 30,
+  "_note_bucket": "Granularity of seasonal demand matrix (30-minute slots).",
+
+  "top_n_designated_stands": 20,
+  "_note_designated": "Number of top routes (by annual frequency) that receive a preferred stand designation in the Seasonal Guide.",
+
+  "remote_upgrade_check_interval_min": 15,
+  "_note_upgrade": "In Live Ops, how often to check if any remote-allocated flights can be upgraded to a contact stand that has freed up."
+}

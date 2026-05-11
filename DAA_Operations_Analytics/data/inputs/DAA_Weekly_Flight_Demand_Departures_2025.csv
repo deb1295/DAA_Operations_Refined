@@ -1,0 +1,1563 @@
+Season_Code,Week_In_Year,Week_Start,Terminal,Airline,Airline_Name,Flight_Category,Aircraft_Family,Weekly_Movements,Peak_Day_Movements,Avg_Load_Factor_Pct
+W24,1,2025-01-06,T1,FR,Ryanair,International Short-Haul,B737,707,120,83%
+W24,1,2025-01-06,T1,FR,Ryanair,International Short-Haul,A320,50,10,81%
+W24,1,2025-01-06,T1,FR,Ryanair,Domestic,B737,38,7,70%
+W24,1,2025-01-06,T2,EI,Aer Lingus,International Short-Haul,A320,247,43,80%
+W24,1,2025-01-06,T2,EI,Aer Lingus,Transatlantic CBP,A330,87,16,88%
+W24,1,2025-01-06,T2,EI,Aer Lingus,Transatlantic CBP,B787,41,7,87%
+W24,1,2025-01-06,T2,EI,Aer Lingus,International Long-Haul,A330,9,2,84%
+W24,1,2025-01-06,T2,RE,Aer Lingus Regional,Domestic,ATR72,82,14,68%
+W24,1,2025-01-06,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,54,10,83%
+W24,1,2025-01-06,T2,BA,British Airways,International Short-Haul,A320,55,10,83%
+W24,1,2025-01-06,T2,BA,British Airways,International Short-Haul,E-Jet,42,7,83%
+W24,1,2025-01-06,T1,LH,Lufthansa,International Short-Haul,A320,32,6,80%
+W24,1,2025-01-06,T1,AF,Air France,International Short-Haul,A320,30,5,80%
+W24,1,2025-01-06,T1,KL,KLM,International Short-Haul,A320,29,5,83%
+W24,1,2025-01-06,T1,IB,Iberia,International Short-Haul,A320,18,3,83%
+W24,1,2025-01-06,T1,VY,Vueling,International Short-Haul,A320,18,3,82%
+W24,1,2025-01-06,T1,OS,Austrian,International Short-Haul,A320,10,2,81%
+W24,1,2025-01-06,T1,SK,SAS,International Short-Haul,A320,10,2,81%
+W24,1,2025-01-06,T1,AY,Finnair,International Short-Haul,A320,7,1,83%
+W24,1,2025-01-06,T1,TK,Turkish Airlines,International Long-Haul,A320,15,3,85%
+W24,1,2025-01-06,T1,U2,easyJet,International Short-Haul,A320,40,7,82%
+W24,1,2025-01-06,T1,W6,Wizz Air,International Short-Haul,A320,35,7,81%
+W24,1,2025-01-06,T2,AA,American Airlines,Transatlantic CBP,B787,22,4,88%
+W24,1,2025-01-06,T2,UA,United Airlines,Transatlantic CBP,B787,11,2,86%
+W24,1,2025-01-06,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,86%
+W24,1,2025-01-06,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,89%
+W24,1,2025-01-06,T2,EK,Emirates,International Long-Haul,B777,9,2,85%
+W24,1,2025-01-06,T2,EY,Etihad,International Long-Haul,A330,5,1,84%
+W24,1,2025-01-06,T1,5X,UPS,Cargo,B767,4,1,nan%
+W24,1,2025-01-06,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,2,2025-01-13,T1,FR,Ryanair,International Short-Haul,B737,748,138,80%
+W24,2,2025-01-13,T1,FR,Ryanair,International Short-Haul,A320,52,10,82%
+W24,2,2025-01-13,T1,FR,Ryanair,Domestic,B737,37,7,70%
+W24,2,2025-01-13,T2,EI,Aer Lingus,International Short-Haul,A320,230,40,83%
+W24,2,2025-01-13,T2,EI,Aer Lingus,Transatlantic CBP,A330,83,16,88%
+W24,2,2025-01-13,T2,EI,Aer Lingus,Transatlantic CBP,B787,44,8,86%
+W24,2,2025-01-13,T2,EI,Aer Lingus,International Long-Haul,A330,10,2,85%
+W24,2,2025-01-13,T2,RE,Aer Lingus Regional,Domestic,ATR72,85,14,67%
+W24,2,2025-01-13,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,57,11,81%
+W24,2,2025-01-13,T2,BA,British Airways,International Short-Haul,A320,56,10,81%
+W24,2,2025-01-13,T2,BA,British Airways,International Short-Haul,E-Jet,41,8,81%
+W24,2,2025-01-13,T1,LH,Lufthansa,International Short-Haul,A320,33,6,83%
+W24,2,2025-01-13,T1,AF,Air France,International Short-Haul,A320,29,5,82%
+W24,2,2025-01-13,T1,KL,KLM,International Short-Haul,A320,31,5,81%
+W24,2,2025-01-13,T1,IB,Iberia,International Short-Haul,A320,19,3,83%
+W24,2,2025-01-13,T1,VY,Vueling,International Short-Haul,A320,18,3,81%
+W24,2,2025-01-13,T1,OS,Austrian,International Short-Haul,A320,10,2,81%
+W24,2,2025-01-13,T1,SK,SAS,International Short-Haul,A320,10,2,83%
+W24,2,2025-01-13,T1,AY,Finnair,International Short-Haul,A320,8,2,81%
+W24,2,2025-01-13,T1,TK,Turkish Airlines,International Long-Haul,A320,14,2,83%
+W24,2,2025-01-13,T1,U2,easyJet,International Short-Haul,A320,40,7,83%
+W24,2,2025-01-13,T1,W6,Wizz Air,International Short-Haul,A320,36,7,80%
+W24,2,2025-01-13,T2,AA,American Airlines,Transatlantic CBP,B787,21,3,88%
+W24,2,2025-01-13,T2,UA,United Airlines,Transatlantic CBP,B787,11,2,86%
+W24,2,2025-01-13,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,87%
+W24,2,2025-01-13,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,86%
+W24,2,2025-01-13,T2,EK,Emirates,International Long-Haul,B777,9,2,82%
+W24,2,2025-01-13,T2,EY,Etihad,International Long-Haul,A330,5,1,82%
+W24,2,2025-01-13,T1,5X,UPS,Cargo,B767,4,1,nan%
+W24,2,2025-01-13,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,3,2025-01-20,T1,FR,Ryanair,International Short-Haul,B737,749,134,83%
+W24,3,2025-01-20,T1,FR,Ryanair,International Short-Haul,A320,53,9,83%
+W24,3,2025-01-20,T1,FR,Ryanair,Domestic,B737,38,7,69%
+W24,3,2025-01-20,T2,EI,Aer Lingus,International Short-Haul,A320,255,47,80%
+W24,3,2025-01-20,T2,EI,Aer Lingus,Transatlantic CBP,A330,88,17,89%
+W24,3,2025-01-20,T2,EI,Aer Lingus,Transatlantic CBP,B787,42,8,87%
+W24,3,2025-01-20,T2,EI,Aer Lingus,International Long-Haul,A330,9,2,82%
+W24,3,2025-01-20,T2,RE,Aer Lingus Regional,Domestic,ATR72,90,16,71%
+W24,3,2025-01-20,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,55,10,80%
+W24,3,2025-01-20,T2,BA,British Airways,International Short-Haul,A320,56,9,80%
+W24,3,2025-01-20,T2,BA,British Airways,International Short-Haul,E-Jet,42,7,81%
+W24,3,2025-01-20,T1,LH,Lufthansa,International Short-Haul,A320,33,6,83%
+W24,3,2025-01-20,T1,AF,Air France,International Short-Haul,A320,31,5,80%
+W24,3,2025-01-20,T1,KL,KLM,International Short-Haul,A320,32,5,81%
+W24,3,2025-01-20,T1,IB,Iberia,International Short-Haul,A320,19,3,80%
+W24,3,2025-01-20,T1,VY,Vueling,International Short-Haul,A320,18,3,82%
+W24,3,2025-01-20,T1,OS,Austrian,International Short-Haul,A320,10,2,83%
+W24,3,2025-01-20,T1,SK,SAS,International Short-Haul,A320,10,2,82%
+W24,3,2025-01-20,T1,AY,Finnair,International Short-Haul,A320,7,1,80%
+W24,3,2025-01-20,T1,TK,Turkish Airlines,International Long-Haul,A320,15,3,85%
+W24,3,2025-01-20,T1,U2,easyJet,International Short-Haul,A320,40,7,83%
+W24,3,2025-01-20,T1,W6,Wizz Air,International Short-Haul,A320,37,7,83%
+W24,3,2025-01-20,T2,AA,American Airlines,Transatlantic CBP,B787,23,4,87%
+W24,3,2025-01-20,T2,UA,United Airlines,Transatlantic CBP,B787,11,2,87%
+W24,3,2025-01-20,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,88%
+W24,3,2025-01-20,T2,AC,Air Canada,Transatlantic CBP,B787,5,1,87%
+W24,3,2025-01-20,T2,EK,Emirates,International Long-Haul,B777,10,2,84%
+W24,3,2025-01-20,T2,EY,Etihad,International Long-Haul,A330,5,1,82%
+W24,3,2025-01-20,T1,5X,UPS,Cargo,B767,4,1,nan%
+W24,3,2025-01-20,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,4,2025-01-27,T1,FR,Ryanair,International Short-Haul,B737,782,150,81%
+W24,4,2025-01-27,T1,FR,Ryanair,International Short-Haul,A320,50,8,81%
+W24,4,2025-01-27,T1,FR,Ryanair,Domestic,B737,40,7,71%
+W24,4,2025-01-27,T2,EI,Aer Lingus,International Short-Haul,A320,237,46,81%
+W24,4,2025-01-27,T2,EI,Aer Lingus,Transatlantic CBP,A330,92,16,88%
+W24,4,2025-01-27,T2,EI,Aer Lingus,Transatlantic CBP,B787,43,7,89%
+W24,4,2025-01-27,T2,EI,Aer Lingus,International Long-Haul,A330,10,2,84%
+W24,4,2025-01-27,T2,RE,Aer Lingus Regional,Domestic,ATR72,91,15,69%
+W24,4,2025-01-27,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,57,10,81%
+W24,4,2025-01-27,T2,BA,British Airways,International Short-Haul,A320,56,10,83%
+W24,4,2025-01-27,T2,BA,British Airways,International Short-Haul,E-Jet,42,7,80%
+W24,4,2025-01-27,T1,LH,Lufthansa,International Short-Haul,A320,33,6,82%
+W24,4,2025-01-27,T1,AF,Air France,International Short-Haul,A320,32,6,81%
+W24,4,2025-01-27,T1,KL,KLM,International Short-Haul,A320,32,5,81%
+W24,4,2025-01-27,T1,IB,Iberia,International Short-Haul,A320,20,3,80%
+W24,4,2025-01-27,T1,VY,Vueling,International Short-Haul,A320,19,3,82%
+W24,4,2025-01-27,T1,OS,Austrian,International Short-Haul,A320,10,2,81%
+W24,4,2025-01-27,T1,SK,SAS,International Short-Haul,A320,10,2,81%
+W24,4,2025-01-27,T1,AY,Finnair,International Short-Haul,A320,8,1,80%
+W24,4,2025-01-27,T1,TK,Turkish Airlines,International Long-Haul,A320,15,3,85%
+W24,4,2025-01-27,T1,U2,easyJet,International Short-Haul,A320,40,7,80%
+W24,4,2025-01-27,T1,W6,Wizz Air,International Short-Haul,A320,35,7,80%
+W24,4,2025-01-27,T2,AA,American Airlines,Transatlantic CBP,B787,24,4,89%
+W24,4,2025-01-27,T2,UA,United Airlines,Transatlantic CBP,B787,11,2,88%
+W24,4,2025-01-27,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,86%
+W24,4,2025-01-27,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,87%
+W24,4,2025-01-27,T2,EK,Emirates,International Long-Haul,B777,10,2,85%
+W24,4,2025-01-27,T2,EY,Etihad,International Long-Haul,A330,5,1,85%
+W24,4,2025-01-27,T1,5X,UPS,Cargo,B767,4,1,nan%
+W24,4,2025-01-27,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,5,2025-02-03,T1,FR,Ryanair,International Short-Haul,B737,789,150,81%
+W24,5,2025-02-03,T1,FR,Ryanair,International Short-Haul,A320,53,10,81%
+W24,5,2025-02-03,T1,FR,Ryanair,Domestic,B737,40,7,71%
+W24,5,2025-02-03,T2,EI,Aer Lingus,International Short-Haul,A320,256,48,83%
+W24,5,2025-02-03,T2,EI,Aer Lingus,Transatlantic CBP,A330,91,16,89%
+W24,5,2025-02-03,T2,EI,Aer Lingus,Transatlantic CBP,B787,45,8,89%
+W24,5,2025-02-03,T2,EI,Aer Lingus,International Long-Haul,A330,10,2,85%
+W24,5,2025-02-03,T2,RE,Aer Lingus Regional,Domestic,ATR72,94,17,68%
+W24,5,2025-02-03,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,60,11,81%
+W24,5,2025-02-03,T2,BA,British Airways,International Short-Haul,A320,62,11,82%
+W24,5,2025-02-03,T2,BA,British Airways,International Short-Haul,E-Jet,42,8,82%
+W24,5,2025-02-03,T1,LH,Lufthansa,International Short-Haul,A320,34,6,83%
+W24,5,2025-02-03,T1,AF,Air France,International Short-Haul,A320,32,5,84%
+W24,5,2025-02-03,T1,KL,KLM,International Short-Haul,A320,33,6,81%
+W24,5,2025-02-03,T1,IB,Iberia,International Short-Haul,A320,20,4,82%
+W24,5,2025-02-03,T1,VY,Vueling,International Short-Haul,A320,19,3,81%
+W24,5,2025-02-03,T1,OS,Austrian,International Short-Haul,A320,10,2,80%
+W24,5,2025-02-03,T1,SK,SAS,International Short-Haul,A320,10,2,81%
+W24,5,2025-02-03,T1,AY,Finnair,International Short-Haul,A320,8,2,82%
+W24,5,2025-02-03,T1,TK,Turkish Airlines,International Long-Haul,A320,15,3,84%
+W24,5,2025-02-03,T1,U2,easyJet,International Short-Haul,A320,45,8,84%
+W24,5,2025-02-03,T1,W6,Wizz Air,International Short-Haul,A320,37,6,82%
+W24,5,2025-02-03,T2,AA,American Airlines,Transatlantic CBP,B787,22,4,86%
+W24,5,2025-02-03,T2,UA,United Airlines,Transatlantic CBP,B787,12,2,88%
+W24,5,2025-02-03,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,89%
+W24,5,2025-02-03,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,86%
+W24,5,2025-02-03,T2,EK,Emirates,International Long-Haul,B777,11,2,82%
+W24,5,2025-02-03,T2,EY,Etihad,International Long-Haul,A330,5,1,85%
+W24,5,2025-02-03,T1,5X,UPS,Cargo,B767,5,1,nan%
+W24,5,2025-02-03,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,6,2025-02-10,T1,FR,Ryanair,International Short-Haul,B737,746,129,82%
+W24,6,2025-02-10,T1,FR,Ryanair,International Short-Haul,A320,56,10,82%
+W24,6,2025-02-10,T1,FR,Ryanair,Domestic,B737,42,8,71%
+W24,6,2025-02-10,T2,EI,Aer Lingus,International Short-Haul,A320,259,44,80%
+W24,6,2025-02-10,T2,EI,Aer Lingus,Transatlantic CBP,A330,96,16,87%
+W24,6,2025-02-10,T2,EI,Aer Lingus,Transatlantic CBP,B787,47,8,88%
+W24,6,2025-02-10,T2,EI,Aer Lingus,International Long-Haul,A330,10,2,84%
+W24,6,2025-02-10,T2,RE,Aer Lingus Regional,Domestic,ATR72,97,18,71%
+W24,6,2025-02-10,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,63,11,81%
+W24,6,2025-02-10,T2,BA,British Airways,International Short-Haul,A320,62,11,82%
+W24,6,2025-02-10,T2,BA,British Airways,International Short-Haul,E-Jet,44,8,81%
+W24,6,2025-02-10,T1,LH,Lufthansa,International Short-Haul,A320,35,6,83%
+W24,6,2025-02-10,T1,AF,Air France,International Short-Haul,A320,32,5,82%
+W24,6,2025-02-10,T1,KL,KLM,International Short-Haul,A320,33,6,81%
+W24,6,2025-02-10,T1,IB,Iberia,International Short-Haul,A320,21,4,83%
+W24,6,2025-02-10,T1,VY,Vueling,International Short-Haul,A320,20,4,81%
+W24,6,2025-02-10,T1,OS,Austrian,International Short-Haul,A320,11,2,82%
+W24,6,2025-02-10,T1,SK,SAS,International Short-Haul,A320,11,2,80%
+W24,6,2025-02-10,T1,AY,Finnair,International Short-Haul,A320,8,1,82%
+W24,6,2025-02-10,T1,TK,Turkish Airlines,International Long-Haul,A320,15,3,84%
+W24,6,2025-02-10,T1,U2,easyJet,International Short-Haul,A320,45,8,82%
+W24,6,2025-02-10,T1,W6,Wizz Air,International Short-Haul,A320,37,6,80%
+W24,6,2025-02-10,T2,AA,American Airlines,Transatlantic CBP,B787,25,4,87%
+W24,6,2025-02-10,T2,UA,United Airlines,Transatlantic CBP,B787,12,2,86%
+W24,6,2025-02-10,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,86%
+W24,6,2025-02-10,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,86%
+W24,6,2025-02-10,T2,EK,Emirates,International Long-Haul,B777,10,2,85%
+W24,6,2025-02-10,T2,EY,Etihad,International Long-Haul,A330,5,1,82%
+W24,6,2025-02-10,T1,5X,UPS,Cargo,B767,5,1,nan%
+W24,6,2025-02-10,T1,FX,FedEx,Cargo,A320,3,1,nan%
+W24,7,2025-02-17,T1,FR,Ryanair,International Short-Haul,B737,926,155,82%
+W24,7,2025-02-17,T1,FR,Ryanair,International Short-Haul,A320,63,12,85%
+W24,7,2025-02-17,T1,FR,Ryanair,Domestic,B737,51,10,71%
+W24,7,2025-02-17,T2,EI,Aer Lingus,International Short-Haul,A320,318,55,83%
+W24,7,2025-02-17,T2,EI,Aer Lingus,Transatlantic CBP,A330,112,20,90%
+W24,7,2025-02-17,T2,EI,Aer Lingus,Transatlantic CBP,B787,55,10,90%
+W24,7,2025-02-17,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,86%
+W24,7,2025-02-17,T2,RE,Aer Lingus Regional,Domestic,ATR72,113,20,70%
+W24,7,2025-02-17,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,73,14,83%
+W24,7,2025-02-17,T2,BA,British Airways,International Short-Haul,A320,74,12,81%
+W24,7,2025-02-17,T2,BA,British Airways,International Short-Haul,E-Jet,56,10,83%
+W24,7,2025-02-17,T1,LH,Lufthansa,International Short-Haul,A320,41,8,84%
+W24,7,2025-02-17,T1,AF,Air France,International Short-Haul,A320,40,7,83%
+W24,7,2025-02-17,T1,KL,KLM,International Short-Haul,A320,40,7,84%
+W24,7,2025-02-17,T1,IB,Iberia,International Short-Haul,A320,25,5,83%
+W24,7,2025-02-17,T1,VY,Vueling,International Short-Haul,A320,22,4,82%
+W24,7,2025-02-17,T1,OS,Austrian,International Short-Haul,A320,14,3,83%
+W24,7,2025-02-17,T1,SK,SAS,International Short-Haul,A320,13,2,84%
+W24,7,2025-02-17,T1,AY,Finnair,International Short-Haul,A320,10,2,83%
+W24,7,2025-02-17,T1,TK,Turkish Airlines,International Long-Haul,A320,18,3,85%
+W24,7,2025-02-17,T1,U2,easyJet,International Short-Haul,A320,51,10,82%
+W24,7,2025-02-17,T1,W6,Wizz Air,International Short-Haul,A320,43,7,84%
+W24,7,2025-02-17,T2,AA,American Airlines,Transatlantic CBP,B787,28,5,87%
+W24,7,2025-02-17,T2,UA,United Airlines,Transatlantic CBP,B787,14,2,90%
+W24,7,2025-02-17,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,89%
+W24,7,2025-02-17,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,90%
+W24,7,2025-02-17,T2,EK,Emirates,International Long-Haul,B777,12,2,86%
+W24,7,2025-02-17,T2,EY,Etihad,International Long-Haul,A330,7,1,84%
+W24,7,2025-02-17,T1,5X,UPS,Cargo,B767,6,1,nan%
+W24,7,2025-02-17,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W24,8,2025-02-24,T1,FR,Ryanair,International Short-Haul,B737,850,162,81%
+W24,8,2025-02-24,T1,FR,Ryanair,International Short-Haul,A320,59,11,80%
+W24,8,2025-02-24,T1,FR,Ryanair,Domestic,B737,42,7,69%
+W24,8,2025-02-24,T2,EI,Aer Lingus,International Short-Haul,A320,287,52,83%
+W24,8,2025-02-24,T2,EI,Aer Lingus,Transatlantic CBP,A330,104,18,89%
+W24,8,2025-02-24,T2,EI,Aer Lingus,Transatlantic CBP,B787,49,9,87%
+W24,8,2025-02-24,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,83%
+W24,8,2025-02-24,T2,RE,Aer Lingus Regional,Domestic,ATR72,100,18,70%
+W24,8,2025-02-24,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,64,12,81%
+W24,8,2025-02-24,T2,BA,British Airways,International Short-Haul,A320,62,11,82%
+W24,8,2025-02-24,T2,BA,British Airways,International Short-Haul,E-Jet,45,8,82%
+W24,8,2025-02-24,T1,LH,Lufthansa,International Short-Haul,A320,36,7,84%
+W24,8,2025-02-24,T1,AF,Air France,International Short-Haul,A320,33,6,83%
+W24,8,2025-02-24,T1,KL,KLM,International Short-Haul,A320,34,6,82%
+W24,8,2025-02-24,T1,IB,Iberia,International Short-Haul,A320,22,4,83%
+W24,8,2025-02-24,T1,VY,Vueling,International Short-Haul,A320,20,3,82%
+W24,8,2025-02-24,T1,OS,Austrian,International Short-Haul,A320,12,2,82%
+W24,8,2025-02-24,T1,SK,SAS,International Short-Haul,A320,12,2,82%
+W24,8,2025-02-24,T1,AY,Finnair,International Short-Haul,A320,9,2,82%
+W24,8,2025-02-24,T1,TK,Turkish Airlines,International Long-Haul,A320,17,3,86%
+W24,8,2025-02-24,T1,U2,easyJet,International Short-Haul,A320,48,8,83%
+W24,8,2025-02-24,T1,W6,Wizz Air,International Short-Haul,A320,40,7,82%
+W24,8,2025-02-24,T2,AA,American Airlines,Transatlantic CBP,B787,25,5,87%
+W24,8,2025-02-24,T2,UA,United Airlines,Transatlantic CBP,B787,13,2,86%
+W24,8,2025-02-24,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,87%
+W24,8,2025-02-24,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,87%
+W24,8,2025-02-24,T2,EK,Emirates,International Long-Haul,B777,11,2,83%
+W24,8,2025-02-24,T2,EY,Etihad,International Long-Haul,A330,6,1,83%
+W24,8,2025-02-24,T1,5X,UPS,Cargo,B767,5,1,nan%
+W24,8,2025-02-24,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W24,9,2025-03-03,T1,FR,Ryanair,International Short-Haul,B737,941,168,81%
+W24,9,2025-03-03,T1,FR,Ryanair,International Short-Haul,A320,65,12,83%
+W24,9,2025-03-03,T1,FR,Ryanair,Domestic,B737,49,8,69%
+W24,9,2025-03-03,T2,EI,Aer Lingus,International Short-Haul,A320,303,52,81%
+W24,9,2025-03-03,T2,EI,Aer Lingus,Transatlantic CBP,A330,102,17,90%
+W24,9,2025-03-03,T2,EI,Aer Lingus,Transatlantic CBP,B787,52,9,89%
+W24,9,2025-03-03,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,86%
+W24,9,2025-03-03,T2,RE,Aer Lingus Regional,Domestic,ATR72,101,19,72%
+W24,9,2025-03-03,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,70,13,82%
+W24,9,2025-03-03,T2,BA,British Airways,International Short-Haul,A320,69,13,84%
+W24,9,2025-03-03,T2,BA,British Airways,International Short-Haul,E-Jet,50,9,84%
+W24,9,2025-03-03,T1,LH,Lufthansa,International Short-Haul,A320,42,8,82%
+W24,9,2025-03-03,T1,AF,Air France,International Short-Haul,A320,37,7,81%
+W24,9,2025-03-03,T1,KL,KLM,International Short-Haul,A320,38,7,82%
+W24,9,2025-03-03,T1,IB,Iberia,International Short-Haul,A320,23,4,81%
+W24,9,2025-03-03,T1,VY,Vueling,International Short-Haul,A320,22,4,81%
+W24,9,2025-03-03,T1,OS,Austrian,International Short-Haul,A320,12,2,81%
+W24,9,2025-03-03,T1,SK,SAS,International Short-Haul,A320,12,2,82%
+W24,9,2025-03-03,T1,AY,Finnair,International Short-Haul,A320,10,2,82%
+W24,9,2025-03-03,T1,TK,Turkish Airlines,International Long-Haul,A320,18,3,82%
+W24,9,2025-03-03,T1,U2,easyJet,International Short-Haul,A320,52,10,81%
+W24,9,2025-03-03,T1,W6,Wizz Air,International Short-Haul,A320,41,8,83%
+W24,9,2025-03-03,T2,AA,American Airlines,Transatlantic CBP,B787,26,4,88%
+W24,9,2025-03-03,T2,UA,United Airlines,Transatlantic CBP,B787,14,3,90%
+W24,9,2025-03-03,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,89%
+W24,9,2025-03-03,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,90%
+W24,9,2025-03-03,T2,EK,Emirates,International Long-Haul,B777,12,2,85%
+W24,9,2025-03-03,T2,EY,Etihad,International Long-Haul,A330,6,1,85%
+W24,9,2025-03-03,T1,5X,UPS,Cargo,B767,5,1,nan%
+W24,9,2025-03-03,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W24,10,2025-03-10,T1,FR,Ryanair,International Short-Haul,B737,1004,170,82%
+W24,10,2025-03-10,T1,FR,Ryanair,International Short-Haul,A320,67,12,84%
+W24,10,2025-03-10,T1,FR,Ryanair,Domestic,B737,50,9,71%
+W24,10,2025-03-10,T2,EI,Aer Lingus,International Short-Haul,A320,318,60,82%
+W24,10,2025-03-10,T2,EI,Aer Lingus,Transatlantic CBP,A330,114,20,88%
+W24,10,2025-03-10,T2,EI,Aer Lingus,Transatlantic CBP,B787,56,10,89%
+W24,10,2025-03-10,T2,EI,Aer Lingus,International Long-Haul,A330,13,2,85%
+W24,10,2025-03-10,T2,RE,Aer Lingus Regional,Domestic,ATR72,120,20,71%
+W24,10,2025-03-10,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,79,14,84%
+W24,10,2025-03-10,T2,BA,British Airways,International Short-Haul,A320,76,13,83%
+W24,10,2025-03-10,T2,BA,British Airways,International Short-Haul,E-Jet,55,10,82%
+W24,10,2025-03-10,T1,LH,Lufthansa,International Short-Haul,A320,46,9,82%
+W24,10,2025-03-10,T1,AF,Air France,International Short-Haul,A320,40,8,85%
+W24,10,2025-03-10,T1,KL,KLM,International Short-Haul,A320,41,7,83%
+W24,10,2025-03-10,T1,IB,Iberia,International Short-Haul,A320,26,4,84%
+W24,10,2025-03-10,T1,VY,Vueling,International Short-Haul,A320,23,4,82%
+W24,10,2025-03-10,T1,OS,Austrian,International Short-Haul,A320,13,2,83%
+W24,10,2025-03-10,T1,SK,SAS,International Short-Haul,A320,13,2,82%
+W24,10,2025-03-10,T1,AY,Finnair,International Short-Haul,A320,11,2,83%
+W24,10,2025-03-10,T1,TK,Turkish Airlines,International Long-Haul,A320,20,4,84%
+W24,10,2025-03-10,T1,U2,easyJet,International Short-Haul,A320,56,10,83%
+W24,10,2025-03-10,T1,W6,Wizz Air,International Short-Haul,A320,45,8,81%
+W24,10,2025-03-10,T2,AA,American Airlines,Transatlantic CBP,B787,30,6,88%
+W24,10,2025-03-10,T2,UA,United Airlines,Transatlantic CBP,B787,15,2,90%
+W24,10,2025-03-10,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,87%
+W24,10,2025-03-10,T2,AC,Air Canada,Transatlantic CBP,B787,8,1,88%
+W24,10,2025-03-10,T2,EK,Emirates,International Long-Haul,B777,13,2,85%
+W24,10,2025-03-10,T2,EY,Etihad,International Long-Haul,A330,6,1,84%
+W24,10,2025-03-10,T1,5X,UPS,Cargo,B767,6,1,nan%
+W24,10,2025-03-10,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W24,11,2025-03-17,T1,FR,Ryanair,International Short-Haul,B737,1248,219,87%
+W24,11,2025-03-17,T1,FR,Ryanair,International Short-Haul,A320,92,17,84%
+W24,11,2025-03-17,T1,FR,Ryanair,Domestic,B737,63,11,72%
+W24,11,2025-03-17,T2,EI,Aer Lingus,International Short-Haul,A320,418,78,86%
+W24,11,2025-03-17,T2,EI,Aer Lingus,Transatlantic CBP,A330,156,27,91%
+W24,11,2025-03-17,T2,EI,Aer Lingus,Transatlantic CBP,B787,74,12,92%
+W24,11,2025-03-17,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,86%
+W24,11,2025-03-17,T2,RE,Aer Lingus Regional,Domestic,ATR72,152,28,72%
+W24,11,2025-03-17,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,102,18,84%
+W24,11,2025-03-17,T2,BA,British Airways,International Short-Haul,A320,101,19,87%
+W24,11,2025-03-17,T2,BA,British Airways,International Short-Haul,E-Jet,70,13,85%
+W24,11,2025-03-17,T1,LH,Lufthansa,International Short-Haul,A320,60,10,86%
+W24,11,2025-03-17,T1,AF,Air France,International Short-Haul,A320,53,9,85%
+W24,11,2025-03-17,T1,KL,KLM,International Short-Haul,A320,52,9,86%
+W24,11,2025-03-17,T1,IB,Iberia,International Short-Haul,A320,33,6,85%
+W24,11,2025-03-17,T1,VY,Vueling,International Short-Haul,A320,29,5,85%
+W24,11,2025-03-17,T1,OS,Austrian,International Short-Haul,A320,17,3,85%
+W24,11,2025-03-17,T1,SK,SAS,International Short-Haul,A320,17,3,85%
+W24,11,2025-03-17,T1,AY,Finnair,International Short-Haul,A320,13,2,86%
+W24,11,2025-03-17,T1,TK,Turkish Airlines,International Long-Haul,A320,26,4,88%
+W24,11,2025-03-17,T1,U2,easyJet,International Short-Haul,A320,74,14,83%
+W24,11,2025-03-17,T1,W6,Wizz Air,International Short-Haul,A320,61,11,85%
+W24,11,2025-03-17,T2,AA,American Airlines,Transatlantic CBP,B787,39,7,91%
+W24,11,2025-03-17,T2,UA,United Airlines,Transatlantic CBP,B787,18,3,89%
+W24,11,2025-03-17,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,91%
+W24,11,2025-03-17,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,92%
+W24,11,2025-03-17,T2,EK,Emirates,International Long-Haul,B777,16,3,85%
+W24,11,2025-03-17,T2,EY,Etihad,International Long-Haul,A330,9,2,87%
+W24,11,2025-03-17,T1,5X,UPS,Cargo,B767,7,1,nan%
+W24,11,2025-03-17,T1,FX,FedEx,Cargo,A320,6,1,nan%
+W24,12,2025-03-24,T1,FR,Ryanair,International Short-Haul,B737,1071,178,82%
+W24,12,2025-03-24,T1,FR,Ryanair,International Short-Haul,A320,70,12,82%
+W24,12,2025-03-24,T1,FR,Ryanair,Domestic,B737,53,9,73%
+W24,12,2025-03-24,T2,EI,Aer Lingus,International Short-Haul,A320,353,66,84%
+W24,12,2025-03-24,T2,EI,Aer Lingus,Transatlantic CBP,A330,122,23,89%
+W24,12,2025-03-24,T2,EI,Aer Lingus,Transatlantic CBP,B787,64,11,91%
+W24,12,2025-03-24,T2,EI,Aer Lingus,International Long-Haul,A330,14,2,87%
+W24,12,2025-03-24,T2,RE,Aer Lingus Regional,Domestic,ATR72,119,22,72%
+W24,12,2025-03-24,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,86,17,85%
+W24,12,2025-03-24,T2,BA,British Airways,International Short-Haul,A320,79,15,84%
+W24,12,2025-03-24,T2,BA,British Airways,International Short-Haul,E-Jet,61,10,84%
+W24,12,2025-03-24,T1,LH,Lufthansa,International Short-Haul,A320,50,10,83%
+W24,12,2025-03-24,T1,AF,Air France,International Short-Haul,A320,42,7,85%
+W24,12,2025-03-24,T1,KL,KLM,International Short-Haul,A320,45,8,82%
+W24,12,2025-03-24,T1,IB,Iberia,International Short-Haul,A320,27,5,85%
+W24,12,2025-03-24,T1,VY,Vueling,International Short-Haul,A320,26,5,84%
+W24,12,2025-03-24,T1,OS,Austrian,International Short-Haul,A320,14,3,83%
+W24,12,2025-03-24,T1,SK,SAS,International Short-Haul,A320,15,3,84%
+W24,12,2025-03-24,T1,AY,Finnair,International Short-Haul,A320,11,2,83%
+W24,12,2025-03-24,T1,TK,Turkish Airlines,International Long-Haul,A320,21,4,86%
+W24,12,2025-03-24,T1,U2,easyJet,International Short-Haul,A320,57,10,85%
+W24,12,2025-03-24,T1,W6,Wizz Air,International Short-Haul,A320,53,9,83%
+W24,12,2025-03-24,T2,AA,American Airlines,Transatlantic CBP,B787,31,6,91%
+W24,12,2025-03-24,T2,UA,United Airlines,Transatlantic CBP,B787,16,3,91%
+W24,12,2025-03-24,T2,DL,Delta Air Lines,Transatlantic CBP,A330,8,1,90%
+W24,12,2025-03-24,T2,AC,Air Canada,Transatlantic CBP,B787,8,1,91%
+W24,12,2025-03-24,T2,EK,Emirates,International Long-Haul,B777,15,3,84%
+W24,12,2025-03-24,T2,EY,Etihad,International Long-Haul,A330,7,1,85%
+W24,12,2025-03-24,T1,5X,UPS,Cargo,B767,6,1,nan%
+W24,12,2025-03-24,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,13,2025-03-31,T1,FR,Ryanair,International Short-Haul,B737,1069,181,82%
+S25,13,2025-03-31,T1,FR,Ryanair,International Short-Haul,A320,73,13,85%
+S25,13,2025-03-31,T1,FR,Ryanair,Domestic,B737,54,9,72%
+S25,13,2025-03-31,T2,EI,Aer Lingus,International Short-Haul,A320,376,65,83%
+S25,13,2025-03-31,T2,EI,Aer Lingus,Transatlantic CBP,A330,133,23,88%
+S25,13,2025-03-31,T2,EI,Aer Lingus,Transatlantic CBP,B787,68,12,90%
+S25,13,2025-03-31,T2,EI,Aer Lingus,International Long-Haul,A330,15,3,85%
+S25,13,2025-03-31,T2,RE,Aer Lingus Regional,Domestic,ATR72,129,22,70%
+S25,13,2025-03-31,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,88,17,86%
+S25,13,2025-03-31,T2,BA,British Airways,International Short-Haul,A320,88,15,82%
+S25,13,2025-03-31,T2,BA,British Airways,International Short-Haul,E-Jet,64,12,84%
+S25,13,2025-03-31,T1,LH,Lufthansa,International Short-Haul,A320,51,9,85%
+S25,13,2025-03-31,T1,AF,Air France,International Short-Haul,A320,44,8,85%
+S25,13,2025-03-31,T1,KL,KLM,International Short-Haul,A320,45,8,83%
+S25,13,2025-03-31,T1,IB,Iberia,International Short-Haul,A320,30,5,84%
+S25,13,2025-03-31,T1,VY,Vueling,International Short-Haul,A320,26,5,82%
+S25,13,2025-03-31,T1,OS,Austrian,International Short-Haul,A320,15,3,85%
+S25,13,2025-03-31,T1,SK,SAS,International Short-Haul,A320,15,3,85%
+S25,13,2025-03-31,T1,AY,Finnair,International Short-Haul,A320,12,2,82%
+S25,13,2025-03-31,T1,TK,Turkish Airlines,International Long-Haul,A320,22,4,84%
+S25,13,2025-03-31,T1,U2,easyJet,International Short-Haul,A320,64,12,85%
+S25,13,2025-03-31,T1,W6,Wizz Air,International Short-Haul,A320,52,9,83%
+S25,13,2025-03-31,T2,AA,American Airlines,Transatlantic CBP,B787,35,6,89%
+S25,13,2025-03-31,T2,UA,United Airlines,Transatlantic CBP,B787,17,3,89%
+S25,13,2025-03-31,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,91%
+S25,13,2025-03-31,T2,AC,Air Canada,Transatlantic CBP,B787,8,1,91%
+S25,13,2025-03-31,T2,EK,Emirates,International Long-Haul,B777,14,3,86%
+S25,13,2025-03-31,T2,EY,Etihad,International Long-Haul,A330,8,1,85%
+S25,13,2025-03-31,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,13,2025-03-31,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,14,2025-04-07,T1,FR,Ryanair,International Short-Haul,B737,1082,191,85%
+S25,14,2025-04-07,T1,FR,Ryanair,International Short-Haul,A320,76,13,84%
+S25,14,2025-04-07,T1,FR,Ryanair,Domestic,B737,57,10,71%
+S25,14,2025-04-07,T2,EI,Aer Lingus,International Short-Haul,A320,388,73,83%
+S25,14,2025-04-07,T2,EI,Aer Lingus,Transatlantic CBP,A330,137,25,91%
+S25,14,2025-04-07,T2,EI,Aer Lingus,Transatlantic CBP,B787,69,13,89%
+S25,14,2025-04-07,T2,EI,Aer Lingus,International Long-Haul,A330,14,2,87%
+S25,14,2025-04-07,T2,RE,Aer Lingus Regional,Domestic,ATR72,134,25,74%
+S25,14,2025-04-07,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,85,16,85%
+S25,14,2025-04-07,T2,BA,British Airways,International Short-Haul,A320,92,18,85%
+S25,14,2025-04-07,T2,BA,British Airways,International Short-Haul,E-Jet,62,12,82%
+S25,14,2025-04-07,T1,LH,Lufthansa,International Short-Haul,A320,52,10,83%
+S25,14,2025-04-07,T1,AF,Air France,International Short-Haul,A320,48,8,84%
+S25,14,2025-04-07,T1,KL,KLM,International Short-Haul,A320,46,9,86%
+S25,14,2025-04-07,T1,IB,Iberia,International Short-Haul,A320,31,5,85%
+S25,14,2025-04-07,T1,VY,Vueling,International Short-Haul,A320,28,5,82%
+S25,14,2025-04-07,T1,OS,Austrian,International Short-Haul,A320,15,3,84%
+S25,14,2025-04-07,T1,SK,SAS,International Short-Haul,A320,16,3,85%
+S25,14,2025-04-07,T1,AY,Finnair,International Short-Haul,A320,11,2,84%
+S25,14,2025-04-07,T1,TK,Turkish Airlines,International Long-Haul,A320,22,4,85%
+S25,14,2025-04-07,T1,U2,easyJet,International Short-Haul,A320,65,11,84%
+S25,14,2025-04-07,T1,W6,Wizz Air,International Short-Haul,A320,52,9,85%
+S25,14,2025-04-07,T2,AA,American Airlines,Transatlantic CBP,B787,34,6,92%
+S25,14,2025-04-07,T2,UA,United Airlines,Transatlantic CBP,B787,17,3,91%
+S25,14,2025-04-07,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,90%
+S25,14,2025-04-07,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,92%
+S25,14,2025-04-07,T2,EK,Emirates,International Long-Haul,B777,16,3,85%
+S25,14,2025-04-07,T2,EY,Etihad,International Long-Haul,A330,7,1,87%
+S25,14,2025-04-07,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,14,2025-04-07,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,15,2025-04-14,T1,FR,Ryanair,International Short-Haul,B737,1305,230,84%
+S25,15,2025-04-14,T1,FR,Ryanair,International Short-Haul,A320,94,18,84%
+S25,15,2025-04-14,T1,FR,Ryanair,Domestic,B737,64,11,71%
+S25,15,2025-04-14,T2,EI,Aer Lingus,International Short-Haul,A320,429,82,85%
+S25,15,2025-04-14,T2,EI,Aer Lingus,Transatlantic CBP,A330,159,28,92%
+S25,15,2025-04-14,T2,EI,Aer Lingus,Transatlantic CBP,B787,79,13,90%
+S25,15,2025-04-14,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,86%
+S25,15,2025-04-14,T2,RE,Aer Lingus Regional,Domestic,ATR72,153,29,73%
+S25,15,2025-04-14,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,104,18,86%
+S25,15,2025-04-14,T2,BA,British Airways,International Short-Haul,A320,102,19,84%
+S25,15,2025-04-14,T2,BA,British Airways,International Short-Haul,E-Jet,74,13,85%
+S25,15,2025-04-14,T1,LH,Lufthansa,International Short-Haul,A320,56,9,83%
+S25,15,2025-04-14,T1,AF,Air France,International Short-Haul,A320,56,10,84%
+S25,15,2025-04-14,T1,KL,KLM,International Short-Haul,A320,55,10,85%
+S25,15,2025-04-14,T1,IB,Iberia,International Short-Haul,A320,32,6,86%
+S25,15,2025-04-14,T1,VY,Vueling,International Short-Haul,A320,33,6,86%
+S25,15,2025-04-14,T1,OS,Austrian,International Short-Haul,A320,17,3,83%
+S25,15,2025-04-14,T1,SK,SAS,International Short-Haul,A320,18,3,85%
+S25,15,2025-04-14,T1,AY,Finnair,International Short-Haul,A320,13,2,86%
+S25,15,2025-04-14,T1,TK,Turkish Airlines,International Long-Haul,A320,26,5,86%
+S25,15,2025-04-14,T1,U2,easyJet,International Short-Haul,A320,75,14,84%
+S25,15,2025-04-14,T1,W6,Wizz Air,International Short-Haul,A320,60,11,86%
+S25,15,2025-04-14,T2,AA,American Airlines,Transatlantic CBP,B787,39,7,92%
+S25,15,2025-04-14,T2,UA,United Airlines,Transatlantic CBP,B787,20,4,91%
+S25,15,2025-04-14,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,90%
+S25,15,2025-04-14,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,91%
+S25,15,2025-04-14,T2,EK,Emirates,International Long-Haul,B777,17,3,88%
+S25,15,2025-04-14,T2,EY,Etihad,International Long-Haul,A330,9,2,87%
+S25,15,2025-04-14,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,15,2025-04-14,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,16,2025-04-21,T1,FR,Ryanair,International Short-Haul,B737,1258,219,86%
+S25,16,2025-04-21,T1,FR,Ryanair,International Short-Haul,A320,84,15,85%
+S25,16,2025-04-21,T1,FR,Ryanair,Domestic,B737,60,11,71%
+S25,16,2025-04-21,T2,EI,Aer Lingus,International Short-Haul,A320,404,72,85%
+S25,16,2025-04-21,T2,EI,Aer Lingus,Transatlantic CBP,A330,140,24,90%
+S25,16,2025-04-21,T2,EI,Aer Lingus,Transatlantic CBP,B787,75,14,90%
+S25,16,2025-04-21,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,88%
+S25,16,2025-04-21,T2,RE,Aer Lingus Regional,Domestic,ATR72,145,25,73%
+S25,16,2025-04-21,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,91,17,83%
+S25,16,2025-04-21,T2,BA,British Airways,International Short-Haul,A320,96,16,85%
+S25,16,2025-04-21,T2,BA,British Airways,International Short-Haul,E-Jet,70,13,85%
+S25,16,2025-04-21,T1,LH,Lufthansa,International Short-Haul,A320,57,9,84%
+S25,16,2025-04-21,T1,AF,Air France,International Short-Haul,A320,49,9,84%
+S25,16,2025-04-21,T1,KL,KLM,International Short-Haul,A320,52,10,83%
+S25,16,2025-04-21,T1,IB,Iberia,International Short-Haul,A320,31,5,84%
+S25,16,2025-04-21,T1,VY,Vueling,International Short-Haul,A320,29,5,86%
+S25,16,2025-04-21,T1,OS,Austrian,International Short-Haul,A320,18,3,84%
+S25,16,2025-04-21,T1,SK,SAS,International Short-Haul,A320,16,3,86%
+S25,16,2025-04-21,T1,AY,Finnair,International Short-Haul,A320,12,2,86%
+S25,16,2025-04-21,T1,TK,Turkish Airlines,International Long-Haul,A320,25,4,87%
+S25,16,2025-04-21,T1,U2,easyJet,International Short-Haul,A320,67,12,85%
+S25,16,2025-04-21,T1,W6,Wizz Air,International Short-Haul,A320,60,11,86%
+S25,16,2025-04-21,T2,AA,American Airlines,Transatlantic CBP,B787,36,7,90%
+S25,16,2025-04-21,T2,UA,United Airlines,Transatlantic CBP,B787,19,4,89%
+S25,16,2025-04-21,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,92%
+S25,16,2025-04-21,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,92%
+S25,16,2025-04-21,T2,EK,Emirates,International Long-Haul,B777,16,3,85%
+S25,16,2025-04-21,T2,EY,Etihad,International Long-Haul,A330,8,1,87%
+S25,16,2025-04-21,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,16,2025-04-21,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,17,2025-04-28,T1,FR,Ryanair,International Short-Haul,B737,1109,183,84%
+S25,17,2025-04-28,T1,FR,Ryanair,International Short-Haul,A320,83,15,85%
+S25,17,2025-04-28,T1,FR,Ryanair,Domestic,B737,57,10,72%
+S25,17,2025-04-28,T2,EI,Aer Lingus,International Short-Haul,A320,380,63,85%
+S25,17,2025-04-28,T2,EI,Aer Lingus,Transatlantic CBP,A330,138,26,90%
+S25,17,2025-04-28,T2,EI,Aer Lingus,Transatlantic CBP,B787,66,12,89%
+S25,17,2025-04-28,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,85%
+S25,17,2025-04-28,T2,RE,Aer Lingus Regional,Domestic,ATR72,142,25,70%
+S25,17,2025-04-28,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,91,16,85%
+S25,17,2025-04-28,T2,BA,British Airways,International Short-Haul,A320,93,18,84%
+S25,17,2025-04-28,T2,BA,British Airways,International Short-Haul,E-Jet,65,12,83%
+S25,17,2025-04-28,T1,LH,Lufthansa,International Short-Haul,A320,52,9,82%
+S25,17,2025-04-28,T1,AF,Air France,International Short-Haul,A320,48,9,85%
+S25,17,2025-04-28,T1,KL,KLM,International Short-Haul,A320,46,8,83%
+S25,17,2025-04-28,T1,IB,Iberia,International Short-Haul,A320,31,5,85%
+S25,17,2025-04-28,T1,VY,Vueling,International Short-Haul,A320,27,5,83%
+S25,17,2025-04-28,T1,OS,Austrian,International Short-Haul,A320,16,3,85%
+S25,17,2025-04-28,T1,SK,SAS,International Short-Haul,A320,16,3,85%
+S25,17,2025-04-28,T1,AY,Finnair,International Short-Haul,A320,12,2,84%
+S25,17,2025-04-28,T1,TK,Turkish Airlines,International Long-Haul,A320,22,4,85%
+S25,17,2025-04-28,T1,U2,easyJet,International Short-Haul,A320,66,12,82%
+S25,17,2025-04-28,T1,W6,Wizz Air,International Short-Haul,A320,55,10,86%
+S25,17,2025-04-28,T2,AA,American Airlines,Transatlantic CBP,B787,35,7,90%
+S25,17,2025-04-28,T2,UA,United Airlines,Transatlantic CBP,B787,17,3,90%
+S25,17,2025-04-28,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,91%
+S25,17,2025-04-28,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,89%
+S25,17,2025-04-28,T2,EK,Emirates,International Long-Haul,B777,15,3,85%
+S25,17,2025-04-28,T2,EY,Etihad,International Long-Haul,A330,8,1,85%
+S25,17,2025-04-28,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,17,2025-04-28,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,18,2025-05-05,T1,FR,Ryanair,International Short-Haul,B737,1179,209,84%
+S25,18,2025-05-05,T1,FR,Ryanair,International Short-Haul,A320,81,14,85%
+S25,18,2025-05-05,T1,FR,Ryanair,Domestic,B737,63,11,72%
+S25,18,2025-05-05,T2,EI,Aer Lingus,International Short-Haul,A320,422,74,83%
+S25,18,2025-05-05,T2,EI,Aer Lingus,Transatlantic CBP,A330,142,25,91%
+S25,18,2025-05-05,T2,EI,Aer Lingus,Transatlantic CBP,B787,71,13,89%
+S25,18,2025-05-05,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,86%
+S25,18,2025-05-05,T2,RE,Aer Lingus Regional,Domestic,ATR72,145,25,73%
+S25,18,2025-05-05,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,91,17,83%
+S25,18,2025-05-05,T2,BA,British Airways,International Short-Haul,A320,99,17,85%
+S25,18,2025-05-05,T2,BA,British Airways,International Short-Haul,E-Jet,68,13,83%
+S25,18,2025-05-05,T1,LH,Lufthansa,International Short-Haul,A320,53,9,83%
+S25,18,2025-05-05,T1,AF,Air France,International Short-Haul,A320,49,9,86%
+S25,18,2025-05-05,T1,KL,KLM,International Short-Haul,A320,50,10,85%
+S25,18,2025-05-05,T1,IB,Iberia,International Short-Haul,A320,31,6,85%
+S25,18,2025-05-05,T1,VY,Vueling,International Short-Haul,A320,31,5,85%
+S25,18,2025-05-05,T1,OS,Austrian,International Short-Haul,A320,16,3,82%
+S25,18,2025-05-05,T1,SK,SAS,International Short-Haul,A320,18,3,86%
+S25,18,2025-05-05,T1,AY,Finnair,International Short-Haul,A320,13,2,83%
+S25,18,2025-05-05,T1,TK,Turkish Airlines,International Long-Haul,A320,24,4,87%
+S25,18,2025-05-05,T1,U2,easyJet,International Short-Haul,A320,69,11,82%
+S25,18,2025-05-05,T1,W6,Wizz Air,International Short-Haul,A320,56,10,86%
+S25,18,2025-05-05,T2,AA,American Airlines,Transatlantic CBP,B787,38,7,90%
+S25,18,2025-05-05,T2,UA,United Airlines,Transatlantic CBP,B787,18,3,92%
+S25,18,2025-05-05,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,90%
+S25,18,2025-05-05,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,92%
+S25,18,2025-05-05,T2,EK,Emirates,International Long-Haul,B777,16,3,85%
+S25,18,2025-05-05,T2,EY,Etihad,International Long-Haul,A330,8,1,85%
+S25,18,2025-05-05,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,18,2025-05-05,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,19,2025-05-12,T1,FR,Ryanair,International Short-Haul,B737,1133,196,83%
+S25,19,2025-05-12,T1,FR,Ryanair,International Short-Haul,A320,81,14,84%
+S25,19,2025-05-12,T1,FR,Ryanair,Domestic,B737,60,12,70%
+S25,19,2025-05-12,T2,EI,Aer Lingus,International Short-Haul,A320,374,62,85%
+S25,19,2025-05-12,T2,EI,Aer Lingus,Transatlantic CBP,A330,134,25,90%
+S25,19,2025-05-12,T2,EI,Aer Lingus,Transatlantic CBP,B787,70,13,89%
+S25,19,2025-05-12,T2,EI,Aer Lingus,International Long-Haul,A330,15,3,87%
+S25,19,2025-05-12,T2,RE,Aer Lingus Regional,Domestic,ATR72,135,23,74%
+S25,19,2025-05-12,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,87,16,85%
+S25,19,2025-05-12,T2,BA,British Airways,International Short-Haul,A320,90,15,83%
+S25,19,2025-05-12,T2,BA,British Airways,International Short-Haul,E-Jet,68,12,85%
+S25,19,2025-05-12,T1,LH,Lufthansa,International Short-Haul,A320,55,10,83%
+S25,19,2025-05-12,T1,AF,Air France,International Short-Haul,A320,48,9,83%
+S25,19,2025-05-12,T1,KL,KLM,International Short-Haul,A320,47,9,84%
+S25,19,2025-05-12,T1,IB,Iberia,International Short-Haul,A320,32,6,83%
+S25,19,2025-05-12,T1,VY,Vueling,International Short-Haul,A320,30,5,83%
+S25,19,2025-05-12,T1,OS,Austrian,International Short-Haul,A320,16,3,84%
+S25,19,2025-05-12,T1,SK,SAS,International Short-Haul,A320,16,3,84%
+S25,19,2025-05-12,T1,AY,Finnair,International Short-Haul,A320,13,2,83%
+S25,19,2025-05-12,T1,TK,Turkish Airlines,International Long-Haul,A320,23,4,85%
+S25,19,2025-05-12,T1,U2,easyJet,International Short-Haul,A320,68,13,83%
+S25,19,2025-05-12,T1,W6,Wizz Air,International Short-Haul,A320,55,9,85%
+S25,19,2025-05-12,T2,AA,American Airlines,Transatlantic CBP,B787,34,7,91%
+S25,19,2025-05-12,T2,UA,United Airlines,Transatlantic CBP,B787,18,3,92%
+S25,19,2025-05-12,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,90%
+S25,19,2025-05-12,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,91%
+S25,19,2025-05-12,T2,EK,Emirates,International Long-Haul,B777,16,3,88%
+S25,19,2025-05-12,T2,EY,Etihad,International Long-Haul,A330,8,1,87%
+S25,19,2025-05-12,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,19,2025-05-12,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,20,2025-05-19,T1,FR,Ryanair,International Short-Haul,B737,1222,204,84%
+S25,20,2025-05-19,T1,FR,Ryanair,International Short-Haul,A320,80,14,82%
+S25,20,2025-05-19,T1,FR,Ryanair,Domestic,B737,61,11,73%
+S25,20,2025-05-19,T2,EI,Aer Lingus,International Short-Haul,A320,402,76,83%
+S25,20,2025-05-19,T2,EI,Aer Lingus,Transatlantic CBP,A330,138,26,89%
+S25,20,2025-05-19,T2,EI,Aer Lingus,Transatlantic CBP,B787,75,14,90%
+S25,20,2025-05-19,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,85%
+S25,20,2025-05-19,T2,RE,Aer Lingus Regional,Domestic,ATR72,143,25,74%
+S25,20,2025-05-19,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,90,16,85%
+S25,20,2025-05-19,T2,BA,British Airways,International Short-Haul,A320,95,16,84%
+S25,20,2025-05-19,T2,BA,British Airways,International Short-Haul,E-Jet,70,12,86%
+S25,20,2025-05-19,T1,LH,Lufthansa,International Short-Haul,A320,54,10,85%
+S25,20,2025-05-19,T1,AF,Air France,International Short-Haul,A320,48,9,86%
+S25,20,2025-05-19,T1,KL,KLM,International Short-Haul,A320,50,10,84%
+S25,20,2025-05-19,T1,IB,Iberia,International Short-Haul,A320,30,5,86%
+S25,20,2025-05-19,T1,VY,Vueling,International Short-Haul,A320,29,5,86%
+S25,20,2025-05-19,T1,OS,Austrian,International Short-Haul,A320,16,3,85%
+S25,20,2025-05-19,T1,SK,SAS,International Short-Haul,A320,16,3,84%
+S25,20,2025-05-19,T1,AY,Finnair,International Short-Haul,A320,12,2,84%
+S25,20,2025-05-19,T1,TK,Turkish Airlines,International Long-Haul,A320,24,4,86%
+S25,20,2025-05-19,T1,U2,easyJet,International Short-Haul,A320,68,13,84%
+S25,20,2025-05-19,T1,W6,Wizz Air,International Short-Haul,A320,57,10,83%
+S25,20,2025-05-19,T2,AA,American Airlines,Transatlantic CBP,B787,36,7,91%
+S25,20,2025-05-19,T2,UA,United Airlines,Transatlantic CBP,B787,18,3,88%
+S25,20,2025-05-19,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,90%
+S25,20,2025-05-19,T2,AC,Air Canada,Transatlantic CBP,B787,9,1,89%
+S25,20,2025-05-19,T2,EK,Emirates,International Long-Haul,B777,17,3,86%
+S25,20,2025-05-19,T2,EY,Etihad,International Long-Haul,A330,8,1,87%
+S25,20,2025-05-19,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,20,2025-05-19,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,21,2025-05-26,T1,FR,Ryanair,International Short-Haul,B737,1167,198,84%
+S25,21,2025-05-26,T1,FR,Ryanair,International Short-Haul,A320,82,14,85%
+S25,21,2025-05-26,T1,FR,Ryanair,Domestic,B737,63,12,72%
+S25,21,2025-05-26,T2,EI,Aer Lingus,International Short-Haul,A320,382,66,86%
+S25,21,2025-05-26,T2,EI,Aer Lingus,Transatlantic CBP,A330,146,27,88%
+S25,21,2025-05-26,T2,EI,Aer Lingus,Transatlantic CBP,B787,72,12,91%
+S25,21,2025-05-26,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,87%
+S25,21,2025-05-26,T2,RE,Aer Lingus Regional,Domestic,ATR72,142,27,73%
+S25,21,2025-05-26,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,90,16,83%
+S25,21,2025-05-26,T2,BA,British Airways,International Short-Haul,A320,94,17,85%
+S25,21,2025-05-26,T2,BA,British Airways,International Short-Haul,E-Jet,67,11,84%
+S25,21,2025-05-26,T1,LH,Lufthansa,International Short-Haul,A320,56,10,84%
+S25,21,2025-05-26,T1,AF,Air France,International Short-Haul,A320,53,10,83%
+S25,21,2025-05-26,T1,KL,KLM,International Short-Haul,A320,48,9,86%
+S25,21,2025-05-26,T1,IB,Iberia,International Short-Haul,A320,33,6,85%
+S25,21,2025-05-26,T1,VY,Vueling,International Short-Haul,A320,29,5,83%
+S25,21,2025-05-26,T1,OS,Austrian,International Short-Haul,A320,17,3,85%
+S25,21,2025-05-26,T1,SK,SAS,International Short-Haul,A320,17,3,85%
+S25,21,2025-05-26,T1,AY,Finnair,International Short-Haul,A320,12,2,85%
+S25,21,2025-05-26,T1,TK,Turkish Airlines,International Long-Haul,A320,25,5,85%
+S25,21,2025-05-26,T1,U2,easyJet,International Short-Haul,A320,68,12,84%
+S25,21,2025-05-26,T1,W6,Wizz Air,International Short-Haul,A320,60,11,86%
+S25,21,2025-05-26,T2,AA,American Airlines,Transatlantic CBP,B787,36,7,89%
+S25,21,2025-05-26,T2,UA,United Airlines,Transatlantic CBP,B787,19,3,90%
+S25,21,2025-05-26,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,89%
+S25,21,2025-05-26,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,90%
+S25,21,2025-05-26,T2,EK,Emirates,International Long-Haul,B777,16,3,86%
+S25,21,2025-05-26,T2,EY,Etihad,International Long-Haul,A330,8,1,86%
+S25,21,2025-05-26,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,21,2025-05-26,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,22,2025-06-02,T1,FR,Ryanair,International Short-Haul,B737,1257,212,86%
+S25,22,2025-06-02,T1,FR,Ryanair,International Short-Haul,A320,90,15,85%
+S25,22,2025-06-02,T1,FR,Ryanair,Domestic,B737,67,13,74%
+S25,22,2025-06-02,T2,EI,Aer Lingus,International Short-Haul,A320,419,78,85%
+S25,22,2025-06-02,T2,EI,Aer Lingus,Transatlantic CBP,A330,152,25,89%
+S25,22,2025-06-02,T2,EI,Aer Lingus,Transatlantic CBP,B787,76,13,89%
+S25,22,2025-06-02,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,87%
+S25,22,2025-06-02,T2,RE,Aer Lingus Regional,Domestic,ATR72,150,29,73%
+S25,22,2025-06-02,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,95,17,86%
+S25,22,2025-06-02,T2,BA,British Airways,International Short-Haul,A320,104,18,84%
+S25,22,2025-06-02,T2,BA,British Airways,International Short-Haul,E-Jet,74,13,85%
+S25,22,2025-06-02,T1,LH,Lufthansa,International Short-Haul,A320,57,9,84%
+S25,22,2025-06-02,T1,AF,Air France,International Short-Haul,A320,52,10,86%
+S25,22,2025-06-02,T1,KL,KLM,International Short-Haul,A320,52,10,83%
+S25,22,2025-06-02,T1,IB,Iberia,International Short-Haul,A320,33,5,86%
+S25,22,2025-06-02,T1,VY,Vueling,International Short-Haul,A320,32,6,86%
+S25,22,2025-06-02,T1,OS,Austrian,International Short-Haul,A320,18,3,86%
+S25,22,2025-06-02,T1,SK,SAS,International Short-Haul,A320,18,3,83%
+S25,22,2025-06-02,T1,AY,Finnair,International Short-Haul,A320,13,2,85%
+S25,22,2025-06-02,T1,TK,Turkish Airlines,International Long-Haul,A320,25,5,85%
+S25,22,2025-06-02,T1,U2,easyJet,International Short-Haul,A320,69,12,87%
+S25,22,2025-06-02,T1,W6,Wizz Air,International Short-Haul,A320,60,11,86%
+S25,22,2025-06-02,T2,AA,American Airlines,Transatlantic CBP,B787,39,7,90%
+S25,22,2025-06-02,T2,UA,United Airlines,Transatlantic CBP,B787,19,4,89%
+S25,22,2025-06-02,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,90%
+S25,22,2025-06-02,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,89%
+S25,22,2025-06-02,T2,EK,Emirates,International Long-Haul,B777,17,3,85%
+S25,22,2025-06-02,T2,EY,Etihad,International Long-Haul,A330,9,2,88%
+S25,22,2025-06-02,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,22,2025-06-02,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,23,2025-06-09,T1,FR,Ryanair,International Short-Haul,B737,1356,254,85%
+S25,23,2025-06-09,T1,FR,Ryanair,International Short-Haul,A320,89,17,86%
+S25,23,2025-06-09,T1,FR,Ryanair,Domestic,B737,71,12,72%
+S25,23,2025-06-09,T2,EI,Aer Lingus,International Short-Haul,A320,421,79,84%
+S25,23,2025-06-09,T2,EI,Aer Lingus,Transatlantic CBP,A330,150,29,89%
+S25,23,2025-06-09,T2,EI,Aer Lingus,Transatlantic CBP,B787,81,14,92%
+S25,23,2025-06-09,T2,EI,Aer Lingus,International Long-Haul,A330,18,3,89%
+S25,23,2025-06-09,T2,RE,Aer Lingus Regional,Domestic,ATR72,147,24,72%
+S25,23,2025-06-09,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,104,20,85%
+S25,23,2025-06-09,T2,BA,British Airways,International Short-Haul,A320,104,18,86%
+S25,23,2025-06-09,T2,BA,British Airways,International Short-Haul,E-Jet,78,13,85%
+S25,23,2025-06-09,T1,LH,Lufthansa,International Short-Haul,A320,57,10,85%
+S25,23,2025-06-09,T1,AF,Air France,International Short-Haul,A320,53,9,84%
+S25,23,2025-06-09,T1,KL,KLM,International Short-Haul,A320,55,10,83%
+S25,23,2025-06-09,T1,IB,Iberia,International Short-Haul,A320,35,6,84%
+S25,23,2025-06-09,T1,VY,Vueling,International Short-Haul,A320,30,6,87%
+S25,23,2025-06-09,T1,OS,Austrian,International Short-Haul,A320,18,3,84%
+S25,23,2025-06-09,T1,SK,SAS,International Short-Haul,A320,18,3,84%
+S25,23,2025-06-09,T1,AY,Finnair,International Short-Haul,A320,14,3,85%
+S25,23,2025-06-09,T1,TK,Turkish Airlines,International Long-Haul,A320,26,5,85%
+S25,23,2025-06-09,T1,U2,easyJet,International Short-Haul,A320,71,13,83%
+S25,23,2025-06-09,T1,W6,Wizz Air,International Short-Haul,A320,64,12,84%
+S25,23,2025-06-09,T2,AA,American Airlines,Transatlantic CBP,B787,39,7,93%
+S25,23,2025-06-09,T2,UA,United Airlines,Transatlantic CBP,B787,21,4,89%
+S25,23,2025-06-09,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,91%
+S25,23,2025-06-09,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,92%
+S25,23,2025-06-09,T2,EK,Emirates,International Long-Haul,B777,17,3,87%
+S25,23,2025-06-09,T2,EY,Etihad,International Long-Haul,A330,9,2,86%
+S25,23,2025-06-09,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,23,2025-06-09,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,24,2025-06-16,T1,FR,Ryanair,International Short-Haul,B737,1385,251,85%
+S25,24,2025-06-16,T1,FR,Ryanair,International Short-Haul,A320,99,18,84%
+S25,24,2025-06-16,T1,FR,Ryanair,Domestic,B737,69,12,75%
+S25,24,2025-06-16,T2,EI,Aer Lingus,International Short-Haul,A320,447,85,86%
+S25,24,2025-06-16,T2,EI,Aer Lingus,Transatlantic CBP,A330,161,27,90%
+S25,24,2025-06-16,T2,EI,Aer Lingus,Transatlantic CBP,B787,84,14,91%
+S25,24,2025-06-16,T2,EI,Aer Lingus,International Long-Haul,A330,18,3,86%
+S25,24,2025-06-16,T2,RE,Aer Lingus Regional,Domestic,ATR72,162,29,74%
+S25,24,2025-06-16,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,111,19,87%
+S25,24,2025-06-16,T2,BA,British Airways,International Short-Haul,A320,110,20,86%
+S25,24,2025-06-16,T2,BA,British Airways,International Short-Haul,E-Jet,77,13,86%
+S25,24,2025-06-16,T1,LH,Lufthansa,International Short-Haul,A320,63,12,85%
+S25,24,2025-06-16,T1,AF,Air France,International Short-Haul,A320,60,11,84%
+S25,24,2025-06-16,T1,KL,KLM,International Short-Haul,A320,57,11,87%
+S25,24,2025-06-16,T1,IB,Iberia,International Short-Haul,A320,36,7,84%
+S25,24,2025-06-16,T1,VY,Vueling,International Short-Haul,A320,33,6,87%
+S25,24,2025-06-16,T1,OS,Austrian,International Short-Haul,A320,20,4,84%
+S25,24,2025-06-16,T1,SK,SAS,International Short-Haul,A320,20,3,84%
+S25,24,2025-06-16,T1,AY,Finnair,International Short-Haul,A320,14,2,84%
+S25,24,2025-06-16,T1,TK,Turkish Airlines,International Long-Haul,A320,27,5,87%
+S25,24,2025-06-16,T1,U2,easyJet,International Short-Haul,A320,79,14,85%
+S25,24,2025-06-16,T1,W6,Wizz Air,International Short-Haul,A320,68,13,86%
+S25,24,2025-06-16,T2,AA,American Airlines,Transatlantic CBP,B787,41,8,90%
+S25,24,2025-06-16,T2,UA,United Airlines,Transatlantic CBP,B787,20,3,93%
+S25,24,2025-06-16,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,90%
+S25,24,2025-06-16,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,90%
+S25,24,2025-06-16,T2,EK,Emirates,International Long-Haul,B777,19,3,88%
+S25,24,2025-06-16,T2,EY,Etihad,International Long-Haul,A330,9,2,87%
+S25,24,2025-06-16,T1,5X,UPS,Cargo,B767,9,1,nan%
+S25,24,2025-06-16,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,25,2025-06-23,T1,FR,Ryanair,International Short-Haul,B737,1432,238,87%
+S25,25,2025-06-23,T1,FR,Ryanair,International Short-Haul,A320,96,18,87%
+S25,25,2025-06-23,T1,FR,Ryanair,Domestic,B737,74,14,74%
+S25,25,2025-06-23,T2,EI,Aer Lingus,International Short-Haul,A320,464,87,85%
+S25,25,2025-06-23,T2,EI,Aer Lingus,Transatlantic CBP,A330,172,32,91%
+S25,25,2025-06-23,T2,EI,Aer Lingus,Transatlantic CBP,B787,84,15,93%
+S25,25,2025-06-23,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,88%
+S25,25,2025-06-23,T2,RE,Aer Lingus Regional,Domestic,ATR72,175,29,73%
+S25,25,2025-06-23,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,114,21,87%
+S25,25,2025-06-23,T2,BA,British Airways,International Short-Haul,A320,111,19,85%
+S25,25,2025-06-23,T2,BA,British Airways,International Short-Haul,E-Jet,78,13,87%
+S25,25,2025-06-23,T1,LH,Lufthansa,International Short-Haul,A320,62,12,85%
+S25,25,2025-06-23,T1,AF,Air France,International Short-Haul,A320,60,10,85%
+S25,25,2025-06-23,T1,KL,KLM,International Short-Haul,A320,57,11,87%
+S25,25,2025-06-23,T1,IB,Iberia,International Short-Haul,A320,37,6,87%
+S25,25,2025-06-23,T1,VY,Vueling,International Short-Haul,A320,34,6,86%
+S25,25,2025-06-23,T1,OS,Austrian,International Short-Haul,A320,21,3,85%
+S25,25,2025-06-23,T1,SK,SAS,International Short-Haul,A320,21,4,84%
+S25,25,2025-06-23,T1,AY,Finnair,International Short-Haul,A320,15,3,86%
+S25,25,2025-06-23,T1,TK,Turkish Airlines,International Long-Haul,A320,30,6,86%
+S25,25,2025-06-23,T1,U2,easyJet,International Short-Haul,A320,85,15,85%
+S25,25,2025-06-23,T1,W6,Wizz Air,International Short-Haul,A320,69,12,84%
+S25,25,2025-06-23,T2,AA,American Airlines,Transatlantic CBP,B787,41,7,93%
+S25,25,2025-06-23,T2,UA,United Airlines,Transatlantic CBP,B787,22,4,91%
+S25,25,2025-06-23,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,90%
+S25,25,2025-06-23,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,93%
+S25,25,2025-06-23,T2,EK,Emirates,International Long-Haul,B777,20,3,89%
+S25,25,2025-06-23,T2,EY,Etihad,International Long-Haul,A330,9,2,89%
+S25,25,2025-06-23,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,25,2025-06-23,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,26,2025-06-30,T1,FR,Ryanair,International Short-Haul,B737,1483,263,88%
+S25,26,2025-06-30,T1,FR,Ryanair,International Short-Haul,A320,96,17,86%
+S25,26,2025-06-30,T1,FR,Ryanair,Domestic,B737,75,13,75%
+S25,26,2025-06-30,T2,EI,Aer Lingus,International Short-Haul,A320,497,95,87%
+S25,26,2025-06-30,T2,EI,Aer Lingus,Transatlantic CBP,A330,179,32,93%
+S25,26,2025-06-30,T2,EI,Aer Lingus,Transatlantic CBP,B787,85,15,91%
+S25,26,2025-06-30,T2,EI,Aer Lingus,International Long-Haul,A330,19,3,90%
+S25,26,2025-06-30,T2,RE,Aer Lingus Regional,Domestic,ATR72,168,28,74%
+S25,26,2025-06-30,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,108,18,85%
+S25,26,2025-06-30,T2,BA,British Airways,International Short-Haul,A320,113,20,87%
+S25,26,2025-06-30,T2,BA,British Airways,International Short-Haul,E-Jet,84,15,85%
+S25,26,2025-06-30,T1,LH,Lufthansa,International Short-Haul,A320,64,12,84%
+S25,26,2025-06-30,T1,AF,Air France,International Short-Haul,A320,58,11,86%
+S25,26,2025-06-30,T1,KL,KLM,International Short-Haul,A320,58,10,88%
+S25,26,2025-06-30,T1,IB,Iberia,International Short-Haul,A320,39,7,86%
+S25,26,2025-06-30,T1,VY,Vueling,International Short-Haul,A320,35,7,88%
+S25,26,2025-06-30,T1,OS,Austrian,International Short-Haul,A320,20,4,85%
+S25,26,2025-06-30,T1,SK,SAS,International Short-Haul,A320,20,4,85%
+S25,26,2025-06-30,T1,AY,Finnair,International Short-Haul,A320,16,3,86%
+S25,26,2025-06-30,T1,TK,Turkish Airlines,International Long-Haul,A320,30,6,86%
+S25,26,2025-06-30,T1,U2,easyJet,International Short-Haul,A320,81,15,84%
+S25,26,2025-06-30,T1,W6,Wizz Air,International Short-Haul,A320,73,14,84%
+S25,26,2025-06-30,T2,AA,American Airlines,Transatlantic CBP,B787,42,7,93%
+S25,26,2025-06-30,T2,UA,United Airlines,Transatlantic CBP,B787,21,4,92%
+S25,26,2025-06-30,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,91%
+S25,26,2025-06-30,T2,AC,Air Canada,Transatlantic CBP,B787,12,2,93%
+S25,26,2025-06-30,T2,EK,Emirates,International Long-Haul,B777,18,3,88%
+S25,26,2025-06-30,T2,EY,Etihad,International Long-Haul,A330,9,2,88%
+S25,26,2025-06-30,T1,5X,UPS,Cargo,B767,8,2,nan%
+S25,26,2025-06-30,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,27,2025-07-07,T1,FR,Ryanair,International Short-Haul,B737,1500,259,86%
+S25,27,2025-07-07,T1,FR,Ryanair,International Short-Haul,A320,101,18,88%
+S25,27,2025-07-07,T1,FR,Ryanair,Domestic,B737,77,13,75%
+S25,27,2025-07-07,T2,EI,Aer Lingus,International Short-Haul,A320,486,92,86%
+S25,27,2025-07-07,T2,EI,Aer Lingus,Transatlantic CBP,A330,173,29,93%
+S25,27,2025-07-07,T2,EI,Aer Lingus,Transatlantic CBP,B787,87,16,91%
+S25,27,2025-07-07,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,90%
+S25,27,2025-07-07,T2,RE,Aer Lingus Regional,Domestic,ATR72,184,31,74%
+S25,27,2025-07-07,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,113,20,86%
+S25,27,2025-07-07,T2,BA,British Airways,International Short-Haul,A320,122,23,86%
+S25,27,2025-07-07,T2,BA,British Airways,International Short-Haul,E-Jet,84,16,87%
+S25,27,2025-07-07,T1,LH,Lufthansa,International Short-Haul,A320,64,11,86%
+S25,27,2025-07-07,T1,AF,Air France,International Short-Haul,A320,61,10,84%
+S25,27,2025-07-07,T1,KL,KLM,International Short-Haul,A320,63,11,84%
+S25,27,2025-07-07,T1,IB,Iberia,International Short-Haul,A320,38,7,88%
+S25,27,2025-07-07,T1,VY,Vueling,International Short-Haul,A320,36,6,88%
+S25,27,2025-07-07,T1,OS,Austrian,International Short-Haul,A320,20,3,85%
+S25,27,2025-07-07,T1,SK,SAS,International Short-Haul,A320,20,4,88%
+S25,27,2025-07-07,T1,AY,Finnair,International Short-Haul,A320,16,3,88%
+S25,27,2025-07-07,T1,TK,Turkish Airlines,International Long-Haul,A320,29,5,88%
+S25,27,2025-07-07,T1,U2,easyJet,International Short-Haul,A320,85,14,86%
+S25,27,2025-07-07,T1,W6,Wizz Air,International Short-Haul,A320,73,13,87%
+S25,27,2025-07-07,T2,AA,American Airlines,Transatlantic CBP,B787,45,8,92%
+S25,27,2025-07-07,T2,UA,United Airlines,Transatlantic CBP,B787,22,4,92%
+S25,27,2025-07-07,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,92%
+S25,27,2025-07-07,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,94%
+S25,27,2025-07-07,T2,EK,Emirates,International Long-Haul,B777,20,3,88%
+S25,27,2025-07-07,T2,EY,Etihad,International Long-Haul,A330,10,2,87%
+S25,27,2025-07-07,T1,5X,UPS,Cargo,B767,9,1,nan%
+S25,27,2025-07-07,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,28,2025-07-14,T1,FR,Ryanair,International Short-Haul,B737,1521,250,88%
+S25,28,2025-07-14,T1,FR,Ryanair,International Short-Haul,A320,105,19,87%
+S25,28,2025-07-14,T1,FR,Ryanair,Domestic,B737,81,16,74%
+S25,28,2025-07-14,T2,EI,Aer Lingus,International Short-Haul,A320,500,96,87%
+S25,28,2025-07-14,T2,EI,Aer Lingus,Transatlantic CBP,A330,179,30,94%
+S25,28,2025-07-14,T2,EI,Aer Lingus,Transatlantic CBP,B787,90,16,92%
+S25,28,2025-07-14,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,87%
+S25,28,2025-07-14,T2,RE,Aer Lingus Regional,Domestic,ATR72,179,32,74%
+S25,28,2025-07-14,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,123,23,87%
+S25,28,2025-07-14,T2,BA,British Airways,International Short-Haul,A320,114,19,86%
+S25,28,2025-07-14,T2,BA,British Airways,International Short-Haul,E-Jet,90,17,88%
+S25,28,2025-07-14,T1,LH,Lufthansa,International Short-Haul,A320,68,12,86%
+S25,28,2025-07-14,T1,AF,Air France,International Short-Haul,A320,62,10,88%
+S25,28,2025-07-14,T1,KL,KLM,International Short-Haul,A320,62,11,85%
+S25,28,2025-07-14,T1,IB,Iberia,International Short-Haul,A320,42,8,87%
+S25,28,2025-07-14,T1,VY,Vueling,International Short-Haul,A320,39,7,87%
+S25,28,2025-07-14,T1,OS,Austrian,International Short-Haul,A320,20,3,88%
+S25,28,2025-07-14,T1,SK,SAS,International Short-Haul,A320,22,4,86%
+S25,28,2025-07-14,T1,AY,Finnair,International Short-Haul,A320,16,3,85%
+S25,28,2025-07-14,T1,TK,Turkish Airlines,International Long-Haul,A320,30,5,90%
+S25,28,2025-07-14,T1,U2,easyJet,International Short-Haul,A320,85,14,86%
+S25,28,2025-07-14,T1,W6,Wizz Air,International Short-Haul,A320,76,13,85%
+S25,28,2025-07-14,T2,AA,American Airlines,Transatlantic CBP,B787,46,9,93%
+S25,28,2025-07-14,T2,UA,United Airlines,Transatlantic CBP,B787,24,5,93%
+S25,28,2025-07-14,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,90%
+S25,28,2025-07-14,T2,AC,Air Canada,Transatlantic CBP,B787,12,2,91%
+S25,28,2025-07-14,T2,EK,Emirates,International Long-Haul,B777,21,4,89%
+S25,28,2025-07-14,T2,EY,Etihad,International Long-Haul,A330,10,2,90%
+S25,28,2025-07-14,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,28,2025-07-14,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,29,2025-07-21,T1,FR,Ryanair,International Short-Haul,B737,1597,280,87%
+S25,29,2025-07-21,T1,FR,Ryanair,International Short-Haul,A320,104,20,86%
+S25,29,2025-07-21,T1,FR,Ryanair,Domestic,B737,82,14,73%
+S25,29,2025-07-21,T2,EI,Aer Lingus,International Short-Haul,A320,512,97,87%
+S25,29,2025-07-21,T2,EI,Aer Lingus,Transatlantic CBP,A330,194,35,92%
+S25,29,2025-07-21,T2,EI,Aer Lingus,Transatlantic CBP,B787,89,17,91%
+S25,29,2025-07-21,T2,EI,Aer Lingus,International Long-Haul,A330,22,4,90%
+S25,29,2025-07-21,T2,RE,Aer Lingus Regional,Domestic,ATR72,184,34,76%
+S25,29,2025-07-21,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,117,21,85%
+S25,29,2025-07-21,T2,BA,British Airways,International Short-Haul,A320,121,20,85%
+S25,29,2025-07-21,T2,BA,British Airways,International Short-Haul,E-Jet,87,15,87%
+S25,29,2025-07-21,T1,LH,Lufthansa,International Short-Haul,A320,67,12,85%
+S25,29,2025-07-21,T1,AF,Air France,International Short-Haul,A320,65,12,87%
+S25,29,2025-07-21,T1,KL,KLM,International Short-Haul,A320,66,11,88%
+S25,29,2025-07-21,T1,IB,Iberia,International Short-Haul,A320,40,7,87%
+S25,29,2025-07-21,T1,VY,Vueling,International Short-Haul,A320,36,7,87%
+S25,29,2025-07-21,T1,OS,Austrian,International Short-Haul,A320,21,4,85%
+S25,29,2025-07-21,T1,SK,SAS,International Short-Haul,A320,23,4,85%
+S25,29,2025-07-21,T1,AY,Finnair,International Short-Haul,A320,16,3,88%
+S25,29,2025-07-21,T1,TK,Turkish Airlines,International Long-Haul,A320,30,5,90%
+S25,29,2025-07-21,T1,U2,easyJet,International Short-Haul,A320,83,14,88%
+S25,29,2025-07-21,T1,W6,Wizz Air,International Short-Haul,A320,75,13,85%
+S25,29,2025-07-21,T2,AA,American Airlines,Transatlantic CBP,B787,45,8,94%
+S25,29,2025-07-21,T2,UA,United Airlines,Transatlantic CBP,B787,23,4,94%
+S25,29,2025-07-21,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,93%
+S25,29,2025-07-21,T2,AC,Air Canada,Transatlantic CBP,B787,12,2,91%
+S25,29,2025-07-21,T2,EK,Emirates,International Long-Haul,B777,21,4,90%
+S25,29,2025-07-21,T2,EY,Etihad,International Long-Haul,A330,10,2,90%
+S25,29,2025-07-21,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,29,2025-07-21,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,30,2025-07-28,T1,FR,Ryanair,International Short-Haul,B737,1503,288,85%
+S25,30,2025-07-28,T1,FR,Ryanair,International Short-Haul,A320,106,19,85%
+S25,30,2025-07-28,T1,FR,Ryanair,Domestic,B737,79,15,76%
+S25,30,2025-07-28,T2,EI,Aer Lingus,International Short-Haul,A320,512,94,85%
+S25,30,2025-07-28,T2,EI,Aer Lingus,Transatlantic CBP,A330,191,32,93%
+S25,30,2025-07-28,T2,EI,Aer Lingus,Transatlantic CBP,B787,89,17,93%
+S25,30,2025-07-28,T2,EI,Aer Lingus,International Long-Haul,A330,21,4,88%
+S25,30,2025-07-28,T2,RE,Aer Lingus Regional,Domestic,ATR72,183,34,73%
+S25,30,2025-07-28,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,125,24,85%
+S25,30,2025-07-28,T2,BA,British Airways,International Short-Haul,A320,124,22,86%
+S25,30,2025-07-28,T2,BA,British Airways,International Short-Haul,E-Jet,85,15,87%
+S25,30,2025-07-28,T1,LH,Lufthansa,International Short-Haul,A320,69,13,87%
+S25,30,2025-07-28,T1,AF,Air France,International Short-Haul,A320,65,11,88%
+S25,30,2025-07-28,T1,KL,KLM,International Short-Haul,A320,64,11,85%
+S25,30,2025-07-28,T1,IB,Iberia,International Short-Haul,A320,40,8,86%
+S25,30,2025-07-28,T1,VY,Vueling,International Short-Haul,A320,38,6,86%
+S25,30,2025-07-28,T1,OS,Austrian,International Short-Haul,A320,22,4,85%
+S25,30,2025-07-28,T1,SK,SAS,International Short-Haul,A320,21,4,86%
+S25,30,2025-07-28,T1,AY,Finnair,International Short-Haul,A320,16,3,85%
+S25,30,2025-07-28,T1,TK,Turkish Airlines,International Long-Haul,A320,32,6,88%
+S25,30,2025-07-28,T1,U2,easyJet,International Short-Haul,A320,86,16,87%
+S25,30,2025-07-28,T1,W6,Wizz Air,International Short-Haul,A320,73,13,85%
+S25,30,2025-07-28,T2,AA,American Airlines,Transatlantic CBP,B787,48,9,91%
+S25,30,2025-07-28,T2,UA,United Airlines,Transatlantic CBP,B787,24,5,94%
+S25,30,2025-07-28,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,92%
+S25,30,2025-07-28,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,91%
+S25,30,2025-07-28,T2,EK,Emirates,International Long-Haul,B777,20,4,88%
+S25,30,2025-07-28,T2,EY,Etihad,International Long-Haul,A330,11,2,87%
+S25,30,2025-07-28,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,30,2025-07-28,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,31,2025-08-04,T1,FR,Ryanair,International Short-Haul,B737,1551,286,88%
+S25,31,2025-08-04,T1,FR,Ryanair,International Short-Haul,A320,112,21,85%
+S25,31,2025-08-04,T1,FR,Ryanair,Domestic,B737,77,13,76%
+S25,31,2025-08-04,T2,EI,Aer Lingus,International Short-Haul,A320,533,101,85%
+S25,31,2025-08-04,T2,EI,Aer Lingus,Transatlantic CBP,A330,192,34,90%
+S25,31,2025-08-04,T2,EI,Aer Lingus,Transatlantic CBP,B787,92,15,93%
+S25,31,2025-08-04,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,89%
+S25,31,2025-08-04,T2,RE,Aer Lingus Regional,Domestic,ATR72,189,35,74%
+S25,31,2025-08-04,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,124,24,85%
+S25,31,2025-08-04,T2,BA,British Airways,International Short-Haul,A320,121,21,85%
+S25,31,2025-08-04,T2,BA,British Airways,International Short-Haul,E-Jet,89,17,85%
+S25,31,2025-08-04,T1,LH,Lufthansa,International Short-Haul,A320,72,14,88%
+S25,31,2025-08-04,T1,AF,Air France,International Short-Haul,A320,63,12,86%
+S25,31,2025-08-04,T1,KL,KLM,International Short-Haul,A320,65,11,85%
+S25,31,2025-08-04,T1,IB,Iberia,International Short-Haul,A320,41,7,85%
+S25,31,2025-08-04,T1,VY,Vueling,International Short-Haul,A320,36,7,84%
+S25,31,2025-08-04,T1,OS,Austrian,International Short-Haul,A320,22,4,85%
+S25,31,2025-08-04,T1,SK,SAS,International Short-Haul,A320,21,4,86%
+S25,31,2025-08-04,T1,AY,Finnair,International Short-Haul,A320,16,3,87%
+S25,31,2025-08-04,T1,TK,Turkish Airlines,International Long-Haul,A320,29,5,90%
+S25,31,2025-08-04,T1,U2,easyJet,International Short-Haul,A320,85,14,87%
+S25,31,2025-08-04,T1,W6,Wizz Air,International Short-Haul,A320,74,13,85%
+S25,31,2025-08-04,T2,AA,American Airlines,Transatlantic CBP,B787,45,8,91%
+S25,31,2025-08-04,T2,UA,United Airlines,Transatlantic CBP,B787,23,4,92%
+S25,31,2025-08-04,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,93%
+S25,31,2025-08-04,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,92%
+S25,31,2025-08-04,T2,EK,Emirates,International Long-Haul,B777,20,4,87%
+S25,31,2025-08-04,T2,EY,Etihad,International Long-Haul,A330,10,2,89%
+S25,31,2025-08-04,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,31,2025-08-04,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,32,2025-08-11,T1,FR,Ryanair,International Short-Haul,B737,1459,278,88%
+S25,32,2025-08-11,T1,FR,Ryanair,International Short-Haul,A320,104,19,84%
+S25,32,2025-08-11,T1,FR,Ryanair,Domestic,B737,83,15,74%
+S25,32,2025-08-11,T2,EI,Aer Lingus,International Short-Haul,A320,498,83,88%
+S25,32,2025-08-11,T2,EI,Aer Lingus,Transatlantic CBP,A330,174,32,92%
+S25,32,2025-08-11,T2,EI,Aer Lingus,Transatlantic CBP,B787,96,16,92%
+S25,32,2025-08-11,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,87%
+S25,32,2025-08-11,T2,RE,Aer Lingus Regional,Domestic,ATR72,175,30,75%
+S25,32,2025-08-11,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,116,21,85%
+S25,32,2025-08-11,T2,BA,British Airways,International Short-Haul,A320,124,24,86%
+S25,32,2025-08-11,T2,BA,British Airways,International Short-Haul,E-Jet,85,15,85%
+S25,32,2025-08-11,T1,LH,Lufthansa,International Short-Haul,A320,68,12,86%
+S25,32,2025-08-11,T1,AF,Air France,International Short-Haul,A320,67,12,87%
+S25,32,2025-08-11,T1,KL,KLM,International Short-Haul,A320,64,11,85%
+S25,32,2025-08-11,T1,IB,Iberia,International Short-Haul,A320,40,7,87%
+S25,32,2025-08-11,T1,VY,Vueling,International Short-Haul,A320,39,7,84%
+S25,32,2025-08-11,T1,OS,Austrian,International Short-Haul,A320,21,4,85%
+S25,32,2025-08-11,T1,SK,SAS,International Short-Haul,A320,22,4,88%
+S25,32,2025-08-11,T1,AY,Finnair,International Short-Haul,A320,15,3,87%
+S25,32,2025-08-11,T1,TK,Turkish Airlines,International Long-Haul,A320,31,6,90%
+S25,32,2025-08-11,T1,U2,easyJet,International Short-Haul,A320,86,15,86%
+S25,32,2025-08-11,T1,W6,Wizz Air,International Short-Haul,A320,74,13,88%
+S25,32,2025-08-11,T2,AA,American Airlines,Transatlantic CBP,B787,47,9,91%
+S25,32,2025-08-11,T2,UA,United Airlines,Transatlantic CBP,B787,24,4,91%
+S25,32,2025-08-11,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,93%
+S25,32,2025-08-11,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,91%
+S25,32,2025-08-11,T2,EK,Emirates,International Long-Haul,B777,21,4,89%
+S25,32,2025-08-11,T2,EY,Etihad,International Long-Haul,A330,10,2,90%
+S25,32,2025-08-11,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,32,2025-08-11,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,33,2025-08-18,T1,FR,Ryanair,International Short-Haul,B737,1613,290,86%
+S25,33,2025-08-18,T1,FR,Ryanair,International Short-Haul,A320,104,18,88%
+S25,33,2025-08-18,T1,FR,Ryanair,Domestic,B737,82,14,73%
+S25,33,2025-08-18,T2,EI,Aer Lingus,International Short-Haul,A320,527,95,86%
+S25,33,2025-08-18,T2,EI,Aer Lingus,Transatlantic CBP,A330,184,31,93%
+S25,33,2025-08-18,T2,EI,Aer Lingus,Transatlantic CBP,B787,98,17,93%
+S25,33,2025-08-18,T2,EI,Aer Lingus,International Long-Haul,A330,21,4,88%
+S25,33,2025-08-18,T2,RE,Aer Lingus Regional,Domestic,ATR72,191,34,75%
+S25,33,2025-08-18,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,120,20,85%
+S25,33,2025-08-18,T2,BA,British Airways,International Short-Haul,A320,125,21,87%
+S25,33,2025-08-18,T2,BA,British Airways,International Short-Haul,E-Jet,87,15,86%
+S25,33,2025-08-18,T1,LH,Lufthansa,International Short-Haul,A320,70,12,86%
+S25,33,2025-08-18,T1,AF,Air France,International Short-Haul,A320,66,12,86%
+S25,33,2025-08-18,T1,KL,KLM,International Short-Haul,A320,65,11,85%
+S25,33,2025-08-18,T1,IB,Iberia,International Short-Haul,A320,39,7,85%
+S25,33,2025-08-18,T1,VY,Vueling,International Short-Haul,A320,37,6,85%
+S25,33,2025-08-18,T1,OS,Austrian,International Short-Haul,A320,22,4,85%
+S25,33,2025-08-18,T1,SK,SAS,International Short-Haul,A320,22,4,87%
+S25,33,2025-08-18,T1,AY,Finnair,International Short-Haul,A320,16,3,87%
+S25,33,2025-08-18,T1,TK,Turkish Airlines,International Long-Haul,A320,30,5,88%
+S25,33,2025-08-18,T1,U2,easyJet,International Short-Haul,A320,86,16,88%
+S25,33,2025-08-18,T1,W6,Wizz Air,International Short-Haul,A320,79,14,86%
+S25,33,2025-08-18,T2,AA,American Airlines,Transatlantic CBP,B787,46,8,92%
+S25,33,2025-08-18,T2,UA,United Airlines,Transatlantic CBP,B787,23,4,92%
+S25,33,2025-08-18,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,94%
+S25,33,2025-08-18,T2,AC,Air Canada,Transatlantic CBP,B787,12,2,92%
+S25,33,2025-08-18,T2,EK,Emirates,International Long-Haul,B777,22,4,90%
+S25,33,2025-08-18,T2,EY,Etihad,International Long-Haul,A330,10,2,89%
+S25,33,2025-08-18,T1,5X,UPS,Cargo,B767,10,2,nan%
+S25,33,2025-08-18,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,34,2025-08-25,T1,FR,Ryanair,International Short-Haul,B737,1528,257,86%
+S25,34,2025-08-25,T1,FR,Ryanair,International Short-Haul,A320,108,19,87%
+S25,34,2025-08-25,T1,FR,Ryanair,Domestic,B737,80,15,75%
+S25,34,2025-08-25,T2,EI,Aer Lingus,International Short-Haul,A320,529,89,86%
+S25,34,2025-08-25,T2,EI,Aer Lingus,Transatlantic CBP,A330,183,33,94%
+S25,34,2025-08-25,T2,EI,Aer Lingus,Transatlantic CBP,B787,89,15,94%
+S25,34,2025-08-25,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,89%
+S25,34,2025-08-25,T2,RE,Aer Lingus Regional,Domestic,ATR72,190,32,73%
+S25,34,2025-08-25,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,122,23,86%
+S25,34,2025-08-25,T2,BA,British Airways,International Short-Haul,A320,119,22,88%
+S25,34,2025-08-25,T2,BA,British Airways,International Short-Haul,E-Jet,91,18,85%
+S25,34,2025-08-25,T1,LH,Lufthansa,International Short-Haul,A320,67,12,88%
+S25,34,2025-08-25,T1,AF,Air France,International Short-Haul,A320,63,11,88%
+S25,34,2025-08-25,T1,KL,KLM,International Short-Haul,A320,62,11,86%
+S25,34,2025-08-25,T1,IB,Iberia,International Short-Haul,A320,41,8,86%
+S25,34,2025-08-25,T1,VY,Vueling,International Short-Haul,A320,38,7,87%
+S25,34,2025-08-25,T1,OS,Austrian,International Short-Haul,A320,22,4,85%
+S25,34,2025-08-25,T1,SK,SAS,International Short-Haul,A320,21,4,86%
+S25,34,2025-08-25,T1,AY,Finnair,International Short-Haul,A320,17,3,88%
+S25,34,2025-08-25,T1,TK,Turkish Airlines,International Long-Haul,A320,31,5,88%
+S25,34,2025-08-25,T1,U2,easyJet,International Short-Haul,A320,85,14,87%
+S25,34,2025-08-25,T1,W6,Wizz Air,International Short-Haul,A320,78,13,85%
+S25,34,2025-08-25,T2,AA,American Airlines,Transatlantic CBP,B787,49,8,94%
+S25,34,2025-08-25,T2,UA,United Airlines,Transatlantic CBP,B787,24,5,92%
+S25,34,2025-08-25,T2,DL,Delta Air Lines,Transatlantic CBP,A330,12,2,93%
+S25,34,2025-08-25,T2,AC,Air Canada,Transatlantic CBP,B787,12,2,92%
+S25,34,2025-08-25,T2,EK,Emirates,International Long-Haul,B777,21,4,89%
+S25,34,2025-08-25,T2,EY,Etihad,International Long-Haul,A330,11,2,89%
+S25,34,2025-08-25,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,34,2025-08-25,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,35,2025-09-01,T1,FR,Ryanair,International Short-Haul,B737,1543,255,86%
+S25,35,2025-09-01,T1,FR,Ryanair,International Short-Haul,A320,104,18,87%
+S25,35,2025-09-01,T1,FR,Ryanair,Domestic,B737,74,13,74%
+S25,35,2025-09-01,T2,EI,Aer Lingus,International Short-Haul,A320,505,96,87%
+S25,35,2025-09-01,T2,EI,Aer Lingus,Transatlantic CBP,A330,182,32,90%
+S25,35,2025-09-01,T2,EI,Aer Lingus,Transatlantic CBP,B787,86,15,93%
+S25,35,2025-09-01,T2,EI,Aer Lingus,International Long-Haul,A330,20,4,88%
+S25,35,2025-09-01,T2,RE,Aer Lingus Regional,Domestic,ATR72,169,29,75%
+S25,35,2025-09-01,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,120,23,85%
+S25,35,2025-09-01,T2,BA,British Airways,International Short-Haul,A320,123,21,84%
+S25,35,2025-09-01,T2,BA,British Airways,International Short-Haul,E-Jet,89,15,87%
+S25,35,2025-09-01,T1,LH,Lufthansa,International Short-Haul,A320,65,12,88%
+S25,35,2025-09-01,T1,AF,Air France,International Short-Haul,A320,61,11,85%
+S25,35,2025-09-01,T1,KL,KLM,International Short-Haul,A320,63,11,85%
+S25,35,2025-09-01,T1,IB,Iberia,International Short-Haul,A320,38,6,88%
+S25,35,2025-09-01,T1,VY,Vueling,International Short-Haul,A320,36,6,86%
+S25,35,2025-09-01,T1,OS,Austrian,International Short-Haul,A320,20,4,88%
+S25,35,2025-09-01,T1,SK,SAS,International Short-Haul,A320,21,4,86%
+S25,35,2025-09-01,T1,AY,Finnair,International Short-Haul,A320,15,3,86%
+S25,35,2025-09-01,T1,TK,Turkish Airlines,International Long-Haul,A320,30,6,88%
+S25,35,2025-09-01,T1,U2,easyJet,International Short-Haul,A320,88,16,86%
+S25,35,2025-09-01,T1,W6,Wizz Air,International Short-Haul,A320,72,12,88%
+S25,35,2025-09-01,T2,AA,American Airlines,Transatlantic CBP,B787,46,8,91%
+S25,35,2025-09-01,T2,UA,United Airlines,Transatlantic CBP,B787,23,4,90%
+S25,35,2025-09-01,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,92%
+S25,35,2025-09-01,T2,AC,Air Canada,Transatlantic CBP,B787,11,2,93%
+S25,35,2025-09-01,T2,EK,Emirates,International Long-Haul,B777,20,3,87%
+S25,35,2025-09-01,T2,EY,Etihad,International Long-Haul,A330,10,2,87%
+S25,35,2025-09-01,T1,5X,UPS,Cargo,B767,9,2,nan%
+S25,35,2025-09-01,T1,FX,FedEx,Cargo,A320,7,1,nan%
+S25,36,2025-09-08,T1,FR,Ryanair,International Short-Haul,B737,1351,248,85%
+S25,36,2025-09-08,T1,FR,Ryanair,International Short-Haul,A320,93,15,86%
+S25,36,2025-09-08,T1,FR,Ryanair,Domestic,B737,70,13,72%
+S25,36,2025-09-08,T2,EI,Aer Lingus,International Short-Haul,A320,427,78,86%
+S25,36,2025-09-08,T2,EI,Aer Lingus,Transatlantic CBP,A330,164,29,92%
+S25,36,2025-09-08,T2,EI,Aer Lingus,Transatlantic CBP,B787,80,15,91%
+S25,36,2025-09-08,T2,EI,Aer Lingus,International Long-Haul,A330,18,3,88%
+S25,36,2025-09-08,T2,RE,Aer Lingus Regional,Domestic,ATR72,164,27,71%
+S25,36,2025-09-08,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,108,19,86%
+S25,36,2025-09-08,T2,BA,British Airways,International Short-Haul,A320,103,17,86%
+S25,36,2025-09-08,T2,BA,British Airways,International Short-Haul,E-Jet,77,13,84%
+S25,36,2025-09-08,T1,LH,Lufthansa,International Short-Haul,A320,62,10,87%
+S25,36,2025-09-08,T1,AF,Air France,International Short-Haul,A320,54,10,87%
+S25,36,2025-09-08,T1,KL,KLM,International Short-Haul,A320,56,10,86%
+S25,36,2025-09-08,T1,IB,Iberia,International Short-Haul,A320,34,6,87%
+S25,36,2025-09-08,T1,VY,Vueling,International Short-Haul,A320,33,6,84%
+S25,36,2025-09-08,T1,OS,Austrian,International Short-Haul,A320,18,3,85%
+S25,36,2025-09-08,T1,SK,SAS,International Short-Haul,A320,19,3,86%
+S25,36,2025-09-08,T1,AY,Finnair,International Short-Haul,A320,13,2,84%
+S25,36,2025-09-08,T1,TK,Turkish Airlines,International Long-Haul,A320,26,4,89%
+S25,36,2025-09-08,T1,U2,easyJet,International Short-Haul,A320,73,14,85%
+S25,36,2025-09-08,T1,W6,Wizz Air,International Short-Haul,A320,66,12,87%
+S25,36,2025-09-08,T2,AA,American Airlines,Transatlantic CBP,B787,38,7,93%
+S25,36,2025-09-08,T2,UA,United Airlines,Transatlantic CBP,B787,19,3,91%
+S25,36,2025-09-08,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,91%
+S25,36,2025-09-08,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,92%
+S25,36,2025-09-08,T2,EK,Emirates,International Long-Haul,B777,17,3,89%
+S25,36,2025-09-08,T2,EY,Etihad,International Long-Haul,A330,9,2,85%
+S25,36,2025-09-08,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,36,2025-09-08,T1,FX,FedEx,Cargo,A320,6,1,nan%
+S25,37,2025-09-15,T1,FR,Ryanair,International Short-Haul,B737,1283,233,84%
+S25,37,2025-09-15,T1,FR,Ryanair,International Short-Haul,A320,92,16,85%
+S25,37,2025-09-15,T1,FR,Ryanair,Domestic,B737,64,12,71%
+S25,37,2025-09-15,T2,EI,Aer Lingus,International Short-Haul,A320,422,72,86%
+S25,37,2025-09-15,T2,EI,Aer Lingus,Transatlantic CBP,A330,150,28,92%
+S25,37,2025-09-15,T2,EI,Aer Lingus,Transatlantic CBP,B787,75,14,89%
+S25,37,2025-09-15,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,87%
+S25,37,2025-09-15,T2,RE,Aer Lingus Regional,Domestic,ATR72,154,27,72%
+S25,37,2025-09-15,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,97,18,85%
+S25,37,2025-09-15,T2,BA,British Airways,International Short-Haul,A320,103,18,84%
+S25,37,2025-09-15,T2,BA,British Airways,International Short-Haul,E-Jet,72,12,84%
+S25,37,2025-09-15,T1,LH,Lufthansa,International Short-Haul,A320,60,11,85%
+S25,37,2025-09-15,T1,AF,Air France,International Short-Haul,A320,54,9,86%
+S25,37,2025-09-15,T1,KL,KLM,International Short-Haul,A320,51,10,85%
+S25,37,2025-09-15,T1,IB,Iberia,International Short-Haul,A320,33,6,83%
+S25,37,2025-09-15,T1,VY,Vueling,International Short-Haul,A320,32,6,84%
+S25,37,2025-09-15,T1,OS,Austrian,International Short-Haul,A320,18,3,86%
+S25,37,2025-09-15,T1,SK,SAS,International Short-Haul,A320,17,3,83%
+S25,37,2025-09-15,T1,AY,Finnair,International Short-Haul,A320,13,2,83%
+S25,37,2025-09-15,T1,TK,Turkish Airlines,International Long-Haul,A320,25,5,86%
+S25,37,2025-09-15,T1,U2,easyJet,International Short-Haul,A320,70,12,86%
+S25,37,2025-09-15,T1,W6,Wizz Air,International Short-Haul,A320,64,11,83%
+S25,37,2025-09-15,T2,AA,American Airlines,Transatlantic CBP,B787,38,6,89%
+S25,37,2025-09-15,T2,UA,United Airlines,Transatlantic CBP,B787,19,3,91%
+S25,37,2025-09-15,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,92%
+S25,37,2025-09-15,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,90%
+S25,37,2025-09-15,T2,EK,Emirates,International Long-Haul,B777,17,3,87%
+S25,37,2025-09-15,T2,EY,Etihad,International Long-Haul,A330,9,2,86%
+S25,37,2025-09-15,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,37,2025-09-15,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,38,2025-09-22,T1,FR,Ryanair,International Short-Haul,B737,1228,232,83%
+S25,38,2025-09-22,T1,FR,Ryanair,International Short-Haul,A320,88,16,85%
+S25,38,2025-09-22,T1,FR,Ryanair,Domestic,B737,65,12,73%
+S25,38,2025-09-22,T2,EI,Aer Lingus,International Short-Haul,A320,415,69,85%
+S25,38,2025-09-22,T2,EI,Aer Lingus,Transatlantic CBP,A330,156,28,92%
+S25,38,2025-09-22,T2,EI,Aer Lingus,Transatlantic CBP,B787,76,13,89%
+S25,38,2025-09-22,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,88%
+S25,38,2025-09-22,T2,RE,Aer Lingus Regional,Domestic,ATR72,147,26,72%
+S25,38,2025-09-22,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,98,17,83%
+S25,38,2025-09-22,T2,BA,British Airways,International Short-Haul,A320,96,16,83%
+S25,38,2025-09-22,T2,BA,British Airways,International Short-Haul,E-Jet,68,12,84%
+S25,38,2025-09-22,T1,LH,Lufthansa,International Short-Haul,A320,60,10,84%
+S25,38,2025-09-22,T1,AF,Air France,International Short-Haul,A320,52,9,86%
+S25,38,2025-09-22,T1,KL,KLM,International Short-Haul,A320,50,10,86%
+S25,38,2025-09-22,T1,IB,Iberia,International Short-Haul,A320,33,6,85%
+S25,38,2025-09-22,T1,VY,Vueling,International Short-Haul,A320,30,5,83%
+S25,38,2025-09-22,T1,OS,Austrian,International Short-Haul,A320,17,3,85%
+S25,38,2025-09-22,T1,SK,SAS,International Short-Haul,A320,18,3,86%
+S25,38,2025-09-22,T1,AY,Finnair,International Short-Haul,A320,13,2,84%
+S25,38,2025-09-22,T1,TK,Turkish Airlines,International Long-Haul,A320,25,4,87%
+S25,38,2025-09-22,T1,U2,easyJet,International Short-Haul,A320,74,13,85%
+S25,38,2025-09-22,T1,W6,Wizz Air,International Short-Haul,A320,63,12,85%
+S25,38,2025-09-22,T2,AA,American Airlines,Transatlantic CBP,B787,38,7,91%
+S25,38,2025-09-22,T2,UA,United Airlines,Transatlantic CBP,B787,19,3,92%
+S25,38,2025-09-22,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,89%
+S25,38,2025-09-22,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,91%
+S25,38,2025-09-22,T2,EK,Emirates,International Long-Haul,B777,18,3,87%
+S25,38,2025-09-22,T2,EY,Etihad,International Long-Haul,A330,8,1,86%
+S25,38,2025-09-22,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,38,2025-09-22,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,39,2025-09-29,T1,FR,Ryanair,International Short-Haul,B737,1260,233,83%
+S25,39,2025-09-29,T1,FR,Ryanair,International Short-Haul,A320,83,16,84%
+S25,39,2025-09-29,T1,FR,Ryanair,Domestic,B737,67,13,74%
+S25,39,2025-09-29,T2,EI,Aer Lingus,International Short-Haul,A320,397,75,86%
+S25,39,2025-09-29,T2,EI,Aer Lingus,Transatlantic CBP,A330,150,26,90%
+S25,39,2025-09-29,T2,EI,Aer Lingus,Transatlantic CBP,B787,71,13,91%
+S25,39,2025-09-29,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,86%
+S25,39,2025-09-29,T2,RE,Aer Lingus Regional,Domestic,ATR72,149,28,71%
+S25,39,2025-09-29,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,96,16,85%
+S25,39,2025-09-29,T2,BA,British Airways,International Short-Haul,A320,99,19,84%
+S25,39,2025-09-29,T2,BA,British Airways,International Short-Haul,E-Jet,73,12,85%
+S25,39,2025-09-29,T1,LH,Lufthansa,International Short-Haul,A320,54,10,85%
+S25,39,2025-09-29,T1,AF,Air France,International Short-Haul,A320,53,10,83%
+S25,39,2025-09-29,T1,KL,KLM,International Short-Haul,A320,49,9,84%
+S25,39,2025-09-29,T1,IB,Iberia,International Short-Haul,A320,31,6,85%
+S25,39,2025-09-29,T1,VY,Vueling,International Short-Haul,A320,29,5,83%
+S25,39,2025-09-29,T1,OS,Austrian,International Short-Haul,A320,17,3,86%
+S25,39,2025-09-29,T1,SK,SAS,International Short-Haul,A320,18,3,86%
+S25,39,2025-09-29,T1,AY,Finnair,International Short-Haul,A320,13,2,86%
+S25,39,2025-09-29,T1,TK,Turkish Airlines,International Long-Haul,A320,26,5,87%
+S25,39,2025-09-29,T1,U2,easyJet,International Short-Haul,A320,68,12,85%
+S25,39,2025-09-29,T1,W6,Wizz Air,International Short-Haul,A320,58,10,86%
+S25,39,2025-09-29,T2,AA,American Airlines,Transatlantic CBP,B787,39,7,92%
+S25,39,2025-09-29,T2,UA,United Airlines,Transatlantic CBP,B787,20,4,89%
+S25,39,2025-09-29,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,89%
+S25,39,2025-09-29,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,90%
+S25,39,2025-09-29,T2,EK,Emirates,International Long-Haul,B777,17,3,87%
+S25,39,2025-09-29,T2,EY,Etihad,International Long-Haul,A330,8,1,88%
+S25,39,2025-09-29,T1,5X,UPS,Cargo,B767,8,1,nan%
+S25,39,2025-09-29,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,40,2025-10-06,T1,FR,Ryanair,International Short-Haul,B737,1125,186,85%
+S25,40,2025-10-06,T1,FR,Ryanair,International Short-Haul,A320,76,14,83%
+S25,40,2025-10-06,T1,FR,Ryanair,Domestic,B737,58,11,72%
+S25,40,2025-10-06,T2,EI,Aer Lingus,International Short-Haul,A320,369,65,85%
+S25,40,2025-10-06,T2,EI,Aer Lingus,Transatlantic CBP,A330,132,25,91%
+S25,40,2025-10-06,T2,EI,Aer Lingus,Transatlantic CBP,B787,65,11,89%
+S25,40,2025-10-06,T2,EI,Aer Lingus,International Long-Haul,A330,15,3,86%
+S25,40,2025-10-06,T2,RE,Aer Lingus Regional,Domestic,ATR72,135,24,72%
+S25,40,2025-10-06,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,84,14,85%
+S25,40,2025-10-06,T2,BA,British Airways,International Short-Haul,A320,83,14,85%
+S25,40,2025-10-06,T2,BA,British Airways,International Short-Haul,E-Jet,61,12,86%
+S25,40,2025-10-06,T1,LH,Lufthansa,International Short-Haul,A320,49,8,85%
+S25,40,2025-10-06,T1,AF,Air France,International Short-Haul,A320,46,8,85%
+S25,40,2025-10-06,T1,KL,KLM,International Short-Haul,A320,44,8,82%
+S25,40,2025-10-06,T1,IB,Iberia,International Short-Haul,A320,28,5,86%
+S25,40,2025-10-06,T1,VY,Vueling,International Short-Haul,A320,27,5,83%
+S25,40,2025-10-06,T1,OS,Austrian,International Short-Haul,A320,15,3,84%
+S25,40,2025-10-06,T1,SK,SAS,International Short-Haul,A320,15,3,83%
+S25,40,2025-10-06,T1,AY,Finnair,International Short-Haul,A320,12,2,86%
+S25,40,2025-10-06,T1,TK,Turkish Airlines,International Long-Haul,A320,21,4,85%
+S25,40,2025-10-06,T1,U2,easyJet,International Short-Haul,A320,62,11,83%
+S25,40,2025-10-06,T1,W6,Wizz Air,International Short-Haul,A320,52,10,84%
+S25,40,2025-10-06,T2,AA,American Airlines,Transatlantic CBP,B787,35,6,90%
+S25,40,2025-10-06,T2,UA,United Airlines,Transatlantic CBP,B787,17,3,90%
+S25,40,2025-10-06,T2,DL,Delta Air Lines,Transatlantic CBP,A330,8,1,89%
+S25,40,2025-10-06,T2,AC,Air Canada,Transatlantic CBP,B787,8,1,90%
+S25,40,2025-10-06,T2,EK,Emirates,International Long-Haul,B777,15,3,84%
+S25,40,2025-10-06,T2,EY,Etihad,International Long-Haul,A330,8,2,85%
+S25,40,2025-10-06,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,40,2025-10-06,T1,FX,FedEx,Cargo,A320,5,1,nan%
+S25,41,2025-10-13,T1,FR,Ryanair,International Short-Haul,B737,1047,178,83%
+S25,41,2025-10-13,T1,FR,Ryanair,International Short-Haul,A320,77,14,86%
+S25,41,2025-10-13,T1,FR,Ryanair,Domestic,B737,56,9,73%
+S25,41,2025-10-13,T2,EI,Aer Lingus,International Short-Haul,A320,365,62,84%
+S25,41,2025-10-13,T2,EI,Aer Lingus,Transatlantic CBP,A330,134,25,90%
+S25,41,2025-10-13,T2,EI,Aer Lingus,Transatlantic CBP,B787,64,12,90%
+S25,41,2025-10-13,T2,EI,Aer Lingus,International Long-Haul,A330,14,2,87%
+S25,41,2025-10-13,T2,RE,Aer Lingus Regional,Domestic,ATR72,126,21,72%
+S25,41,2025-10-13,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,84,15,82%
+S25,41,2025-10-13,T2,BA,British Airways,International Short-Haul,A320,87,15,82%
+S25,41,2025-10-13,T2,BA,British Airways,International Short-Haul,E-Jet,59,11,85%
+S25,41,2025-10-13,T1,LH,Lufthansa,International Short-Haul,A320,48,9,84%
+S25,41,2025-10-13,T1,AF,Air France,International Short-Haul,A320,48,8,84%
+S25,41,2025-10-13,T1,KL,KLM,International Short-Haul,A320,44,8,86%
+S25,41,2025-10-13,T1,IB,Iberia,International Short-Haul,A320,29,5,82%
+S25,41,2025-10-13,T1,VY,Vueling,International Short-Haul,A320,27,5,83%
+S25,41,2025-10-13,T1,OS,Austrian,International Short-Haul,A320,16,3,83%
+S25,41,2025-10-13,T1,SK,SAS,International Short-Haul,A320,16,3,83%
+S25,41,2025-10-13,T1,AY,Finnair,International Short-Haul,A320,11,2,82%
+S25,41,2025-10-13,T1,TK,Turkish Airlines,International Long-Haul,A320,23,4,84%
+S25,41,2025-10-13,T1,U2,easyJet,International Short-Haul,A320,63,11,83%
+S25,41,2025-10-13,T1,W6,Wizz Air,International Short-Haul,A320,54,10,82%
+S25,41,2025-10-13,T2,AA,American Airlines,Transatlantic CBP,B787,33,6,89%
+S25,41,2025-10-13,T2,UA,United Airlines,Transatlantic CBP,B787,16,3,90%
+S25,41,2025-10-13,T2,DL,Delta Air Lines,Transatlantic CBP,A330,8,1,91%
+S25,41,2025-10-13,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,89%
+S25,41,2025-10-13,T2,EK,Emirates,International Long-Haul,B777,15,3,85%
+S25,41,2025-10-13,T2,EY,Etihad,International Long-Haul,A330,7,1,84%
+S25,41,2025-10-13,T1,5X,UPS,Cargo,B767,6,1,nan%
+S25,41,2025-10-13,T1,FX,FedEx,Cargo,A320,4,1,nan%
+S25,42,2025-10-20,T1,FR,Ryanair,International Short-Haul,B737,1182,199,83%
+S25,42,2025-10-20,T1,FR,Ryanair,International Short-Haul,A320,88,16,84%
+S25,42,2025-10-20,T1,FR,Ryanair,Domestic,B737,65,11,72%
+S25,42,2025-10-20,T2,EI,Aer Lingus,International Short-Haul,A320,387,68,84%
+S25,42,2025-10-20,T2,EI,Aer Lingus,Transatlantic CBP,A330,147,25,91%
+S25,42,2025-10-20,T2,EI,Aer Lingus,Transatlantic CBP,B787,69,12,90%
+S25,42,2025-10-20,T2,EI,Aer Lingus,International Long-Haul,A330,17,3,87%
+S25,42,2025-10-20,T2,RE,Aer Lingus Regional,Domestic,ATR72,139,23,71%
+S25,42,2025-10-20,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,93,16,83%
+S25,42,2025-10-20,T2,BA,British Airways,International Short-Haul,A320,97,16,85%
+S25,42,2025-10-20,T2,BA,British Airways,International Short-Haul,E-Jet,67,12,85%
+S25,42,2025-10-20,T1,LH,Lufthansa,International Short-Haul,A320,54,9,85%
+S25,42,2025-10-20,T1,AF,Air France,International Short-Haul,A320,52,9,83%
+S25,42,2025-10-20,T1,KL,KLM,International Short-Haul,A320,52,9,85%
+S25,42,2025-10-20,T1,IB,Iberia,International Short-Haul,A320,31,5,85%
+S25,42,2025-10-20,T1,VY,Vueling,International Short-Haul,A320,29,5,84%
+S25,42,2025-10-20,T1,OS,Austrian,International Short-Haul,A320,17,3,83%
+S25,42,2025-10-20,T1,SK,SAS,International Short-Haul,A320,17,3,86%
+S25,42,2025-10-20,T1,AY,Finnair,International Short-Haul,A320,13,2,85%
+S25,42,2025-10-20,T1,TK,Turkish Airlines,International Long-Haul,A320,25,4,86%
+S25,42,2025-10-20,T1,U2,easyJet,International Short-Haul,A320,67,12,83%
+S25,42,2025-10-20,T1,W6,Wizz Air,International Short-Haul,A320,58,11,86%
+S25,42,2025-10-20,T2,AA,American Airlines,Transatlantic CBP,B787,38,7,88%
+S25,42,2025-10-20,T2,UA,United Airlines,Transatlantic CBP,B787,19,3,92%
+S25,42,2025-10-20,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,91%
+S25,42,2025-10-20,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,89%
+S25,42,2025-10-20,T2,EK,Emirates,International Long-Haul,B777,17,3,88%
+S25,42,2025-10-20,T2,EY,Etihad,International Long-Haul,A330,8,1,86%
+S25,42,2025-10-20,T1,5X,UPS,Cargo,B767,7,1,nan%
+S25,42,2025-10-20,T1,FX,FedEx,Cargo,A320,5,1,nan%
+W25,43,2025-10-27,T1,FR,Ryanair,International Short-Haul,B737,1123,203,84%
+W25,43,2025-10-27,T1,FR,Ryanair,International Short-Haul,A320,84,15,84%
+W25,43,2025-10-27,T1,FR,Ryanair,Domestic,B737,60,10,71%
+W25,43,2025-10-27,T2,EI,Aer Lingus,International Short-Haul,A320,406,77,83%
+W25,43,2025-10-27,T2,EI,Aer Lingus,Transatlantic CBP,A330,141,27,90%
+W25,43,2025-10-27,T2,EI,Aer Lingus,Transatlantic CBP,B787,67,11,90%
+W25,43,2025-10-27,T2,EI,Aer Lingus,International Long-Haul,A330,16,3,84%
+W25,43,2025-10-27,T2,RE,Aer Lingus Regional,Domestic,ATR72,134,25,74%
+W25,43,2025-10-27,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,93,17,82%
+W25,43,2025-10-27,T2,BA,British Airways,International Short-Haul,A320,95,18,83%
+W25,43,2025-10-27,T2,BA,British Airways,International Short-Haul,E-Jet,68,12,82%
+W25,43,2025-10-27,T1,LH,Lufthansa,International Short-Haul,A320,51,9,83%
+W25,43,2025-10-27,T1,AF,Air France,International Short-Haul,A320,49,9,84%
+W25,43,2025-10-27,T1,KL,KLM,International Short-Haul,A320,48,8,85%
+W25,43,2025-10-27,T1,IB,Iberia,International Short-Haul,A320,30,5,86%
+W25,43,2025-10-27,T1,VY,Vueling,International Short-Haul,A320,29,5,84%
+W25,43,2025-10-27,T1,OS,Austrian,International Short-Haul,A320,16,3,83%
+W25,43,2025-10-27,T1,SK,SAS,International Short-Haul,A320,16,3,85%
+W25,43,2025-10-27,T1,AY,Finnair,International Short-Haul,A320,12,2,86%
+W25,43,2025-10-27,T1,TK,Turkish Airlines,International Long-Haul,A320,23,4,87%
+W25,43,2025-10-27,T1,U2,easyJet,International Short-Haul,A320,68,12,85%
+W25,43,2025-10-27,T1,W6,Wizz Air,International Short-Haul,A320,56,11,84%
+W25,43,2025-10-27,T2,AA,American Airlines,Transatlantic CBP,B787,36,7,91%
+W25,43,2025-10-27,T2,UA,United Airlines,Transatlantic CBP,B787,18,3,90%
+W25,43,2025-10-27,T2,DL,Delta Air Lines,Transatlantic CBP,A330,9,2,91%
+W25,43,2025-10-27,T2,AC,Air Canada,Transatlantic CBP,B787,9,2,91%
+W25,43,2025-10-27,T2,EK,Emirates,International Long-Haul,B777,16,3,88%
+W25,43,2025-10-27,T2,EY,Etihad,International Long-Haul,A330,8,1,85%
+W25,43,2025-10-27,T1,5X,UPS,Cargo,B767,7,1,nan%
+W25,43,2025-10-27,T1,FX,FedEx,Cargo,A320,5,1,nan%
+W25,44,2025-11-03,T1,FR,Ryanair,International Short-Haul,B737,889,149,81%
+W25,44,2025-11-03,T1,FR,Ryanair,International Short-Haul,A320,60,11,83%
+W25,44,2025-11-03,T1,FR,Ryanair,Domestic,B737,44,8,71%
+W25,44,2025-11-03,T2,EI,Aer Lingus,International Short-Haul,A320,274,46,82%
+W25,44,2025-11-03,T2,EI,Aer Lingus,Transatlantic CBP,A330,102,19,89%
+W25,44,2025-11-03,T2,EI,Aer Lingus,Transatlantic CBP,B787,51,9,87%
+W25,44,2025-11-03,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,84%
+W25,44,2025-11-03,T2,RE,Aer Lingus Regional,Domestic,ATR72,99,18,72%
+W25,44,2025-11-03,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,66,12,84%
+W25,44,2025-11-03,T2,BA,British Airways,International Short-Haul,A320,66,12,81%
+W25,44,2025-11-03,T2,BA,British Airways,International Short-Haul,E-Jet,49,8,84%
+W25,44,2025-11-03,T1,LH,Lufthansa,International Short-Haul,A320,40,7,83%
+W25,44,2025-11-03,T1,AF,Air France,International Short-Haul,A320,36,6,84%
+W25,44,2025-11-03,T1,KL,KLM,International Short-Haul,A320,38,7,84%
+W25,44,2025-11-03,T1,IB,Iberia,International Short-Haul,A320,23,4,82%
+W25,44,2025-11-03,T1,VY,Vueling,International Short-Haul,A320,20,3,81%
+W25,44,2025-11-03,T1,OS,Austrian,International Short-Haul,A320,12,2,82%
+W25,44,2025-11-03,T1,SK,SAS,International Short-Haul,A320,13,2,82%
+W25,44,2025-11-03,T1,AY,Finnair,International Short-Haul,A320,9,1,83%
+W25,44,2025-11-03,T1,TK,Turkish Airlines,International Long-Haul,A320,17,3,83%
+W25,44,2025-11-03,T1,U2,easyJet,International Short-Haul,A320,49,8,81%
+W25,44,2025-11-03,T1,W6,Wizz Air,International Short-Haul,A320,39,7,81%
+W25,44,2025-11-03,T2,AA,American Airlines,Transatlantic CBP,B787,25,5,87%
+W25,44,2025-11-03,T2,UA,United Airlines,Transatlantic CBP,B787,13,2,89%
+W25,44,2025-11-03,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,90%
+W25,44,2025-11-03,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,86%
+W25,44,2025-11-03,T2,EK,Emirates,International Long-Haul,B777,12,2,83%
+W25,44,2025-11-03,T2,EY,Etihad,International Long-Haul,A330,6,1,84%
+W25,44,2025-11-03,T1,5X,UPS,Cargo,B767,5,1,nan%
+W25,44,2025-11-03,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,45,2025-11-10,T1,FR,Ryanair,International Short-Haul,B737,796,149,83%
+W25,45,2025-11-10,T1,FR,Ryanair,International Short-Haul,A320,55,10,82%
+W25,45,2025-11-10,T1,FR,Ryanair,Domestic,B737,45,8,71%
+W25,45,2025-11-10,T2,EI,Aer Lingus,International Short-Haul,A320,270,52,81%
+W25,45,2025-11-10,T2,EI,Aer Lingus,Transatlantic CBP,A330,104,20,87%
+W25,45,2025-11-10,T2,EI,Aer Lingus,Transatlantic CBP,B787,51,10,87%
+W25,45,2025-11-10,T2,EI,Aer Lingus,International Long-Haul,A330,11,2,83%
+W25,45,2025-11-10,T2,RE,Aer Lingus Regional,Domestic,ATR72,93,16,69%
+W25,45,2025-11-10,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,64,11,84%
+W25,45,2025-11-10,T2,BA,British Airways,International Short-Haul,A320,66,11,83%
+W25,45,2025-11-10,T2,BA,British Airways,International Short-Haul,E-Jet,48,9,80%
+W25,45,2025-11-10,T1,LH,Lufthansa,International Short-Haul,A320,36,7,84%
+W25,45,2025-11-10,T1,AF,Air France,International Short-Haul,A320,35,7,80%
+W25,45,2025-11-10,T1,KL,KLM,International Short-Haul,A320,35,6,81%
+W25,45,2025-11-10,T1,IB,Iberia,International Short-Haul,A320,22,4,82%
+W25,45,2025-11-10,T1,VY,Vueling,International Short-Haul,A320,21,4,84%
+W25,45,2025-11-10,T1,OS,Austrian,International Short-Haul,A320,12,2,81%
+W25,45,2025-11-10,T1,SK,SAS,International Short-Haul,A320,11,2,81%
+W25,45,2025-11-10,T1,AY,Finnair,International Short-Haul,A320,8,2,81%
+W25,45,2025-11-10,T1,TK,Turkish Airlines,International Long-Haul,A320,17,3,84%
+W25,45,2025-11-10,T1,U2,easyJet,International Short-Haul,A320,49,8,81%
+W25,45,2025-11-10,T1,W6,Wizz Air,International Short-Haul,A320,40,7,83%
+W25,45,2025-11-10,T2,AA,American Airlines,Transatlantic CBP,B787,25,4,90%
+W25,45,2025-11-10,T2,UA,United Airlines,Transatlantic CBP,B787,13,2,89%
+W25,45,2025-11-10,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,87%
+W25,45,2025-11-10,T2,AC,Air Canada,Transatlantic CBP,B787,6,1,86%
+W25,45,2025-11-10,T2,EK,Emirates,International Long-Haul,B777,11,2,85%
+W25,45,2025-11-10,T2,EY,Etihad,International Long-Haul,A330,6,1,82%
+W25,45,2025-11-10,T1,5X,UPS,Cargo,B767,5,1,nan%
+W25,45,2025-11-10,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,46,2025-11-17,T1,FR,Ryanair,International Short-Haul,B737,809,153,82%
+W25,46,2025-11-17,T1,FR,Ryanair,International Short-Haul,A320,61,11,83%
+W25,46,2025-11-17,T1,FR,Ryanair,Domestic,B737,45,8,70%
+W25,46,2025-11-17,T2,EI,Aer Lingus,International Short-Haul,A320,278,52,82%
+W25,46,2025-11-17,T2,EI,Aer Lingus,Transatlantic CBP,A330,99,17,90%
+W25,46,2025-11-17,T2,EI,Aer Lingus,Transatlantic CBP,B787,48,9,88%
+W25,46,2025-11-17,T2,EI,Aer Lingus,International Long-Haul,A330,11,2,82%
+W25,46,2025-11-17,T2,RE,Aer Lingus Regional,Domestic,ATR72,100,19,71%
+W25,46,2025-11-17,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,64,12,83%
+W25,46,2025-11-17,T2,BA,British Airways,International Short-Haul,A320,68,12,82%
+W25,46,2025-11-17,T2,BA,British Airways,International Short-Haul,E-Jet,49,9,82%
+W25,46,2025-11-17,T1,LH,Lufthansa,International Short-Haul,A320,37,6,82%
+W25,46,2025-11-17,T1,AF,Air France,International Short-Haul,A320,34,6,84%
+W25,46,2025-11-17,T1,KL,KLM,International Short-Haul,A320,34,6,81%
+W25,46,2025-11-17,T1,IB,Iberia,International Short-Haul,A320,22,4,81%
+W25,46,2025-11-17,T1,VY,Vueling,International Short-Haul,A320,21,4,81%
+W25,46,2025-11-17,T1,OS,Austrian,International Short-Haul,A320,12,2,84%
+W25,46,2025-11-17,T1,SK,SAS,International Short-Haul,A320,12,2,83%
+W25,46,2025-11-17,T1,AY,Finnair,International Short-Haul,A320,9,1,82%
+W25,46,2025-11-17,T1,TK,Turkish Airlines,International Long-Haul,A320,18,3,84%
+W25,46,2025-11-17,T1,U2,easyJet,International Short-Haul,A320,48,8,82%
+W25,46,2025-11-17,T1,W6,Wizz Air,International Short-Haul,A320,41,7,83%
+W25,46,2025-11-17,T2,AA,American Airlines,Transatlantic CBP,B787,26,4,88%
+W25,46,2025-11-17,T2,UA,United Airlines,Transatlantic CBP,B787,13,2,87%
+W25,46,2025-11-17,T2,DL,Delta Air Lines,Transatlantic CBP,A330,6,1,88%
+W25,46,2025-11-17,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,87%
+W25,46,2025-11-17,T2,EK,Emirates,International Long-Haul,B777,11,2,86%
+W25,46,2025-11-17,T2,EY,Etihad,International Long-Haul,A330,5,1,83%
+W25,46,2025-11-17,T1,5X,UPS,Cargo,B767,5,1,nan%
+W25,46,2025-11-17,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,47,2025-11-24,T1,FR,Ryanair,International Short-Haul,B737,832,151,81%
+W25,47,2025-11-24,T1,FR,Ryanair,International Short-Haul,A320,63,11,83%
+W25,47,2025-11-24,T1,FR,Ryanair,Domestic,B737,46,8,68%
+W25,47,2025-11-24,T2,EI,Aer Lingus,International Short-Haul,A320,286,49,84%
+W25,47,2025-11-24,T2,EI,Aer Lingus,Transatlantic CBP,A330,108,19,89%
+W25,47,2025-11-24,T2,EI,Aer Lingus,Transatlantic CBP,B787,53,10,88%
+W25,47,2025-11-24,T2,EI,Aer Lingus,International Long-Haul,A330,11,2,84%
+W25,47,2025-11-24,T2,RE,Aer Lingus Regional,Domestic,ATR72,103,18,69%
+W25,47,2025-11-24,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,70,12,81%
+W25,47,2025-11-24,T2,BA,British Airways,International Short-Haul,A320,68,12,83%
+W25,47,2025-11-24,T2,BA,British Airways,International Short-Haul,E-Jet,49,9,82%
+W25,47,2025-11-24,T1,LH,Lufthansa,International Short-Haul,A320,38,6,84%
+W25,47,2025-11-24,T1,AF,Air France,International Short-Haul,A320,36,6,80%
+W25,47,2025-11-24,T1,KL,KLM,International Short-Haul,A320,36,6,83%
+W25,47,2025-11-24,T1,IB,Iberia,International Short-Haul,A320,23,4,81%
+W25,47,2025-11-24,T1,VY,Vueling,International Short-Haul,A320,22,4,81%
+W25,47,2025-11-24,T1,OS,Austrian,International Short-Haul,A320,12,2,81%
+W25,47,2025-11-24,T1,SK,SAS,International Short-Haul,A320,12,2,83%
+W25,47,2025-11-24,T1,AY,Finnair,International Short-Haul,A320,9,2,80%
+W25,47,2025-11-24,T1,TK,Turkish Airlines,International Long-Haul,A320,18,3,85%
+W25,47,2025-11-24,T1,U2,easyJet,International Short-Haul,A320,49,9,82%
+W25,47,2025-11-24,T1,W6,Wizz Air,International Short-Haul,A320,40,7,81%
+W25,47,2025-11-24,T2,AA,American Airlines,Transatlantic CBP,B787,26,5,87%
+W25,47,2025-11-24,T2,UA,United Airlines,Transatlantic CBP,B787,13,2,89%
+W25,47,2025-11-24,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,88%
+W25,47,2025-11-24,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,90%
+W25,47,2025-11-24,T2,EK,Emirates,International Long-Haul,B777,11,2,83%
+W25,47,2025-11-24,T2,EY,Etihad,International Long-Haul,A330,6,1,84%
+W25,47,2025-11-24,T1,5X,UPS,Cargo,B767,5,1,nan%
+W25,47,2025-11-24,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,48,2025-12-01,T1,FR,Ryanair,International Short-Haul,B737,935,165,84%
+W25,48,2025-12-01,T1,FR,Ryanair,International Short-Haul,A320,66,12,83%
+W25,48,2025-12-01,T1,FR,Ryanair,Domestic,B737,49,9,70%
+W25,48,2025-12-01,T2,EI,Aer Lingus,International Short-Haul,A320,312,53,82%
+W25,48,2025-12-01,T2,EI,Aer Lingus,Transatlantic CBP,A330,114,21,88%
+W25,48,2025-12-01,T2,EI,Aer Lingus,Transatlantic CBP,B787,53,9,88%
+W25,48,2025-12-01,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,84%
+W25,48,2025-12-01,T2,RE,Aer Lingus Regional,Domestic,ATR72,108,19,73%
+W25,48,2025-12-01,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,71,12,81%
+W25,48,2025-12-01,T2,BA,British Airways,International Short-Haul,A320,73,13,82%
+W25,48,2025-12-01,T2,BA,British Airways,International Short-Haul,E-Jet,52,9,83%
+W25,48,2025-12-01,T1,LH,Lufthansa,International Short-Haul,A320,42,7,81%
+W25,48,2025-12-01,T1,AF,Air France,International Short-Haul,A320,37,6,83%
+W25,48,2025-12-01,T1,KL,KLM,International Short-Haul,A320,37,6,81%
+W25,48,2025-12-01,T1,IB,Iberia,International Short-Haul,A320,25,5,82%
+W25,48,2025-12-01,T1,VY,Vueling,International Short-Haul,A320,22,4,83%
+W25,48,2025-12-01,T1,OS,Austrian,International Short-Haul,A320,12,2,83%
+W25,48,2025-12-01,T1,SK,SAS,International Short-Haul,A320,13,2,84%
+W25,48,2025-12-01,T1,AY,Finnair,International Short-Haul,A320,10,2,82%
+W25,48,2025-12-01,T1,TK,Turkish Airlines,International Long-Haul,A320,18,3,84%
+W25,48,2025-12-01,T1,U2,easyJet,International Short-Haul,A320,52,9,84%
+W25,48,2025-12-01,T1,W6,Wizz Air,International Short-Haul,A320,42,8,82%
+W25,48,2025-12-01,T2,AA,American Airlines,Transatlantic CBP,B787,29,5,87%
+W25,48,2025-12-01,T2,UA,United Airlines,Transatlantic CBP,B787,15,3,89%
+W25,48,2025-12-01,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,89%
+W25,48,2025-12-01,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,89%
+W25,48,2025-12-01,T2,EK,Emirates,International Long-Haul,B777,13,2,83%
+W25,48,2025-12-01,T2,EY,Etihad,International Long-Haul,A330,6,1,84%
+W25,48,2025-12-01,T1,5X,UPS,Cargo,B767,5,1,nan%
+W25,48,2025-12-01,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,49,2025-12-08,T1,FR,Ryanair,International Short-Haul,B737,1003,172,83%
+W25,49,2025-12-08,T1,FR,Ryanair,International Short-Haul,A320,71,13,84%
+W25,49,2025-12-08,T1,FR,Ryanair,Domestic,B737,50,9,69%
+W25,49,2025-12-08,T2,EI,Aer Lingus,International Short-Haul,A320,311,53,83%
+W25,49,2025-12-08,T2,EI,Aer Lingus,Transatlantic CBP,A330,121,21,90%
+W25,49,2025-12-08,T2,EI,Aer Lingus,Transatlantic CBP,B787,60,11,88%
+W25,49,2025-12-08,T2,EI,Aer Lingus,International Long-Haul,A330,13,2,83%
+W25,49,2025-12-08,T2,RE,Aer Lingus Regional,Domestic,ATR72,121,20,69%
+W25,49,2025-12-08,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,79,14,84%
+W25,49,2025-12-08,T2,BA,British Airways,International Short-Haul,A320,75,13,82%
+W25,49,2025-12-08,T2,BA,British Airways,International Short-Haul,E-Jet,54,10,84%
+W25,49,2025-12-08,T1,LH,Lufthansa,International Short-Haul,A320,44,8,81%
+W25,49,2025-12-08,T1,AF,Air France,International Short-Haul,A320,41,7,85%
+W25,49,2025-12-08,T1,KL,KLM,International Short-Haul,A320,39,7,84%
+W25,49,2025-12-08,T1,IB,Iberia,International Short-Haul,A320,25,5,81%
+W25,49,2025-12-08,T1,VY,Vueling,International Short-Haul,A320,24,5,84%
+W25,49,2025-12-08,T1,OS,Austrian,International Short-Haul,A320,14,2,85%
+W25,49,2025-12-08,T1,SK,SAS,International Short-Haul,A320,14,2,84%
+W25,49,2025-12-08,T1,AY,Finnair,International Short-Haul,A320,10,2,82%
+W25,49,2025-12-08,T1,TK,Turkish Airlines,International Long-Haul,A320,19,3,85%
+W25,49,2025-12-08,T1,U2,easyJet,International Short-Haul,A320,55,10,84%
+W25,49,2025-12-08,T1,W6,Wizz Air,International Short-Haul,A320,47,8,84%
+W25,49,2025-12-08,T2,AA,American Airlines,Transatlantic CBP,B787,30,5,90%
+W25,49,2025-12-08,T2,UA,United Airlines,Transatlantic CBP,B787,15,3,87%
+W25,49,2025-12-08,T2,DL,Delta Air Lines,Transatlantic CBP,A330,8,1,91%
+W25,49,2025-12-08,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,88%
+W25,49,2025-12-08,T2,EK,Emirates,International Long-Haul,B777,13,2,85%
+W25,49,2025-12-08,T2,EY,Etihad,International Long-Haul,A330,7,1,84%
+W25,49,2025-12-08,T1,5X,UPS,Cargo,B767,6,1,nan%
+W25,49,2025-12-08,T1,FX,FedEx,Cargo,A320,4,1,nan%
+W25,50,2025-12-15,T1,FR,Ryanair,International Short-Haul,B737,1331,222,84%
+W25,50,2025-12-15,T1,FR,Ryanair,International Short-Haul,A320,98,19,85%
+W25,50,2025-12-15,T1,FR,Ryanair,Domestic,B737,67,11,73%
+W25,50,2025-12-15,T2,EI,Aer Lingus,International Short-Haul,A320,452,75,87%
+W25,50,2025-12-15,T2,EI,Aer Lingus,Transatlantic CBP,A330,160,30,92%
+W25,50,2025-12-15,T2,EI,Aer Lingus,Transatlantic CBP,B787,83,15,92%
+W25,50,2025-12-15,T2,EI,Aer Lingus,International Long-Haul,A330,18,3,87%
+W25,50,2025-12-15,T2,RE,Aer Lingus Regional,Domestic,ATR72,168,31,74%
+W25,50,2025-12-15,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,110,19,84%
+W25,50,2025-12-15,T2,BA,British Airways,International Short-Haul,A320,106,19,87%
+W25,50,2025-12-15,T2,BA,British Airways,International Short-Haul,E-Jet,76,14,85%
+W25,50,2025-12-15,T1,LH,Lufthansa,International Short-Haul,A320,59,11,87%
+W25,50,2025-12-15,T1,AF,Air France,International Short-Haul,A320,55,10,86%
+W25,50,2025-12-15,T1,KL,KLM,International Short-Haul,A320,55,9,87%
+W25,50,2025-12-15,T1,IB,Iberia,International Short-Haul,A320,35,6,84%
+W25,50,2025-12-15,T1,VY,Vueling,International Short-Haul,A320,34,6,86%
+W25,50,2025-12-15,T1,OS,Austrian,International Short-Haul,A320,18,3,85%
+W25,50,2025-12-15,T1,SK,SAS,International Short-Haul,A320,19,3,85%
+W25,50,2025-12-15,T1,AY,Finnair,International Short-Haul,A320,15,3,84%
+W25,50,2025-12-15,T1,TK,Turkish Airlines,International Long-Haul,A320,28,5,89%
+W25,50,2025-12-15,T1,U2,easyJet,International Short-Haul,A320,75,14,84%
+W25,50,2025-12-15,T1,W6,Wizz Air,International Short-Haul,A320,67,11,86%
+W25,50,2025-12-15,T2,AA,American Airlines,Transatlantic CBP,B787,41,7,92%
+W25,50,2025-12-15,T2,UA,United Airlines,Transatlantic CBP,B787,21,4,93%
+W25,50,2025-12-15,T2,DL,Delta Air Lines,Transatlantic CBP,A330,10,2,91%
+W25,50,2025-12-15,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,92%
+W25,50,2025-12-15,T2,EK,Emirates,International Long-Haul,B777,18,3,88%
+W25,50,2025-12-15,T2,EY,Etihad,International Long-Haul,A330,9,2,88%
+W25,50,2025-12-15,T1,5X,UPS,Cargo,B767,8,1,nan%
+W25,50,2025-12-15,T1,FX,FedEx,Cargo,A320,6,1,nan%
+W25,51,2025-12-22,T1,FR,Ryanair,International Short-Haul,B737,1334,247,86%
+W25,51,2025-12-22,T1,FR,Ryanair,International Short-Haul,A320,93,17,86%
+W25,51,2025-12-22,T1,FR,Ryanair,Domestic,B737,71,13,71%
+W25,51,2025-12-22,T2,EI,Aer Lingus,International Short-Haul,A320,457,80,87%
+W25,51,2025-12-22,T2,EI,Aer Lingus,Transatlantic CBP,A330,167,30,90%
+W25,51,2025-12-22,T2,EI,Aer Lingus,Transatlantic CBP,B787,79,14,91%
+W25,51,2025-12-22,T2,EI,Aer Lingus,International Long-Haul,A330,18,3,86%
+W25,51,2025-12-22,T2,RE,Aer Lingus Regional,Domestic,ATR72,168,28,75%
+W25,51,2025-12-22,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,111,20,86%
+W25,51,2025-12-22,T2,BA,British Airways,International Short-Haul,A320,106,19,85%
+W25,51,2025-12-22,T2,BA,British Airways,International Short-Haul,E-Jet,75,14,85%
+W25,51,2025-12-22,T1,LH,Lufthansa,International Short-Haul,A320,62,11,85%
+W25,51,2025-12-22,T1,AF,Air France,International Short-Haul,A320,54,9,84%
+W25,51,2025-12-22,T1,KL,KLM,International Short-Haul,A320,54,9,87%
+W25,51,2025-12-22,T1,IB,Iberia,International Short-Haul,A320,34,6,84%
+W25,51,2025-12-22,T1,VY,Vueling,International Short-Haul,A320,34,6,84%
+W25,51,2025-12-22,T1,OS,Austrian,International Short-Haul,A320,19,3,86%
+W25,51,2025-12-22,T1,SK,SAS,International Short-Haul,A320,18,3,85%
+W25,51,2025-12-22,T1,AY,Finnair,International Short-Haul,A320,14,3,85%
+W25,51,2025-12-22,T1,TK,Turkish Airlines,International Long-Haul,A320,28,5,88%
+W25,51,2025-12-22,T1,U2,easyJet,International Short-Haul,A320,74,14,86%
+W25,51,2025-12-22,T1,W6,Wizz Air,International Short-Haul,A320,63,11,85%
+W25,51,2025-12-22,T2,AA,American Airlines,Transatlantic CBP,B787,43,7,91%
+W25,51,2025-12-22,T2,UA,United Airlines,Transatlantic CBP,B787,20,4,92%
+W25,51,2025-12-22,T2,DL,Delta Air Lines,Transatlantic CBP,A330,11,2,93%
+W25,51,2025-12-22,T2,AC,Air Canada,Transatlantic CBP,B787,10,2,91%
+W25,51,2025-12-22,T2,EK,Emirates,International Long-Haul,B777,18,3,89%
+W25,51,2025-12-22,T2,EY,Etihad,International Long-Haul,A330,9,2,86%
+W25,51,2025-12-22,T1,5X,UPS,Cargo,B767,9,2,nan%
+W25,51,2025-12-22,T1,FX,FedEx,Cargo,A320,6,1,nan%
+W25,52,2025-12-29,T1,FR,Ryanair,International Short-Haul,B737,943,167,82%
+W25,52,2025-12-29,T1,FR,Ryanair,International Short-Haul,A320,66,11,81%
+W25,52,2025-12-29,T1,FR,Ryanair,Domestic,B737,51,9,70%
+W25,52,2025-12-29,T2,EI,Aer Lingus,International Short-Haul,A320,312,55,84%
+W25,52,2025-12-29,T2,EI,Aer Lingus,Transatlantic CBP,A330,116,22,90%
+W25,52,2025-12-29,T2,EI,Aer Lingus,Transatlantic CBP,B787,55,10,89%
+W25,52,2025-12-29,T2,EI,Aer Lingus,International Long-Haul,A330,12,2,84%
+W25,52,2025-12-29,T2,RE,Aer Lingus Regional,Domestic,ATR72,107,19,73%
+W25,52,2025-12-29,T2,RE,Aer Lingus Regional,International Short-Haul,ATR72,72,13,82%
+W25,52,2025-12-29,T2,BA,British Airways,International Short-Haul,A320,71,13,84%
+W25,52,2025-12-29,T2,BA,British Airways,International Short-Haul,E-Jet,53,10,82%
+W25,52,2025-12-29,T1,LH,Lufthansa,International Short-Haul,A320,41,8,82%
+W25,52,2025-12-29,T1,AF,Air France,International Short-Haul,A320,40,7,82%
+W25,52,2025-12-29,T1,KL,KLM,International Short-Haul,A320,40,7,82%
+W25,52,2025-12-29,T1,IB,Iberia,International Short-Haul,A320,24,4,82%
+W25,52,2025-12-29,T1,VY,Vueling,International Short-Haul,A320,23,4,83%
+W25,52,2025-12-29,T1,OS,Austrian,International Short-Haul,A320,13,2,82%
+W25,52,2025-12-29,T1,SK,SAS,International Short-Haul,A320,13,2,85%
+W25,52,2025-12-29,T1,AY,Finnair,International Short-Haul,A320,10,2,84%
+W25,52,2025-12-29,T1,TK,Turkish Airlines,International Long-Haul,A320,19,3,86%
+W25,52,2025-12-29,T1,U2,easyJet,International Short-Haul,A320,53,10,82%
+W25,52,2025-12-29,T1,W6,Wizz Air,International Short-Haul,A320,46,8,85%
+W25,52,2025-12-29,T2,AA,American Airlines,Transatlantic CBP,B787,28,5,89%
+W25,52,2025-12-29,T2,UA,United Airlines,Transatlantic CBP,B787,14,3,89%
+W25,52,2025-12-29,T2,DL,Delta Air Lines,Transatlantic CBP,A330,7,1,89%
+W25,52,2025-12-29,T2,AC,Air Canada,Transatlantic CBP,B787,7,1,88%
+W25,52,2025-12-29,T2,EK,Emirates,International Long-Haul,B777,13,2,86%
+W25,52,2025-12-29,T2,EY,Etihad,International Long-Haul,A330,6,1,84%
+W25,52,2025-12-29,T1,5X,UPS,Cargo,B767,6,1,nan%
+W25,52,2025-12-29,T1,FX,FedEx,Cargo,A320,4,1,nan%
+"ROW COLOURS: Yellow = Peak (Jul–Aug, mult ≥1.28)  |  Blue = Low season (Jan–Feb, mult ≤0.68)  |  Purple = St Patrick's / Easter  |  Pink = Christmas",,,,,,,,,,
+"SOURCE: Synthesised from DAA 3-day actual schedule (31 Mar–3 Apr 2026) using IATA S25/W25 seasonality curves, Irish calendar events, and Dublin Airport 2025 traffic patterns (~36.4M pax).",,,,,,,,,,

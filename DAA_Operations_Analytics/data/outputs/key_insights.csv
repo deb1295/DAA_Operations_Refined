@@ -1,0 +1,9 @@
+insight_id,category,finding,metric,implication
+1,Demand Shape,Peak week is 2.2× the winter trough,"7,599 vs 3,433 movements","Staffing and stands must plan for peak, not average"
+2,Ramp Speed,Demand surges +31.8% in 12 weeks (W14→W26),"5,385 → 7,098 movements","Operational ramp-up must begin by early April, not May"
+3,Gate Pressure,"Pier 4, Pier E, and Pier 1 enter Red-alert zone by 16 Mar 2026 (at +5% growth)",Pier 4: 20 Red weeks | Pier E: 24 Red weeks | Pier 1: 2 Red weeks,Stand allocation review required before early surge
+4,Carrier Growth,All 23 carriers show positive year-on-year trajectory,No carrier is shrinking; every pier faces more pressure,No capacity relief from airline churn — plan for growth across board
+5,Compound Risk,16 Critical-risk weeks concentrated Jul–Aug,Weeks 27–35 (Jul 06 – Aug 31 2026),Pre-assign contingency gates and remote stands for this 9-week window
+6,CBP Headroom,Aer Lingus CBP avg LF 89.5% — only 10.5% slack,Min 84.0% | Max 94.0%,Any transatlantic disruption on a peak day has zero buffer — escalation protocol needed
+7,Terminal Split,T2 gate util (54%) is nearly 2× T1 (30%) despite 39% less volume,"T1: 177,909 mvts @ 29.9% | T2: 113,197 mvts @ 54.0%",T2 is the binding constraint — widebody dwell times drive disproportionate pressure
+8,Fleet Mix,B737 + A320 family account for ~85% of all movements,Widebodies (B787/A330/B777) concentrated in summer CBP window,Pier E and Pier 4 capacity is non-substitutable — no overflow to narrowbody piers

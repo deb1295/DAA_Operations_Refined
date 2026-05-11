@@ -1,0 +1,17 @@
+Stand_ID,Type,ICAO_Cat_Max,CBP_Eligible,Terminal,Pier,Has_Airbridge,MARS_Group
+101,Contact,C,False,T1,Pier 1,True,
+102,Contact,C,False,T1,Pier 1,True,
+103,Contact,C,False,T1,Pier 1,True,
+104,Contact,C,False,T1,Pier 1,True,
+105,Contact,C,False,T1,Pier 1,True,
+106,Contact,E,True,T2,Pier 2,True,
+107,Contact,D,True,T2,Pier 2,True,
+108L,Contact,C,False,T2,Pier 2,True,MARS_108
+108C,Contact,E,False,T2,Pier 2,True,MARS_108
+108R,Contact,C,False,T2,Pier 2,True,MARS_108
+110,Contact,E,False,T2,Pier 2,True,
+R1,Remote,C,False,Remote,Remote Apron,False,
+R2,Remote,C,False,Remote,Remote Apron,False,
+R3,Remote,E,False,Remote,Remote Apron,False,
+R4,Buffer_Remote,C,False,Remote,Remote Apron,False,
+R5,Buffer_Remote,C,False,Remote,Remote Apron,False,

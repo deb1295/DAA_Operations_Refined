@@ -1,0 +1,3968 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dublin Airport — 2026 Long Term</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+    </script>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --navy: #0f2044;
+            --blue: #2d7be5;
+            --teal: #1ab8a0;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --green: #10b981;
+            --t1: #1e293b;
+            --t2: #475569;
+            --t3: #cbd5e1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --bdr: #e2e8f0;
+            --bdr2: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0f1a;
+            color: #f1f5f9;
+            font-size: 13px;
+            line-height: 1.5
+        }
+
+        /* ── POLICY STUDIO DARK THEME OVERRIDES ── */
+        :root {
+            --bg: #0b0f1a;
+            --card: #1a2235;
+            --bdr: #1f2f4a;
+            --bdr2: #1f2f4a;
+            --t1: #f1f5f9;
+            --t2: #94a3b8;
+            --t3: #cbd5e1;
+        }
+
+        .page-head {
+            background: #0a1628;
+            border-bottom-color: #3b82f6;
+        }
+
+        .page-sub {
+            color: rgba(255, 255, 255, .45);
+        }
+
+        /* ── SUB NAV BAR ── */
+        .subnav {
+            background: var(--navy);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 52px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+        }
+
+        .subnav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .daa-badge {
+            background: var(--blue);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            letter-spacing: .08em;
+        }
+
+        /* ── NAV BAR ── */
+        .navbar {
+            background: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 52px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .sw-btn {
+            width: 230px;
+            flex: 0 0 230px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: transparent;
+            color: rgba(255, 255, 255, .5);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .sw-btn:first-of-type {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .sw-btn:last-of-type {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .sw-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        .sw-btn.active {
+            background: #1d5fd1;
+            color: #fff;
+            border-color: #1d5fd1;
+        }
+
+        .glossary {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .glossary-item {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            cursor: default;
+        }
+
+        .gl-icon {
+            font-size: 14px;
+        }
+
+        /* PAGE HEADER */
+        .page-head {
+            background: var(--navy);
+            padding: 20px 40px 0;
+            border-bottom: 3px solid var(--blue);
+        }
+
+        .page-eye {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--teal);
+            margin-bottom: 4px
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px
+        }
+
+        .page-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 16px
+        }
+
+        /* SUB-TAB BAR */
+        .subtab-bar {
+            display: flex;
+            gap: 0;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .stab {
+            color: rgba(255, 255, 255, .45);
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .2s;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .stab:hover {
+            color: rgba(255, 255, 255, .8)
+        }
+
+        .stab.active {
+            color: #fff;
+            border-bottom-color: var(--teal)
+        }
+
+        /* BODY CONTAINER */
+        .body {
+            padding: 28px 40px;
+            max-width: 1560px;
+            margin: 0 auto
+        }
+
+        /* SUB-TAB PANELS */
+        .sp {
+            display: none
+        }
+
+        .sp.active {
+            display: block
+        }
+
+        /* SECTION LABEL */
+        .sec-eye {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--blue);
+            margin-bottom: 4px
+        }
+
+        .sec-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--t1);
+            margin-bottom: 4px
+        }
+
+        .sec-sub {
+            font-size: 12px;
+            color: var(--t3);
+            margin-bottom: 20px
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            padding: 16px
+        }
+
+        .card.card-highlight {
+            background: #0f2044;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .card-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--t3);
+            margin-bottom: 8px
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 2px
+        }
+
+        .card-sub {
+            font-size: 11.5px;
+            color: var(--t2)
+        }
+
+        /* GRIDS */
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px
+        }
+
+        .g-hist {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .g23 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        .hidden-sec {
+            display: none !important;
+        }
+
+        .g4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px
+        }
+
+        .g13 {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 16px
+        }
+
+        .g23 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px
+        }
+
+        .mt {
+            margin-top: 16px
+        }
+
+        .mt8 {
+            margin-top: 8px
+        }
+
+        /* KPI STRIP */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 20px
+        }
+
+        .kpi {
+            background: var(--card);
+            border: 1px solid var(--bdr);
+            border-radius: 10px;
+            padding: 14px 16px;
+            border-top: 3px solid var(--blue)
+        }
+
+        .kpi-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--t1);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.1
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            color: var(--t3);
+            margin-top: 3px;
+            font-weight: 500
+        }
+
+        .kpi-delta {
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 3px
+        }
+
+        .up {
+            color: var(--green)
+        }
+
+        .dn {
+            color: var(--red)
+        }
+
+        .nu {
+            color: var(--amber)
+        }
+
+        .kpi.accent-teal {
+            border-top-color: var(--teal)
+        }
+
+        .kpi.accent-amber {
+            border-top-color: var(--amber)
+        }
+
+        .kpi.accent-red {
+            border-top-color: var(--red)
+        }
+
+        .kpi.accent-green {
+            border-top-color: var(--green)
+        }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: .05em
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1d4ed8
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: #065f46
+        }
+
+        .badge-amber {
+            background: #fef3c7;
+            color: #92400e
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: var(--t2)
+        }
+
+        .badge-teal {
+            background: #ccfbf1;
+            color: #134e4a
+        }
+
+        /* ALGO ACCURACY TABLE */
+        .acc-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--bdr)
+        }
+
+        .acc-row:last-child {
+            border-bottom: none
+        }
+
+        .acc-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--t1)
+        }
+
+        .acc-meta {
+            font-size: 11px;
+            color: var(--t3)
+        }
+
+        .acc-bar-wrap {
+            flex: 1;
+            margin: 0 16px;
+            height: 6px;
+            background: var(--bdr);
+            border-radius: 3px
+        }
+
+        .acc-bar {
+            height: 100%;
+            border-radius: 3px;
+            background: var(--blue)
+        }
+
+        .acc-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--t1);
+            min-width: 48px;
+            text-align: right
+        }
+
+        /* CHART CONTAINERS */
+        .chart-wrap {
+            position: relative;
+            width: 100%
+        }
+
+        /* EVENTS FEED — Module 2 */
+        .ev-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .ev-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--card);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            align-items: flex-start
+        }
+
+        .ev-icon {
+            font-size: 18px;
+            min-width: 28px;
+            text-align: center
+        }
+
+        .ev-title {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--t1)
+        }
+
+        .ev-meta {
+            font-size: 11px;
+            color: var(--t3);
+            margin-top: 1px
+        }
+
+        .ev-impact {
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px
+        }
+
+        .ev-digest {
+            font-size: 11.5px;
+            color: var(--t2);
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--bdr);
+            font-style: italic
+        }
+
+        /* SIMULATOR — Module 3 */
+        .sim-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px
+        }
+
+        .sim-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--t1);
+            min-width: 170px
+        }
+
+        .sim-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue);
+            min-width: 48px;
+            text-align: right
+        }
+
+        input[type=range].sl {
+            flex: 1;
+            height: 5px;
+            appearance: none;
+            background: var(--bdr);
+            border-radius: 3px;
+            outline: none
+        }
+
+        input[type=range].sl::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--blue);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .15)
+        }
+
+        .sim-select {
+            padding: 6px 10px;
+            background: #fff;
+            border: 1px solid var(--bdr2);
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+            color: var(--t1);
+            outline: none;
+            cursor: pointer
+        }
+
+        /* DELTA CARD */
+        .delta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .delta-cell {
+            background: var(--bg);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center
+        }
+
+        .delta-val {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 2px
+        }
+
+        .delta-label {
+            font-size: 10.5px;
+            color: var(--t3);
+            font-weight: 500
+        }
+
+        .pos {
+            color: var(--red)
+        }
+
+        .neg {
+            color: var(--green)
+        }
+
+        .neu {
+            color: var(--amber)
+        }
+
+        /* AI SIDEBAR */
+        .ai-box {
+            background: var(--navy);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column
+        }
+
+        .ai-hd {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, .05);
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .ai-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--teal);
+            border-radius: 50%;
+            box-shadow: 0 0 7px var(--teal)
+        }
+
+        .ai-hd-title {
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em
+        }
+
+        .ai-body {
+            padding: 16px;
+            flex: 1
+        }
+
+        .ai-msg {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 8px 8px 8px 2px;
+            padding: 10px 12px;
+            color: rgba(255, 255, 255, .9);
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 8px
+        }
+
+        .ai-inp {
+            width: 100%;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #fff;
+            font-size: 11.5px;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            margin-top: 4px
+        }
+
+        .ai-inp:focus {
+            border-color: var(--teal)
+        }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: var(--bdr);
+            margin: 20px 0
+        }
+
+        /* DECOMP TABLE */
+        .decomp-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--bdr)
+        }
+
+        .decomp-row:last-child {
+            border-bottom: none
+        }
+
+        .decomp-label {
+            font-size: 12px;
+            font-weight: 600;
+            width: 110px;
+            color: var(--t1)
+        }
+
+        .decomp-bar-wrap {
+            flex: 1;
+            height: 8px;
+            background: var(--bdr);
+            border-radius: 4px
+        }
+
+        .decomp-bar {
+            height: 100%;
+            border-radius: 4px
+        }
+
+        .decomp-val {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            width: 56px;
+            text-align: right;
+            color: var(--t1)
+        }
+
+        /* WEEK LABELS */
+        .wk-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px
+        }
+
+        .wk-cell {
+            background: var(--card);
+            border: 1px solid var(--bdr);
+            border-radius: 8px;
+            padding: 12px;
+            border-top: 3px solid var(--bdr2)
+        }
+
+        .wk-cell.red {
+            border-top-color: var(--red)
+        }
+
+        .wk-cell.amber {
+            border-top-color: var(--amber)
+        }
+
+        .wk-cell.green {
+            border-top-color: var(--green)
+        }
+
+        .wk-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--t3);
+            margin-bottom: 4px
+        }
+
+        .wk-val {
+            font-size: 18px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--t1)
+        }
+
+        .wk-sub {
+            font-size: 11px;
+            color: var(--t3);
+            margin-top: 2px
+        }
+
+        .wk-delta {
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 3px
+        }
+
+        /* === NEAR TERM INTEL CSS === */
+
+
+        /* === NEAR TERM INTEL CSS === */
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="nav-brand" href="/">
+            <span class="daa-badge">DAA</span>
+            Strategic Planning Suite
+        </a>
+        <div class="nav-links">
+            <a class="sw-btn active" href="/seasonal/plan-ahead">2026 Long Term Plan</a>
+            <a class="sw-btn" href="/3day">3-Day Stand Allocation</a>
+            <a class="sw-btn" href="/intraday">Intra-Day Stand Simulation</a>
+            <a class="sw-btn" href="/passenger">Short Term Passenger Plan</a>
+        </div>
+    </nav>
+
+
+    <!-- PAGE HEADER + SUB-TAB BAR -->
+    <div class="page-head">
+        <div class="page-eye">2026 Planning Suite</div>
+        <div class="page-title">2026 Long Term</div>
+        <div class="page-sub">Strategic analytical framework: Machine Learning Ensemble Forecast · High-Fidelity Passenger Modeling ·
+            Scenario Simulation</div>
+        <div class="subtab-bar" style="display:flex; justify-content:flex-start; align-items:center; border-bottom: none; padding-top:10px;">
+            <div class="metric-switcher" style="display:flex; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:4px;">
+                <button id="btn-metric-mov" onclick="setMasterMetric('mov')" style="background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 24px; font-size:12px; font-weight:700; cursor:pointer; letter-spacing:0.05em; box-shadow:0 2px 8px rgba(0,0,0,0.2);">FLIGHT MOVEMENTS</button>
+                <button id="btn-metric-pax" onclick="setMasterMetric('pax')" style="background:transparent; color:rgba(255,255,255,0.5); border:none; border-radius:6px; padding:8px 24px; font-size:12px; font-weight:700; cursor:pointer; letter-spacing:0.05em; transition:all 0.2s;">PASSENGER FLOW</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="body">
+
+        <!-- ═══════════════════════════════════════════════════
+         MODULE 1: LONG-TERM ML FORECAST
+     ═══════════════════════════════════════════════════ -->
+        <div class="sp active" id="sp-m1">
+
+            <!-- ─── SECTION 1: HISTORICAL OVERVIEW (topmost) ─── -->
+            <div id="sec-historical-overview" class="g-hist" style="margin-bottom:28px">
+                <div
+                    style="background:#0f2044;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px;height:390px;box-sizing:border-box;box-shadow:0 4px 15px rgba(0,0,0,0.2)">
+                    <div style="margin-bottom:10px">
+                        <div
+                            style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">
+                            Historical Overview</div>
+                        <div style="font-size:17px;font-weight:700;color:#fff"><span id="overview-chart-title">Year-by-Year Growth Trajectory &mdash; 2023&ndash;2025</span></div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px"><span id="overview-chart-sub">3 annual cohorts from actual DAA demand data</span> &middot; Amber dashed = 3-year rolling average</div>
+                    </div>
+                    <div style="height:275px;position:relative"><canvas id="overviewChart"></canvas></div>
+                </div>
+                <div id="overviewKpi"
+                    style="border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:16px;background:#0f2044;height:390px;box-sizing:border-box;overflow:auto;box-shadow:0 4px 15px rgba(0,0,0,0.2)">
+                    <div style="color:#94a3b8;font-size:11px">Loading KPIs...</div>
+                </div>
+            </div>
+
+            <!-- ─── SECTION 2: ENSEMBLE DESCRIPTION + KPI STRIP ─── -->
+            <div id="sec-ensemble-kpis" style="margin-bottom:20px">
+                <div class="sec-eye">Ensemble ML Engine · SARIMA · Monte Carlo · LSTM · Prophet</div>
+                <div class="sec-title">2026 Long-Term Strategic Forecast</div>
+                <div class="sec-sub" style="margin-bottom:14px">Automated forecast derived from 4-year historical
+                    regression (2022&ndash;2025). No manual inputs required. Confidence band represents Monte Carlo
+                    P10/P50/P90 over 1,000 simulated paths.</div>
+                <div class="kpi-strip" id="lt-kpi-strip">
+                    <div class="kpi">
+                        <div class="kpi-val" id="kpi-val-p50">390K</div>
+                        <div class="kpi-label" id="kpi-lbl-p50">P50 Central Estimate (Flight Mov)</div>
+                        <div class="kpi-delta up" id="kpi-del-p50">▲ +6.2% vs 2025</div>
+                    </div>
+                    <div class="kpi accent-teal">
+                        <div class="kpi-val" id="kpi-val-p10">370K</div>
+                        <div class="kpi-label" id="kpi-lbl-p10">P10 Conservative Estimate</div>
+                        <div class="kpi-delta nu" id="kpi-del-p10">▲ +0.8% vs 2025</div>
+                    </div>
+                    <div class="kpi accent-green">
+                        <div class="kpi-val" id="kpi-val-p90">412K</div>
+                        <div class="kpi-label" id="kpi-lbl-p90">P90 Optimistic Estimate</div>
+                        <div class="kpi-delta up" id="kpi-del-p90">▲ +12.4% vs 2025</div>
+                    </div>
+                    <div class="kpi accent-amber">
+                        <div class="kpi-val" id="kpi-val-pwk">W31</div>
+                        <div class="kpi-label" id="kpi-lbl-pwk">Forecast Peak Week (Central)</div>
+                        <div class="kpi-delta nu" id="kpi-del-pwk">Aug 3&ndash;9, 2026</div>
+                    </div>
+                    <div class="kpi accent-red" id="kpi-card-5">
+                        <div class="kpi-val" id="kpi-val-5">11</div>
+                        <div class="kpi-label" id="kpi-lbl-5">Projected Red-Risk Weeks</div>
+                        <div class="kpi-delta dn" id="kpi-del-5">▲ +3 vs 2025 baseline</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── SECTION 3: FORECAST CHART + ALGORITHM ACCURACY (side-by-side) ─── -->
+            <div id="sec-forecast-main" class="g23" style="margin-bottom:8px">
+                <div class="card card-highlight">
+                    <div class="card-label">52-Week Forecast &mdash; 4 Historical Cohorts + 2026 Ensemble (Week-by-Week)
+                    </div>
+                    <div class="chart-wrap" style="height:280px"><canvas id="ltForecastChart"></canvas></div>
+                </div>
+                <div class="card card-highlight">
+                    <div class="card-label">Algorithm Accuracy · Backtested vs 2025 Actuals</div>
+                    <div class="acc-row">
+                        <div>
+                            <div class="acc-name">LSTM Deep Learning</div>
+                            <div class="acc-meta">Sequence memory · recency-weighted</div>
+                        </div>
+                        <div class="acc-bar-wrap">
+                            <div class="acc-bar" id="bar-lstm" style="width:97.4%;background:#2d7be5"></div>
+                        </div>
+                        <div class="acc-val" id="val-lstm">97.4%</div>
+                    </div>
+                    <div class="acc-row">
+                        <div>
+                            <div class="acc-name">Monte Carlo Simulation</div>
+                            <div class="acc-meta">N=1,000 paths · P50 median</div>
+                        </div>
+                        <div class="acc-bar-wrap">
+                            <div class="acc-bar" id="bar-mc" style="width:96.1%;background:#1ab8a0"></div>
+                        </div>
+                        <div class="acc-val" id="val-mc">96.1%</div>
+                    </div>
+                    <div class="acc-row">
+                        <div>
+                            <div class="acc-name">SARIMA (52-week)</div>
+                            <div class="acc-meta">Seasonal ARIMA · statistical</div>
+                        </div>
+                        <div class="acc-bar-wrap">
+                            <div class="acc-bar" id="bar-sarima" style="width:94.2%;background:#f59e0b"></div>
+                        </div>
+                        <div class="acc-val" id="val-sarima">94.2%</div>
+                    </div>
+                    <div class="acc-row">
+                        <div>
+                            <div class="acc-name">Prophet Decomposition</div>
+                            <div class="acc-meta">Trend + Seasonality + Holiday</div>
+                        </div>
+                        <div class="acc-bar-wrap">
+                            <div class="acc-bar" id="bar-prophet" style="width:93.8%;background:#10b981"></div>
+                        </div>
+                        <div class="acc-val" id="val-prophet">93.8%</div>
+                    </div>
+                    <div class="acc-row">
+                        <div>
+                            <div class="acc-name">Ensemble (Weighted Avg)</div>
+                            <div class="acc-meta">Official 2026 central forecast</div>
+                        </div>
+                        <div class="acc-bar-wrap">
+                            <div class="acc-bar" id="bar-ensemble" style="width:98.1%;background:#2d7be5"></div>
+                        </div>
+                        <div class="acc-val" id="val-ensemble" style="color:var(--blue)">98.1%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ▸ ENSEMBLE INTELLIGENCE BANNER (MOVED) ──────────────────────── -->
+            <!-- ▸ ENSEMBLE INTELLIGENCE BANNER (CLEAN VERSION) ────────────────── -->
+            <div style="background:rgba(29,95,209,0.1); border-left:4px solid var(--blue); border-radius:8px; padding:16px 24px; margin-bottom:24px;">
+                <div style="font-size:12px; color:rgba(255,255,255,0.75); line-height:1.6; letter-spacing:0.02em;">
+                    The Ensemble model combines SARIMA (seasonal regression), Monte Carlo simulation, LSTM deep learning, and Prophet decomposition — 
+                    weighted by backtested accuracy — and achieves <strong id="banner-acc-text" style="color:#1ab8a0; font-weight:700;">98.1% accuracy</strong> 
+                    on 2025 actuals. The four analytical sections below — <em>Demand Intensity, Gate Pressure, Carrier Growth, and Risk Calendar</em> — 
+                    all derive from this single, highest-fidelity forecast.
+                </div>
+            </div>
+
+            <!-- 5 KEY PLANNING INSIGHTS -->
+            <div id="sec-strategic-intelligence">
+                <div class="divider"></div>
+                <div class="sec-eye">Strategic Intelligence</div>
+                <div class="sec-title" style="font-size:15px;margin-bottom:12px">5 Key Planning Insights for 2026</div>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+                <div class="card card-highlight" style="border-top:3px solid #1d5fd1">
+                    <div
+                        style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(29,95,209,0.15);color:#60a5fa;margin-bottom:8px">
+                        📈 Demand Shape</div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#fff">Peak demand 6× trough —
+                        extreme
+                        seasonal concentration</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px">W33 projects 10.3K+ flight
+                        movements
+                        vs Jan
+                        trough of ~3.6K</div>
+                    <div
+                        style="font-size:11px;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
+                        ↳
+                        Capacity must be sized for peak week volumes, not annual averages. Stand allocation templates
+                        must reflect 1,450+ daily flights in summer.</div>
+                </div>
+                <div class="card card-highlight" style="border-top:3px solid #d97706">
+                    <div
+                        style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(217,119,6,0.15);color:#fbbf24;margin-bottom:8px">
+                        ⚡ Ramp Speed</div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#fff">31.8% volume ramp in 12
+                        weeks —
+                        fastest growth window</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px">W14–W26 transition is the
+                        most
+                        critical operational period</div>
+                    <div
+                        style="font-size:11px;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
+                        ↳
+                        Operational ramp-up must be triggered at start of April — not mid-May as historically done.
+                    </div>
+                </div>
+                <div class="card card-highlight" style="border-top:3px solid #dc2626">
+                    <div
+                        style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(220,38,38,0.15);color:#f87171;margin-bottom:8px">
+                        🚨 Gate Pressure</div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#fff">Pier 4 and Pier E hit Red
+                        from W25
+                        onwards</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px">Widebody and transatlantic
+                        traffic
+                        cannot be re-routed</div>
+                    <div
+                        style="font-size:11px;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
+                        ↳ Pier 4
+                        and Pier E re-assignment review before March school break peak in Week 11.</div>
+                </div>
+                <div class="card card-highlight" style="border-top:3px solid #991b1b">
+                    <div
+                        style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(153,27,27,0.15);color:#fca5a5;margin-bottom:8px">
+                        🔥 Risk Index</div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#fff">9-week Critical window
+                        W26–W35 — risk
+                        score ≥70</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px">Demand + pier + dwell
+                        compound
+                        simultaneously in summer</div>
+                    <div
+                        style="font-size:11px;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
+                        ↳
+                        Pre-assign remote overflow pools and activate CBP escalation no later than Week 25.</div>
+                </div>
+                <div class="card card-highlight" style="border-top:3px solid #7c3aed">
+                    <div
+                        style="display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(124,58,237,0.15);color:#a78bfa;margin-bottom:8px">
+                        🌐 CBP Headroom</div>
+                    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#fff">Only 10.5% average slack —
+                        single
+                        disruption cascades</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:6px">No recovery buffer for
+                        transatlantic
+                        disruptions in peak weeks</div>
+                    <div
+                        style="font-size:11px;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.1);padding-top:6px">
+                        ↳ Pier
+                        blockage cascade escalation SOP must be documented for peak days by W22.</div>
+                </div>
+            </div>
+        </div> <!-- End sec-strategic-intelligence -->
+
+        <!-- 52-WEEK DEMAND HEATMAP -->
+            <div class="divider"></div>
+
+            <div class="sec-eye">Demand Heatmap</div>
+            <div class="sec-title" id="title-demand-heatmap" style="font-size:15px;margin-bottom:8px">52-Week Flight Movements Intensity — 2026 Projection
+            </div>
+            <div style="display:grid;grid-template-columns:3fr 7fr;gap:16px">
+                <!-- HEATMAP (30%) -->
+                <div class="card" id="demand-heatmap-card">
+                    <div class="card-label">Week-Level Intensity · Ensemble Weighted Avg · Jan–Dec 2026</div>
+                    <div id="demandHeatmap" style="margin-top:8px"></div>
+                </div>
+                <!-- RIGHT PANEL: Swaps between Decomp (movements) and Weekly Pax Trend (passengers) -->
+                <!-- MOVEMENTS: Decomp panel -->
+                <div class="card" id="decomp-panel-mov">
+                    <div class="card-label">Ensemble Signal Decomposition · Component Contribution Breakdown</div>
+                    <!-- Decomposition 2x2 Grid -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+                        <div class="decomp-row" style="margin-bottom:0;display:flex;align-items:center;gap:8px">
+                            <div class="decomp-label" style="font-size:10px;flex:1">Baseline Trend (LSTM + SARIMA)</div>
+                            <div class="decomp-bar-wrap" style="height:4px;flex:1.5;margin:0">
+                                <div class="decomp-bar"
+                                    style="width:72%;background:var(--blue);height:100%;border-radius:2px"></div>
+                            </div>
+                            <div class="decomp-val" style="color:var(--blue);font-weight:700;font-size:11px">+72%</div>
+                        </div>
+                        <div class="decomp-row" style="margin-bottom:0;display:flex;align-items:center;gap:8px">
+                            <div class="decomp-label" style="font-size:10px;flex:1">Seasonality (SARIMA + Prophet)</div>
+                            <div class="decomp-bar-wrap" style="height:4px;flex:1.5;margin:0">
+                                <div class="decomp-bar"
+                                    style="width:20%;background:var(--teal);height:100%;border-radius:2px"></div>
+                            </div>
+                            <div class="decomp-val" style="color:var(--blue);font-weight:700;font-size:11px">+20%</div>
+                        </div>
+                        <div class="decomp-row" style="margin-bottom:0;display:flex;align-items:center;gap:8px">
+                            <div class="decomp-label" style="font-size:10px;flex:1">Holiday Effect (Prophet)</div>
+                            <div class="decomp-bar-wrap" style="height:4px;flex:1.5;margin:0">
+                                <div class="decomp-bar"
+                                    style="width:5%;background:var(--amber);height:100%;border-radius:2px"></div>
+                            </div>
+                            <div class="decomp-val" style="color:var(--blue);font-weight:700;font-size:11px">+5%</div>
+                        </div>
+                        <div class="decomp-row" style="margin-bottom:0;display:flex;align-items:center;gap:8px">
+                            <div class="decomp-label" style="font-size:10px;flex:1">Uncertainty Band (Monte Carlo)</div>
+                            <div class="decomp-bar-wrap" style="height:4px;flex:1.5;margin:0">
+                                <div class="decomp-bar"
+                                    style="width:3%;background:var(--t3);height:100%;border-radius:2px"></div>
+                            </div>
+                            <div class="decomp-val" style="color:var(--blue);font-weight:700;font-size:11px">+3%</div>
+                        </div>
+                    </div>
+
+                    <!-- QUARTERLY CHART -->
+                    <div>
+                        <div class="card-label">Quarterly Ensemble Forecast vs 2025 Actuals</div>
+                        <div class="chart-wrap" style="height:120px"><canvas id="qtrChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- PASSENGERS: Weekly Avg Trend panel -->
+                <div class="card" id="decomp-panel-pax" style="display:none; background:#0f2044; border-color:rgba(255,255,255,0.1);">
+                    <div class="card-label">Average Weekly Passenger Flow Distribution · Typical Week at Dublin Airport</div>
+                    <div style="font-size:11px;color:var(--t3);margin-bottom:12px;margin-top:2px;">
+                        % share of weekly passenger volume by 3-hour block — Mon to Sun. Y-axis shows each slot's share of total weekly demand.
+                    </div>
+                    <div class="chart-wrap" style="height:256px"><canvas id="weeklyPaxTrendChart"></canvas></div>
+                </div>
+            </div>
+
+
+
+            <!-- ─── SECTION 5: CARRIER MARKET DOMINANCE (Passenger Side Only) ─── -->
+            <div id="sec-carrier-dominance" style="display:none;">
+                <div class="divider"></div>
+                <div class="sec-eye">Carrier Market Dynamics</div>
+                <div class="sec-title" style="font-size:15px;margin-bottom:8px">2026 Carrier Dominance & Absolute Growth Leaderboard</div>
+                <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Analysis of carrier concentration and projected passenger growth. Ryanair and Aer Lingus continue to drive >70% of structural volume.</div>
+                
+                <div class="g2" style="margin-bottom:20px">
+                    <div class="card card-highlight" style="height:320px; display:flex; flex-direction:column;">
+                        <div class="card-label">2026 Market Share · Estimated Passenger Capacity</div>
+                        <div style="flex:1; position:relative; min-height:0;">
+                            <canvas id="carrierShareDonut"></canvas>
+                        </div>
+                    </div>
+                    <div class="card card-highlight" style="height:320px; display:flex; flex-direction:column;">
+                        <div class="card-label">Absolute Growth Leaderboard · New Passengers vs 2025</div>
+                        <div style="flex:1; position:relative; min-height:0;">
+                            <canvas id="carrierAbsGrowthBar"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIER RAG HEATMAP -->
+            <div id="sec-pier-rag">
+                <div class="divider"></div>
+                <div class="sec-eye">Gate Pressure Analysis</div>
+                <div class="sec-title" style="font-size:15px;margin-bottom:4px">Pier × Week RAG Status — 2026 Projection
+                </div>
+                <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Gate utilisation projected from 2025 actuals
+                    scaled by Ensemble ML growth rate (98.1% accuracy). Pier 4 and Pier E are structurally constrained at
+                    peak.</div>
+                <div style="display:flex;gap:16px;margin-bottom:10px;font-size:11px">
+                    <span><span
+                            style="width:10px;height:10px;background:#059669;border-radius:2px;display:inline-block;margin-right:4px"></span>Green
+                        &lt;40%</span>
+                    <span><span
+                            style="width:10px;height:10px;background:#d97706;border-radius:2px;display:inline-block;margin-right:4px"></span>Amber
+                        40–65%</span>
+                    <span><span
+                            style="width:10px;height:10px;background:#dc2626;border-radius:2px;display:inline-block;margin-right:4px"></span>Red
+                        &gt;65%</span>
+                </div>
+                <div class="g23">
+                    <div class="card" style="background:#1e293b">
+                        <div class="card-label" style="color:rgba(255,255,255,.4)">Pier Utilisation Heatmap (Weeks 1–52)
+                        </div>
+                        <div id="pierRagHeatmap" style="margin-top:8px"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Avg Annual Utilisation by Pier</div>
+                        <div class="chart-wrap" style="height:160px"><canvas id="pierUtilBar"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AIRLINE GROWTH MOMENTUM -->
+            <div id="sec-carrier-growth">
+                <div class="divider"></div>
+                <div class="sec-eye">Carrier Growth Trajectories</div>
+                <div class="sec-title" style="font-size:15px;margin-bottom:4px">Airline-Wise Growth Momentum — 2026
+                    Projection</div>
+                <div style="font-size:12px;color:var(--t3);margin-bottom:12px">All 10 tracked carriers show positive YoY
+                    momentum. No carrier is contracting. Planners must provision purely for growth.</div>
+                <div class="g2">
+                    <div class="card">
+                        <div class="card-label">Implied 2026 Growth % by Airline (vs 2025)</div>
+                        <div class="chart-wrap" style="height:280px"><canvas id="carrierGrowthChart"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Volume vs. Momentum Scatter</div>
+                        <div class="chart-wrap" style="height:280px"><canvas id="carrierScatter"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 52-WEEK RISK CALENDAR -->
+            <div id="sec-risk-index">
+                <div class="divider"></div>
+                <div class="sec-eye">Compound Risk Index</div>
+                <div class="sec-title" style="font-size:15px;margin-bottom:4px">52-Week Risk Calendar — 2026</div>
+            <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Weeks scoring Critical (≥70) require
+                pre-positioned contingency. 9-week Critical window W26–W35 is the single most important planning target.
+            </div>
+            <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px">
+                <div class="card">
+                    <div class="card-label">Compound Risk Score — All 52 Weeks · Ensemble Weighted Average Model</div>
+                    <div class="chart-wrap" style="height:240px"><canvas id="riskBarChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Annual Risk Calendar · Each Cell = One Week</div>
+                    <div id="riskCalendar" style="margin-top:8px"></div>
+                    <div style="display:flex;gap:10px;margin-top:10px;font-size:11px;flex-wrap:wrap"><span><span
+                                style="width:10px;height:10px;background:#0f766e;border-radius:2px;display:inline-block;margin-right:3px"></span>Low</span><span><span
+                                style="width:10px;height:10px;background:#ca8a04;border-radius:2px;display:inline-block;margin-right:3px"></span>Moderate</span><span><span
+                                style="width:10px;height:10px;background:#c2410c;border-radius:2px;display:inline-block;margin-right:3px"></span>High</span><span><span
+                                style="width:10px;height:10px;background:#991b1b;border-radius:2px;display:inline-block;margin-right:3px"></span>Critical</span>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End sec-risk-index -->
+
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════
+         MODULE 2: NEAR-TERM INTELLIGENCE
+    ═══════════════════════════════════════════════════ -->
+        <div class="sp" id="sp-m2">
+            <!-- CONTENT FROM NEAR_TERM_INTEL -->
+
+            <div class="sec-label">⚡ LLM-Detected Risk Events — Next 14 Days</div>
+            <div class="alert-row" id="alertRow"></div>
+
+            <!-- 14-DAY RADAR -->
+            <div class="sec-label">Rolling 14-Day Risk Radar · Click a Day to Expand</div>
+            <div class="cal-card">
+                <div class="cal-title">Daily Risk Radar</div>
+                <div class="cal-sub">Click any day to see the AI intelligence brief and the full 24-hour gate schedule
+                    impact view below.</div>
+                <div class="day-rail" id="dayRail"></div>
+                <div class="legend-row">
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:#10b981"></div>Normal (0–30)
+                    </div>
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:#f59e0b"></div>Monitor (31–55)
+                    </div>
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:#f97316"></div>High Risk (56–79)
+                    </div>
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:#ef4444"></div>Critical (80–100)
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLACEHOLDER -->
+            <div id="placeholder">
+                <h3>Select a day on the radar above</h3>
+                <p>Select a day to see a full tactical intelligence brief and a 24-hour gate schedule impact grid —
+                    including exact flights at risk.</p>
+            </div>
+
+            <!-- INTELLIGENCE BRIEF (below Gantt) -->
+            <div id="detailArea">
+                <div class="sec-label">Intelligence Brief</div>
+                <div class="detgrid">
+                    <div class="det-card left-card" id="detLeft">
+                        <div class="det-top">
+                            <div>
+                                <div class="det-eyebrow" id="ddLabel"></div>
+                                <div class="det-category" id="ddCategory"></div>
+                            </div>
+                            <div class="score-pill" id="ddScore"></div>
+                        </div>
+                        <div class="det-headline" id="ddHeadline"></div>
+                        <div class="kv-row">
+                            <div class="kv">
+                                <div class="kv-label">Probability</div>
+                                <div class="kv-val" id="ddProb"></div>
+                                <div class="prob-bar-wrap">
+                                    <div class="prob-bar" id="ddProbBar"></div>
+                                </div>
+                            </div>
+                            <div class="kv">
+                                <div class="kv-label">Impact Window</div>
+                                <div class="kv-val" id="ddWindow"></div>
+                            </div>
+                            <div class="kv">
+                                <div class="kv-label">Base Movements</div>
+                                <div class="kv-val" id="ddVol"></div>
+                            </div>
+                            <div class="kv">
+                                <div class="kv-label">Flight Scope</div>
+                                <div class="kv-val" style="font-size:12px" id="ddScope"></div>
+                            </div>
+                        </div>
+                        <div class="det-eyebrow">Intelligence Sources</div>
+                        <div class="src-tags" id="ddSrc"></div>
+                    </div>
+                    <div class="det-card">
+                        <div style="font-size:15px;font-weight:800;margin-bottom:14px;color:var(--t1)">Operational
+                            Impact &
+                            Contingency</div>
+                        <div class="det-eyebrow">Schedule Impact</div>
+                        <div class="ops-val ops-highlight" id="ddSched"></div>
+                        <div class="ops-label">Stand Pressure</div>
+                        <div class="ops-val" id="ddStand"></div>
+                        <div class="ops-label">Recommended Contingency Action</div>
+                        <div class="contingency-box" id="ddCont"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GANTT (appears here, just below radar) -->
+            <div id="ganttSection" style="display:none; margin-top:24px;">
+                <div class="sec-label">24-Hour Gate Schedule · <span id="ganttLblSpan">Select a day</span></div>
+                <div class="gantt-card">
+                    <div class="gantt-header-row">
+                        <div>
+                            <div class="gantt-title" id="ganttTitle">Gate Schedule — Impact View</div>
+                            <div class="gantt-sub">Flights from the 3-day schedule. Red blocks = inside LLM-identified
+                                risk
+                                window. Hover for detail.</div>
+                        </div>
+                        <div class="gantt-legend">
+                            <div class="gl-item">
+                                <div class="gl-box gl-arr"></div>Arrival
+                            </div>
+                            <div class="gl-item">
+                                <div class="gl-box gl-dep"></div>Departure
+                            </div>
+                            <div class="gl-item">
+                                <div class="gl-box gl-imp"></div>In Risk Window
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slicer-row" id="pierSlicers"></div>
+
+                    <div id="ganttWrap">
+                        <div id="ganttGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+
+        <div id="tt"></div>
+
+    </div>
+
+    <!-- ------------iv>
+
+        <!-- ═══════════════════════════════════════════════════
+         MODULE 3: SCENARIO SIMULATOR
+    ═══════════════════════════════════════════════════ -->
+    <div class="sp" id="sp-m3">
+
+        <div class="sec-eye">Baseline: ML P50 from Module 1</div>
+        <div class="sec-title">Scenario Simulator</div>
+        <div class="sec-sub">Configure a hypothesis across market, fleet, and operational variables. Output shows
+            scenario vs. baseline delta.</div>
+
+        <div class="g13">
+            <!-- CONTROLS -->
+            <div>
+                <div class="g2">
+                    <!-- Market -->
+                    <div class="card">
+                        <div class="card-label">Market & Carrier Growth</div>
+                        <div class="sim-row">
+                            <span class="sim-label">Macro Growth</span>
+                            <input type="range" class="sl" min="0" max="20" value="6" id="s-macro">
+                            <span class="sim-val" id="sv-macro">+6.0%</span>
+                        </div>
+                        <div class="sim-row" style="margin-bottom:8px">
+                            <span class="sim-label">Target Airline</span>
+                            <select class="sim-select" style="flex:1">
+                                <option>Ryanair</option>
+                                <option>Aer Lingus</option>
+                                <option>British Airways</option>
+                                <option>Lufthansa</option>
+                                <option>Emirates</option>
+                                <option>United Airlines</option>
+                                <option>Delta Air Lines</option>
+                                <option>KLM</option>
+                                <option>Air France</option>
+                                <option>Qatar Airways</option>
+                            </select>
+                        </div>
+                        <div class="sim-row" style="margin-bottom:8px">
+                            <span class="sim-label">Target Period</span>
+                            <select class="sim-select" style="flex:1">
+                                <option>Full Year</option>
+                                <option>January</option>
+                                <option>February</option>
+                                <option>March</option>
+                                <option>April</option>
+                                <option>May</option>
+                                <option>June</option>
+                                <option>July</option>
+                                <option>August</option>
+                                <option>September</option>
+                                <option>October</option>
+                                <option>November</option>
+                                <option>December</option>
+                            </select>
+                        </div>
+                        <div class="sim-row">
+                            <span class="sim-label">Carrier Expansion</span>
+                            <input type="range" class="sl" min="-10" max="20" value="5" id="s-carrier">
+                            <span class="sim-val" id="sv-carrier">+5.0%</span>
+                        </div>
+                    </div>
+                    <!-- Ops -->
+                    <div class="card">
+                        <div class="card-label">Operations & Asset</div>
+                        <div class="sim-row">
+                            <span class="sim-label">Dwell Multiplier</span>
+                            <input type="range" class="sl" min="80" max="150" value="100" id="s-dwell">
+                            <span class="sim-val" id="sv-dwell">1.0x</span>
+                        </div>
+                        <div class="sim-row">
+                            <span class="sim-label">Peak Stress Buffer</span>
+                            <input type="range" class="sl" min="0" max="10" value="0" id="s-peak">
+                            <span class="sim-val" id="sv-peak">+0.0%</span>
+                        </div>
+                        <div class="sim-row">
+                            <span class="sim-label">T1 / T2 Split</span>
+                            <input type="range" class="sl" min="0" max="100" value="61" id="s-term">
+                            <span class="sim-val" id="sv-term">61/39</span>
+                        </div>
+                        <div class="sim-row" style="flex-wrap:wrap;gap:6px;margin-top:4px">
+                            <span class="sim-label" style="min-width:auto">Pier Mode</span>
+                            <button class="badge badge-blue" onclick="setPierMode(this)">Auto</button>
+                            <button class="badge badge-gray" onclick="setPierMode(this)">Pier 4 Focus</button>
+                            <button class="badge badge-gray" onclick="setPierMode(this)">N.Runway Shift</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DELTA SUMMARY -->
+                <div class="card mt">
+                    <div class="card-label">Delta Summary — Scenario vs Baseline</div>
+                    <div class="delta-grid">
+                        <div class="delta-cell">
+                            <div class="delta-val pos" id="d-mov">+6.3%</div>
+                            <div class="delta-label">Movement Volume</div>
+                        </div>
+                        <div class="delta-cell">
+                            <div class="delta-val pos" id="d-rw">+3</div>
+                            <div class="delta-label">Additional Red Weeks</div>
+                        </div>
+                        <div class="delta-cell">
+                            <div class="delta-val pos" id="d-risk">78/100</div>
+                            <div class="delta-label">Peak Risk Index</div>
+                        </div>
+                        <div class="delta-cell">
+                            <div class="delta-val pos" id="d-pier">W27–33</div>
+                            <div class="delta-label">Critical Pier Windows</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIDE-BY-SIDE CHART -->
+                <div class="g2 mt">
+                    <div class="card">
+                        <div class="card-label">Baseline (ML P50)</div>
+                        <div class="chart-wrap" style="height:200px"><canvas id="simBaseChart"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Simulated Scenario</div>
+                        <div class="chart-wrap" style="height:200px"><canvas id="simScenChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI ASSISTANT -->
+            <div class="ai-box">
+                <div class="ai-hd">
+                    <div class="ai-dot"></div>
+                    <div class="ai-hd-title">Strategic Assistant</div>
+                </div>
+                <div class="ai-body">
+                    <div class="ai-msg">Baseline loaded: <strong>8.14M movements</strong> (ML P50
+                        Ensemble).<br><br>Adjust variables to build your scenario. I'll interpret the structural
+                        impact on demand, gate pressure, and risk index.</div>
+                    <div class="ai-msg" id="aiNarrative">Currently running: <em>Baseline scenario</em>. No
+                        deviations detected. All metrics within expected range.</div>
+                    <textarea class="ai-inp" placeholder="Type a scenario to model..." rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <script>
+        // ─── TAB SWITCHING ───────────────────────────────────────────────────
+        function swi(id) {
+            document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sp').forEach(p => p.classList.remove('active'));
+
+            const tabMap = { 'm1': 0, 'm2': 1, 'm3': 2 };
+            document.querySelectorAll('.stab')[tabMap[id]].classList.add('active');
+            document.getElementById('sp-' + id).classList.add('active');
+
+            if (id === 'm1' && !window._ltDone) renderLT();
+            if (id === 'm2' && !window._ntDone) renderNT();
+            if (id === 'm3' && !window._simDone) renderSim();
+        }
+        // Alias so onclick="switchTab(...)" also works
+        const switchTab = swi;
+
+        // ─── MODULE 2: NEAR-TERM CHART ────────────────────────────────────
+        function renderNT() {
+            window._ntDone = true;
+            const ctx = document.getElementById('ntChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wk+1', 'Wk+2', 'Wk+3', 'Wk+4'],
+                    datasets: [
+                        { label: 'Baseline (P50)', data: [166000, 158000, 158000, 158000], backgroundColor: 'rgba(26,184,160,.2)', borderColor: '#1ab8a0', borderWidth: 1.5, borderRadius: 4 },
+                        { label: 'Adjusted Forecast', data: [159000, 171000, 185000, 168000], backgroundColor: ['rgba(16,185,129,.25)', 'rgba(245,158,11,.25)', 'rgba(239,68,68,.25)', 'rgba(245,158,11,.25)'], borderColor: ['#10b981', '#f59e0b', '#ef4444', '#f59e0b'], borderWidth: 1.5, borderRadius: 4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { size: 10 }, boxWidth: 10 } } }, scales: { y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'K' } }, x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94a3b8' } } } }
+            });
+        }
+
+        // ─── MODULE 3: SIMULATOR ─────────────────────────────────────────
+        function renderSim() {
+            window._simDone = true;
+            drawSimCharts(1.0, 1.0);
+        }
+
+        function drawSimCharts(growthMult, dwellMult) {
+            const baseData = (typeof P50 !== 'undefined') ? P50 : Array(52).fill(150000);
+            const peakVal = parseFloat(document.getElementById('s-peak').value) / 100;
+
+            const simData = baseData.map((v, i) => {
+                const peak = (i >= 25 && i <= 34) ? 1 + peakVal : 1;
+                return Math.round(v * growthMult * dwellMult * peak);
+            });
+
+            if (window._simBase) window._simBase.destroy();
+            if (window._simScen) window._simScen.destroy();
+
+            const opts = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, color: '#94a3b8', callback: v => (v / 1000).toFixed(0) + 'K' } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94a3b8', maxTicksLimit: 13 } }
+                }
+            };
+
+            window._simBase = new Chart(document.getElementById('simBaseChart').getContext('2d'), {
+                type: 'line', data: { labels: WK_LABELS, datasets: [{ data: baseData, borderColor: '#1ab8a0', borderWidth: 2, fill: true, backgroundColor: 'rgba(26,184,160,.08)', tension: .1, pointRadius: 0 }] }, options: opts
+            });
+            window._simScen = new Chart(document.getElementById('simScenChart').getContext('2d'), {
+                type: 'line', data: { labels: WK_LABELS, datasets: [{ data: simData, borderColor: '#2d7be5', borderWidth: 2, fill: true, backgroundColor: 'rgba(45,123,229,.08)', tension: .1, pointRadius: 0 }] }, options: opts
+            });
+
+            const totalBase = baseData.reduce((a, b) => a + b, 0);
+            const totalScen = simData.reduce((a, b) => a + b, 0);
+            const pctDelta = (((totalScen - totalBase) / totalBase) * 100).toFixed(1);
+            const redWks = simData.filter((v, i) => v > baseData[i] * 1.12).length;
+            const riskIdx = Math.min(100, Math.round(62 + (totalScen - totalBase) / 100000));
+
+            document.getElementById('d-mov').textContent = (pctDelta > 0 ? '+' : '') + pctDelta + '%';
+            document.getElementById('d-rw').textContent = (redWks > 0 ? '+' : '') + redWks;
+            document.getElementById('d-risk').textContent = riskIdx + '/100';
+
+            const narr = pctDelta > 5
+                ? `Scenario projects <strong>+${pctDelta}% above baseline</strong>. ${redWks} additional high-stress weeks detected. Pier 4 utilisation is critical from W26. Recommend pre-assigning overflow capacity.`
+                : `Scenario is within <strong>±5% of the baseline</strong>. Risk index at ${riskIdx}/100. No critical stand deficits projected — standard seasonal planning applies.`;
+            document.getElementById('aiNarrative').innerHTML = narr;
+        }
+
+        function updateSim() {
+            const macro = parseFloat(document.getElementById('s-macro').value);
+            const carrier = parseFloat(document.getElementById('s-carrier').value);
+            const dwell = parseFloat(document.getElementById('s-dwell').value) / 100;
+
+            document.getElementById('sv-macro').textContent = '+' + macro.toFixed(1) + '%';
+            document.getElementById('sv-carrier').textContent = (carrier >= 0 ? '+' : '') + carrier.toFixed(1) + '%';
+            document.getElementById('sv-dwell').textContent = (parseFloat(document.getElementById('s-dwell').value) / 100).toFixed(2) + 'x';
+
+            const peak = parseFloat(document.getElementById('s-peak').value);
+            document.getElementById('sv-peak').textContent = (peak > 0 ? '+' : '') + peak.toFixed(1) + '%';
+
+            const term = parseFloat(document.getElementById('s-term').value);
+            document.getElementById('sv-term').textContent = term + '/' + (100 - term);
+
+            const growthMult = 1 + (macro + carrier * 0.3) / 100;
+            drawSimCharts(growthMult, dwell);
+        }
+
+        document.querySelectorAll('.sl').forEach(s => s.addEventListener('input', updateSim));
+
+        function setPierMode(btn) {
+            document.querySelectorAll('[onclick="setPierMode(this)"]').forEach(b => b.className = 'badge badge-gray');
+            btn.className = 'badge badge-blue';
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            if (typeof renderLT === 'function') renderLT();
+        });
+
+
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+    </script>
+    <script src="/static/js/_data_arrays.js"></script>
+    <script src="/static/js/_pax_ml_results.js"></script>
+    <script>
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+    </script>
+    <script src="/static/js/plan_ahead_lt.js">
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+
+        /* === NEAR TERM INTEL JS === */
+        const RISK = {{ risk_data | tojson | safe }};
+        let SCH = null;          // loaded lazily on first day-click
+        let _schLoading = false;
+        let _schCallbacks = [];
+
+        function ensureSchedule(cb) {
+            if (SCH) { cb(SCH); return; }
+            _schCallbacks.push(cb);
+            if (_schLoading) return;
+            _schLoading = true;
+            fetch('/api/near-term-schedule')
+                .then(r => r.json())
+                .then(data => {
+                    SCH = data;
+                    gateMap = {};
+                    SCH.forEach(f => {
+                        if (!gateMap[f.gate]) gateMap[f.gate] = [];
+                        gateMap[f.gate].push(f);
+                    });
+                    _schLoading = false;
+                    _schCallbacks.forEach(fn => fn(SCH));
+                    _schCallbacks = [];
+                })
+                .catch(e => { console.error('Schedule load failed:', e); _schLoading = false; });
+        }
+
+        const COLOR = { green: '#10b981', yellow: '#f59e0b', orange: '#f97316', red: '#ef4444' };
+
+        // Gate pier groupings
+        const PIERS = [
+            { label: 'T1 · Pier A / B (100s)', test: g => { const n = +g; return n >= 100 && n <= 199; } },
+            { label: 'T1 · Pier D — Ryanair (200s)', test: g => { const n = +g; return n >= 200 && n <= 249; } },
+            { label: 'T1 · Remote Apron', test: g => g.startsWith('R') },
+            { label: 'T2 · Pier A (300s)', test: g => { const n = +g; return n >= 300 && n <= 399; } },
+            { label: 'T2 · Pier B (400s)', test: g => { const n = +g; return n >= 400 && n <= 499; } },
+            { label: 'T2 · Pier E — CBP/Transatlantic (500s)', test: g => { const n = +g; return n >= 500 && n <= 599; } },
+        ];
+
+        // Group schedule by gate
+        let gateMap = {};
+
+        // Operating hours to show — we show 06:00-23:00 (17 cells) to fit the UI
+        const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06..22
+        const GRID_START = 6 * 60;
+        const GRID_TOTAL = 17 * 60; // 17 hours in minutes
+
+        // ── Build Alert Cards ──────────────────────────────────────────
+        const alertRow = document.getElementById('alertRow');
+        const risky = RISK.filter(d => d.risk_level !== 'green');
+        if (!risky.length) {
+            alertRow.innerHTML = '<p style="color:var(--t3);font-size:13px">No significant disruptions detected in the next 14 days.</p>';
+        } else {
+            risky.forEach(d => {
+                const col = COLOR[d.risk_level];
+
+                const iconMap = {
+                    'Normal Operations': '✅',
+                    'ATC / Airspace': '📡',
+                    'Airline Schedule Change': '🔄',
+                    'Airport Maintenance / NOTAM': '🚧',
+                    'Meteorological': '🌩️'
+                };
+                const icon = iconMap[d.risk_category] || '⚠️';
+
+                const el = document.createElement('div');
+                el.className = `alert-card lv-${d.risk_level}`;
+                el.innerHTML = `
+        <div class="ac-top">
+          <span class="ac-chip chip-${d.risk_level}">${icon} ${d.risk_category}</span>
+          <span class="ac-score" style="color:${col}">${d.risk_score}</span>
+        </div>
+        <div class="ac-headline"><span style="color:var(--t3);font-size:11px;font-weight:600">${d.weekday_full}, ${d.date} &nbsp;·&nbsp; </span>${d.llm_headline}</div>
+        <div class="ac-meta">
+          <span>🔵 <strong style="color:var(--t2)">${d.probability}</strong> probability</span>
+          <span>⏱ ${d.impact_window}</span>
+        </div>`;
+                el.addEventListener('click', () => {
+                    const idx = RISK.indexOf(d);
+                    const pill = document.getElementById('pill-' + idx);
+                    if (pill) { pill.scrollIntoView({ behavior: 'smooth', inline: 'center' }); showDetail(idx, pill); }
+                });
+                alertRow.appendChild(el);
+            });
+        }
+
+        // ── Build Day Rail ───────────────────────────────────────────
+        const rail = document.getElementById('dayRail');
+        RISK.forEach((d, idx) => {
+            const pill = document.createElement('div');
+            pill.id = 'pill-' + idx;
+            pill.className = `day-pill dp-${d.risk_level}`;
+            pill.innerHTML = `<div class="p-wd">${d.weekday}</div><div class="p-dd">${d.date.split(' ')[0]}</div><div class="p-mo">${d.date.split(' ')[1]}</div><div class="p-scr">${d.risk_score}</div>`;
+            pill.addEventListener('click', () => showDetail(idx, pill));
+            rail.appendChild(pill);
+        });
+
+        // ── Build Pier Slicers ──────────────────────────────────────────
+        let activePierFilter = PIERS[0].label; // Default to first Pier
+
+        function buildSlicers() {
+            const container = document.getElementById('pierSlicers');
+            container.innerHTML = '';
+
+            PIERS.forEach(pier => {
+                const btn = document.createElement('button');
+                btn.className = 'slicer-btn ' + (activePierFilter === pier.label ? 'active' : '');
+                btn.innerText = pier.label.split('·')[1].trim(); // Use shorter label
+                btn.onclick = () => { activePierFilter = pier.label; buildGantt(RISK[activeIdx]); buildSlicers(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // ── Build Gantt ──────────────────────────────────────────────
+        function buildGantt(day) {
+            const impStart = day.impact_start_h * 60;
+            const impEnd = day.impact_end_h * 60;
+            const akw = (day.affected_airline_kw || '').toLowerCase();
+            const col = COLOR[day.risk_level];
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+
+            // Time header row
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            const corner = document.createElement('div');
+            corner.className = 'g-corner'; corner.innerText = 'GATE';
+            trow.appendChild(corner);
+            HOURS.forEach(h => {
+                const hd = document.createElement('div');
+                hd.className = 'g-hour' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                hd.innerText = String(h).padStart(2, '0');
+                trow.appendChild(hd);
+            });
+            grid.appendChild(trow);
+
+            PIERS.forEach(pier => {
+                if (activePierFilter !== pier.label) return;
+
+                const pierGates = Object.keys(gateMap).filter(g => pier.test(g)).sort((a, b) => {
+                    const na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                    return na - nb;
+                });
+                if (!pierGates.length) return;
+
+                const ph = document.createElement('div');
+                ph.className = 'pier-hdr';
+                ph.innerHTML = `<div class="pier-name">${pier.label}</div><div class="pier-count">${pierGates.length} gates</div>`;
+                grid.appendChild(ph);
+
+                pierGates.forEach(gate => {
+                    const row = document.createElement('div');
+                    row.className = 'g-gate-row';
+
+                    const lbl = document.createElement('div');
+                    lbl.className = 'g-lbl'; lbl.innerText = gate;
+                    row.appendChild(lbl);
+
+                    const canvas = document.createElement('div');
+                    canvas.className = 'g-canvas';
+
+                    // Hour bg cells
+                    HOURS.forEach(h => {
+                        const c = document.createElement('div');
+                        c.className = 'g-hcell' + (h >= day.impact_start_h && h < day.impact_end_h ? ' imp-zone' : '');
+                        canvas.appendChild(c);
+                    });
+
+                    // Flight blocks
+                    (gateMap[gate] || []).forEach(f => {
+                        if (f.end_min <= GRID_START || f.start_min >= GRID_START + GRID_TOTAL) return;
+                        const visS = Math.max(f.start_min, GRID_START);
+                        const visE = Math.min(f.end_min, GRID_START + GRID_TOTAL);
+                        const leftPct = ((visS - GRID_START) / GRID_TOTAL) * 100;
+                        const widthPct = Math.max(((visE - visS) / GRID_TOTAL) * 100, 0.4);
+
+                        const inWindow = f.start_min < impEnd && f.end_min > impStart;
+                        const airlineOk = !akw || (f.airline || '').toLowerCase().includes(akw);
+                        const isImpacted = inWindow && airlineOk;
+
+                        // OPTIMIZATION: Only render impacted flights to prevent DOM freezing
+                        if (!isImpacted) return;
+
+                        const fb = document.createElement('div');
+                        fb.className = 'fb ' + (isImpacted ? 'fb-imp' : (f.type === 'ARR' ? 'fb-arr' : 'fb-dep'));
+                        fb.style.left = leftPct + '%';
+                        fb.style.width = '38px';
+                        fb.innerText = f.flight;
+
+                        const routeStr = f.type === 'ARR' ? `${f.route} → DUB` : `DUB → ${f.route}`;
+                        fb.addEventListener('mouseenter', e => {
+                            const tt = document.getElementById('tt');
+                            tt.innerHTML = `<strong>${f.flight} · ${f.type}  ${f.time}</strong>${f.airline}<br>${routeStr} · Gate ${gate}<br>${f.aircraft}${f.cbp ? '<br>🛂 US CBP Preclearance' : ''}${isImpacted ? `<br><span class="tt-imp">⚠ Within risk window ${day.impact_window}</span>` : ''}`;
+                            tt.style.display = 'block';
+                        });
+                        fb.addEventListener('mousemove', e => {
+                            const tt = document.getElementById('tt');
+                            tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 54) + 'px';
+                        });
+                        fb.addEventListener('mouseleave', () => document.getElementById('tt').style.display = 'none');
+                        canvas.appendChild(fb);
+                    });
+
+                    row.appendChild(canvas);
+                    grid.appendChild(row);
+                });
+            });
+        }
+
+        // ── Show / Toggle Detail ────────────────────────────────────
+        let activeIdx = null;
+        function showDetail(idx, pill) {
+            if (activeIdx === idx) {
+                document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+                document.getElementById('placeholder').style.display = 'block';
+                document.getElementById('ganttSection').style.display = 'none';
+                document.getElementById('detailArea').style.display = 'none';
+                activeIdx = null;
+                return;
+            }
+            activeIdx = idx;
+            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('is-active'));
+            pill.classList.add('is-active');
+
+            const d = RISK[idx];
+            const col = COLOR[d.risk_level];
+            const pn = parseInt(d.probability.replace(/[^0-9]/g, '')) || 10;
+
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('detailArea').style.display = 'block';
+
+            if (d.risk_level === 'green') {
+                document.getElementById('ganttSection').style.display = 'none';
+            } else {
+                document.getElementById('ganttSection').style.display = 'block';
+                // Gantt label
+                document.getElementById('ganttLblSpan').innerText = `${d.weekday_full}, ${d.date} · Risk Window: ${d.impact_window}`;
+                document.getElementById('ganttTitle').innerText = `24-Hour Gate Schedule · ${d.weekday_full} ${d.date} · Impact Window: ${d.impact_window}`;
+                ensureSchedule(() => {
+                    buildSlicers();
+                    buildGantt(d);
+                });
+            }
+
+            // Brief
+            const iconMap = {
+                'Normal Operations': '✅',
+                'ATC / Airspace': '📡',
+                'Airline Schedule Change': '🔄',
+                'Airport Maintenance / NOTAM': '🚧',
+                'Meteorological': '🌩️'
+            };
+            const icon = iconMap[d.risk_category] || '⚠️';
+
+            document.getElementById('detLeft').style.borderTopColor = col;
+            document.getElementById('ddLabel').innerText = `${d.weekday_full}, ${d.date}`;
+            document.getElementById('ddCategory').innerText = `${icon} ${d.risk_category}`;
+            document.getElementById('ddCategory').style.color = col;
+            document.getElementById('ddScore').innerText = d.risk_score + '/100';
+            document.getElementById('ddScore').style.color = col;
+            document.getElementById('ddHeadline').innerText = d.llm_headline;
+            document.getElementById('ddProb').innerText = d.probability;
+            document.getElementById('ddProbBar').style.width = pn + '%';
+            document.getElementById('ddProbBar').style.background = col;
+
+            // Adjust confusing impact window text for green days
+            document.getElementById('ddWindow').innerText = d.risk_level === 'green' ? 'None projected' : d.impact_window;
+            document.getElementById('ddVol').innerText = d.base_movements + ' movements';
+            document.getElementById('ddScope').innerText = d.flight_scope;
+            document.getElementById('ddSched').innerText = d.schedule_impact;
+            document.getElementById('ddStand').innerText = d.stand_pressure;
+            document.getElementById('ddCont').innerText = d.contingency;
+
+            const srcEl = document.getElementById('ddSrc');
+            srcEl.innerHTML = '';
+            (d.sources || []).forEach(s => {
+                const t = document.createElement('div'); t.className = 'stag'; t.innerText = s; srcEl.appendChild(t);
+            });
+
+            // Scroll Intelligence Brief into view
+            document.getElementById('detailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+    </script>
+</body>
+
+</html>

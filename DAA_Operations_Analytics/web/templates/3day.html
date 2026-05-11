@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>72-Hour Allocation Plan | DAA Planning Suite</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #0a1628;
+            --navy2: #0f1f3d;
+            --panel: #111827;
+            --card: #1a2540;
+            --blue: #2d7be5;
+            --cyan: #38bdf8;
+            --teal: #14b8a6;
+            --amber: #f59e0b;
+            --violet: #8b5cf6;
+            --green: #22c55e;
+            --red: #ef4444;
+            --border: rgba(255, 255, 255, .07);
+            --border2: rgba(255, 255, 255, .14);
+            --t1: #f1f5f9;
+            --t2: #cbd5e1;
+            --t3: #64748b;
+            --t4: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--navy);
+            color: var(--t1);
+            font-size: 13px;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* ── TOP NAVBAR ── */
+        .navbar {
+            background: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 52px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .daa-badge {
+            background: var(--blue);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            letter-spacing: .08em;
+        }
+
+        .nav-links {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .sw-btn {
+            width: 230px;
+            flex: 0 0 230px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            background: transparent;
+            color: rgba(255, 255, 256, .5);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all .2s;
+            text-decoration: none;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .sw-btn:first-of-type {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .sw-btn:last-of-type {
+            border-radius: 0 20px 20px 0;
+        }
+
+        .sw-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+        }
+
+        .sw-btn.active {
+            background: #1d5fd1;
+            color: #fff;
+            border-color: #1d5fd1;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, #060f1f 0%, #0f2044 40%, #0a1628 100%);
+            padding: 20px 40px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-eyebrow {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--cyan);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .hero-sub {
+            font-size: 12.5px;
+            color: var(--t3);
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        /* ── CONTENT ── */
+        .content {
+            padding: 24px 40px;
+            margin: 0 auto;
+        }
+
+        /* ── SECTION LABEL ── */
+        .sec-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--t3);
+            margin-bottom: 10px;
+        }
+
+        /* ── SLICER ROWS ── */
+        .slicer-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .slicer-btn {
+            background: rgba(255, 255, 255, .04);
+            border: 1.5px solid var(--border2);
+            padding: 5px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            color: var(--t2);
+            font-family: inherit;
+            transition: all .2s;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .slicer-btn:hover {
+            background: rgba(45, 123, 229, .12);
+            border-color: var(--blue);
+            color: var(--cyan);
+        }
+
+        .slicer-btn.active {
+            background: linear-gradient(135deg, #1a3060, #0d2551);
+            color: var(--cyan);
+            border-color: var(--blue);
+            box-shadow: 0 0 10px rgba(45, 123, 229, .25);
+        }
+
+        /* ── KPI BAR ── */
+        .kpi-bar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            border-radius: 12px;
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.4),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.15),
+                0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent, var(--blue));
+        }
+
+        .kpi-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--t3);
+            margin-bottom: 6px;
+        }
+
+        .kpi-val {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--t1);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .kpi-sub {
+            font-size: 10px;
+            color: var(--t3);
+        }
+
+        .kpi-icon {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            font-size: 18px;
+            opacity: .35;
+        }
+
+        /* ── TOP CONTROLS ROW ── */
+        .top-controls {
+            display: flex;
+            align-items: center;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+
+        .tc-divider {
+            width: 1px;
+            height: 38px;
+            background: var(--border);
+            margin: 0 4px;
+        }
+
+        .tc-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ctrl-row {
+            display: flex;
+            flex: 1;
+            gap: 12px;
+        }
+
+        .ctrl-field label {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: var(--t3);
+            display: block;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            white-space: nowrap;
+        }
+
+        .ctrl-field input[type=range] {
+            width: 100%;
+            height: 4px;
+            accent-color: var(--cyan);
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .ctrl-field input[type=text],
+        .ctrl-field input[type=number] {
+            width: 100%;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid var(--border2);
+            border-radius: 7px;
+            padding: 7px 10px;
+            color: var(--t1);
+            font-size: 11px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .ctrl-field input:focus {
+            border-color: var(--cyan);
+        }
+
+        .sim-val {
+            font-size: 11px;
+            color: var(--cyan);
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        /* ── ALLOCATE BUTTON ── */
+        .btn-allocate {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            letter-spacing: .4px;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: all .2s;
+            box-shadow: 0 4px 14px rgba(45, 123, 229, .3);
+        }
+
+        .btn-allocate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px rgba(45, 123, 229, .5);
+        }
+
+        .btn-allocate:active {
+            transform: scale(.97);
+        }
+
+        .btn-allocate:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── GANTT CARD ── */
+        .gantt-card {
+            background: #0f2044;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 24px;
+        }
+
+        .gantt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gantt-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--t1);
+        }
+
+        .gantt-sub {
+            font-size: 11px;
+            color: var(--t3);
+            margin-top: 2px;
+        }
+
+        /* Inline legend */
+        .legend-inline {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .leg-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--t2);
+        }
+
+        .leg-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        #ganttGrid {
+            width: 100%;
+        }
+
+        .g-timerow {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #0f2044;
+        }
+
+        .g-corner {
+            width: 80px;
+            flex-shrink: 0;
+            padding: 7px 8px;
+            font-size: 8px;
+            font-weight: 700;
+            color: var(--t3);
+            border-right: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .g-hour {
+            flex: 1;
+            padding: 7px 2px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--t4);
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .pier-hdr {
+            padding: 5px 10px;
+            background: rgba(45, 123, 229, .08);
+            border-bottom: 1px solid var(--border);
+            border-top: 1px solid var(--border);
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: .9px;
+        }
+
+        .g-gate-row {
+            display: flex;
+            min-height: 32px;
+            border-bottom: 1px solid var(--border);
+            background: #0f2044;
+            position: relative;
+        }
+
+        .g-gate-row:hover {
+            background: #101e38;
+        }
+
+        .g-lbl {
+            width: 80px;
+            flex-shrink: 0;
+            padding: 0 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--t2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+        .g-canvas {
+            position: relative;
+            flex: 1;
+            display: flex;
+            min-height: 32px;
+            overflow: hidden;
+        }
+
+        .g-hcell {
+            flex: 1;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Flight blocks */
+        .fb {
+            position: absolute;
+            top: 4px;
+            height: 24px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            font-size: 8px;
+            font-weight: 700;
+            overflow: hidden;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: filter .15s, transform .1s;
+            z-index: 2;
+            color: #fff !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+        }
+
+        .fb:hover {
+            filter: brightness(1.3);
+            transform: scaleY(1.08);
+            z-index: 10;
+        }
+
+        .fb-quick {
+            background: rgba(56, 189, 248, .7);
+            border: 1px solid #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, .3);
+        }
+
+        .fb-slow {
+            background: rgba(245, 158, 11, .7);
+            border: 1px solid #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, .2);
+        }
+
+        .fb-park {
+            background: rgba(139, 92, 246, .7);
+            border: 1px solid #8b5cf6;
+            box-shadow: 0 0 8px rgba(139, 92, 246, .2);
+        }
+
+        /* Tooltip */
+        #tooltip {
+            position: fixed;
+            background: #0d1b33;
+            border: 1px solid rgba(45, 123, 229, .35);
+            border-radius: 10px;
+            padding: 13px 16px;
+            font-size: 11px;
+            color: var(--t2);
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+            min-width: 210px;
+            backdrop-filter: blur(8px);
+        }
+
+        #tooltip strong {
+            color: #fff;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 12px;
+            padding: 48px;
+            color: var(--t3);
+            font-weight: 600;
+        }
+
+        .loader-ring {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(45, 123, 229, .2);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── LOGIC ACCORDION ── */
+        .logic-acc {
+            background: linear-gradient(135deg, rgba(45, 123, 229, 0.15) 0%, rgba(15, 32, 68, 0.6) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all .3s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .logic-header {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--t2);
+            user-select: none;
+            transition: background .2s;
+        }
+
+        .logic-header:hover {
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+        }
+
+        .logic-header span.lh-title {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logic-indicator {
+            font-size: 10px;
+            transition: transform .3s;
+        }
+
+        .logic-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 0 20px;
+            max-height: 0;
+            opacity: 0;
+            transition: all .3s ease;
+        }
+
+        .logic-acc.open .logic-body {
+            padding: 20px;
+            max-height: 500px;
+            opacity: 1;
+            border-top: 1px solid var(--border);
+        }
+
+        .logic-acc.open .logic-indicator {
+            transform: rotate(180deg);
+        }
+
+        .logic-col-title {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logic-list {
+            list-style: none;
+        }
+
+        .logic-list li {
+            position: relative;
+            padding-left: 14px;
+            font-size: 11px;
+            color: var(--t2);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .logic-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--blue);
+            font-weight: bold;
+        }
+
+        .logic-list strong {
+            color: #fff;
+        }
+
+        /* ── RISK BULLETIN ── */
+        .risk-bulletin {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px 40px 4px;
+            margin: 0 auto;
+        }
+        .risk-card {
+            background: #111827;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 10px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: border-color .2s, box-shadow .2s, transform .15s;
+            position: relative;
+        }
+        .risk-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,.3); }
+        .risk-card.active-sim {
+            border-color: var(--amber);
+            box-shadow: 0 0 0 2px rgba(245,158,11,.25), 0 6px 24px rgba(0,0,0,.3);
+        }
+        .risk-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .risk-icon { font-size: 18px; }
+        .risk-title { font-size: 12px; font-weight: 700; color: #f1f5f9; }
+        .risk-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .risk-badge.green  { background: rgba(34,197,94,.15);  color: #22c55e; }
+        .risk-badge.yellow { background: rgba(234,179,8,.15);   color: #eab308; }
+        .risk-badge.orange { background: rgba(249,115,22,.15);  color: #f97316; }
+        .risk-badge.red    { background: rgba(239,68,68,.15);   color: #ef4444; }
+        .risk-prob { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+        .risk-detail { font-size: 11px; color: #64748b; line-height: 1.5; }
+
+        /* ── DISRUPTION PANEL ── */
+        .disruption-panel {
+            margin: 8px 40px 0;
+            background: #111827;
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .dp-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+        .dp-select {
+            background: #0f1f3d;
+            border: 1px solid rgba(255,255,255,.12);
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            padding: 7px 12px;
+            border-radius: 7px;
+            outline: none;
+            cursor: pointer;
+            min-width: 200px;
+        }
+        .dp-select:hover { border-color: var(--blue); }
+        .btn-disrupt {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            font-weight: 800;
+            font-size: 12px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: opacity .2s;
+            white-space: nowrap;
+        }
+        .btn-disrupt:hover { opacity: .88; }
+        .btn-disrupt:disabled { opacity: .4; cursor: not-allowed; }
+        .btn-reset {
+            background: transparent;
+            color: #64748b;
+            font-size: 12px;
+            padding: 8px 14px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 7px;
+            cursor: pointer;
+            transition: color .2s, border-color .2s;
+            white-space: nowrap;
+        }
+        .btn-reset:hover { color: #f1f5f9; border-color: rgba(255,255,255,.3); }
+
+        /* ── IMPACT SUMMARY ── */
+        .impact-bar {
+            margin: 8px 40px 0;
+            background: rgba(245,158,11,.06);
+            border: 1px solid rgba(245,158,11,.25);
+            border-radius: 10px;
+            padding: 14px 20px;
+            display: none;
+        }
+        .impact-bar.visible { display: block; }
+        .impact-bar-title { font-size: 12px; font-weight: 700; color: var(--amber); margin-bottom: 8px; }
+        .impact-kpis { display: flex; gap: 24px; margin-bottom: 10px; flex-wrap: wrap; }
+        .impact-kpi { text-align: center; }
+        .impact-kpi-val { font-size: 20px; font-weight: 800; color: #f1f5f9; }
+        .impact-kpi-lbl { font-size: 10px; color: #64748b; }
+        .impact-bullets { list-style: none; }
+        .impact-bullets li { font-size: 12px; color: #94a3b8; padding: 2px 0; }
+        .impact-bullets li::before { content: '→ '; color: var(--amber); }
+
+        /* Disrupted Gantt block overlay */
+        .fb.fb-disrupted {
+            outline: 2px solid var(--amber) !important;
+            outline-offset: -1px;
+            filter: brightness(1.15);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="nav-brand" href="/">
+            <span class="daa-badge">DAA</span>
+            Strategic Planning Suite
+        </a>
+        <div class="nav-links">
+            <a class="sw-btn" href="/seasonal/plan-ahead">2026 Long Term Plan</a>
+            <a class="sw-btn active" href="/3day">3-Day Stand Allocation</a>
+            <a class="sw-btn" href="/intraday">Intra-Day Stand Simulation</a>
+            <a class="sw-btn" href="/passenger">Short Term Passenger Plan</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-title">72-Hour Stand Allocation Plan</div>
+        <div class="hero-sub">AI-optimised stand allocation enforcing CBP preclearance rules, MARS geometries, and
+            airline pier preferences across all scheduled movements.</div>
+    </div>
+
+    <!-- Risk Intelligence Bulletin -->
+    <div style="padding: 16px 40px 0; margin: 0 auto; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .08em;">⚠ Operational Risk Intelligence</span>
+        <div style="flex:1; height:1px; background: rgba(255,255,255,.06);"></div>
+        <span style="font-size: 10px; color: #334155; font-style: italic;">API-based detection · Next 72 hours · Day 1 simulation anchored</span>
+    </div>
+    <div class="risk-bulletin" id="riskBulletin"></div>
+
+    <!-- Disruption Simulation Panel -->
+    <div class="disruption-panel">
+        <span class="dp-label">⚡ Simulate Disruption</span>
+        <select class="dp-select" id="dpType" onchange="onDisruptTypeChange()">
+            <option value="">— Select Disruption Type —</option>
+            <option value="notam">🔴 NOTAM Ground Stop</option>
+            <option value="weather">🌧️ Weather Disruption</option>
+            <option value="runway">🛬 Reduced Runway Capacity</option>
+            <option value="schedule">✈️ Schedule Change</option>
+        </select>
+        <select class="dp-select" id="dpIntensity" style="display:none; min-width:220px">
+            <option value="">— Select Intensity —</option>
+        </select>
+        <button class="btn-disrupt" id="btnSimDisrupt" onclick="runDisruption()" disabled>Run Simulation</button>
+        <button class="btn-reset" id="btnReset" onclick="resetToBaseline()" style="display:none">↺ Reset to Baseline</button>
+    </div>
+
+    <!-- Impact Summary (hidden until simulation runs) -->
+    <div class="impact-bar" id="impactBar">
+        <div class="impact-bar-title" id="impactTitle">Disruption Impact Summary</div>
+        <div style="display:flex; align-items:center; gap:32px;">
+            <div class="impact-kpis" id="impactKpis" style="margin-bottom:0; flex-shrink:0;"></div>
+            <div style="width:1px; height:40px; background:rgba(245,158,11,.3);"></div>
+            <ul class="impact-bullets" id="impactBullets" style="margin:0; flex:1;"></ul>
+        </div>
+    </div>
+
+    <div class="content">
+
+
+
+        <!-- Allocation Logic Accordion -->
+        <div class="logic-acc" id="logicAccordion">
+            <div class="logic-header" onclick="document.getElementById('logicAccordion').classList.toggle('open')">
+                <span class="lh-title">💡 Allocation powered by custom Greedy Heuristic Scoring &amp; DAA-level Hard
+                    Policies <span style="opacity: 0.6; font-weight: normal; margin-left: 8px;">(Click to
+                        Expand)</span></span>
+                <span class="logic-indicator">▼</span>
+            </div>
+            <div class="logic-body">
+                <div>
+                    <div class="logic-col-title">🛑 1. Constraint Filtering (Hard Variables)</div>
+                    <ul class="logic-list">
+                        <li><strong>Fleet Match:</strong> Ensures aircraft ICAO Category (e.g., Cat E/F) does not exceed
+                            physical gate capability.</li>
+                        <li><strong>US Preclearance:</strong> Force-maps all US-bound routes strictly to CBP-eligible
+                            gates.</li>
+                        <li><strong>MARS Geometries:</strong> Dynamically blocks adjacent narrowbody stands whenever a
+                            widebody parks on a multi-aircraft center line.</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="logic-col-title">⚖️ 2. Greedy Heuristic Scoring (Soft Weights)</div>
+                    <ul class="logic-list">
+                        <li><strong>Historical Base Targeting (+10pts):</strong> Anchors airlines to seasonal
+                            preferences (e.g., Ryanair to Pier 1/2, Aer Lingus to Pier 4).</li>
+                        <li><strong>Contact Priority (+8pts):</strong> Heavily penalizes routing flights to remote
+                            apron/bus stands when airbridge contacts are available.</li>
+                        <li><strong>Sizing Efficiency (-2pts/class):</strong> Penalizes assigning a small A320 to a
+                            massive A380 gate, preserving widebody capacity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Bar (populated from API) -->
+        <div class="kpi-bar" id="kpiBar" style="display:none;">
+            <div class="kpi-card" style="--accent:#38bdf8">
+                <div class="kpi-icon">✈️</div>
+                <div class="kpi-label">Total Movements</div>
+                <div class="kpi-val" id="kTotal">—</div>
+                <div class="kpi-sub">assigned flights</div>
+            </div>
+            <div class="kpi-card" style="--accent:#22c55e">
+                <div class="kpi-icon">🛬</div>
+                <div class="kpi-label">Narrowbody</div>
+                <div class="kpi-val" id="kNB">—</div>
+                <div class="kpi-sub">CAT C &amp; below</div>
+            </div>
+            <div class="kpi-card" style="--accent:#f59e0b">
+                <div class="kpi-icon">🛩️</div>
+                <div class="kpi-label">Widebody</div>
+                <div class="kpi-val" id="kWB">—</div>
+                <div class="kpi-sub">CAT E/F aircraft</div>
+            </div>
+            <div class="kpi-card" style="--accent:#8b5cf6">
+                <div class="kpi-icon">🇺🇸</div>
+                <div class="kpi-label">CBP Flights</div>
+                <div class="kpi-val" id="kCBP">—</div>
+                <div class="kpi-sub">US preclearance</div>
+            </div>
+            <div class="kpi-card" style="--accent:#a855f7">
+                <div class="kpi-icon">🕒</div>
+                <div class="kpi-label">Time of Day</div>
+                <div class="kpi-val" id="kTimeOfDay" style="font-size:15px;line-height:1.7">—</div>
+                <div class="kpi-sub">Morn/Day/Eve</div>
+            </div>
+            <div class="kpi-card" style="--accent:#ef4444">
+                <div class="kpi-icon">🏆</div>
+                <div class="kpi-label">Top Pier</div>
+                <div class="kpi-val" id="kTopPier" style="font-size:17px;line-height:1.3">—</div>
+                <div class="kpi-sub">highest utilisation</div>
+            </div>
+            <div class="kpi-card" style="--accent:#14b8a6">
+                <div class="kpi-icon">📊</div>
+                <div class="kpi-label">Pier Breakdown</div>
+                <div class="kpi-val" id="kPierBreakdown"
+                    style="font-size:10px;font-weight:700;line-height:1.6;margin-top:4px">—</div>
+                <div class="kpi-sub" id="kPierSub"></div>
+            </div>
+        </div>
+
+        <!-- Gantt Card -->
+        <div class="gantt-card">
+            <!-- Sticky Slicer Bar -->
+            <div style="position:sticky; top:52px; z-index:100; background:#111827; border-bottom:1px solid rgba(255,255,255,.07); border-radius: 14px 14px 0 0; padding:10px 20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; white-space:nowrap;">Select Day</span>
+                    <div class="slicer-row" id="daySlicers" style="margin-bottom:0">
+                        <button class="slicer-btn active" data-day="0">Tomorrow</button>
+                        <button class="slicer-btn" data-day="1">Day 2</button>
+                        <button class="slicer-btn" data-day="2">Day 3</button>
+                    </div>
+                </div>
+                <div style="width:1px; height:20px; background:rgba(255,255,255,.08);"></div>
+                <div style="display:flex; align-items:center; gap:6px; flex:1; flex-wrap:wrap;">
+                    <span style="font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; white-space:nowrap;">Filter Pier</span>
+                    <div class="slicer-row" id="pierSlicers" style="margin-bottom:0"></div>
+                </div>
+                <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+                    <div class="gantt-title" id="ganttTitle" style="font-size:13px; margin:0;">Stand Gantt — Tomorrow</div>
+                </div>
+            </div>
+            <div class="gantt-header" style="border-top:none; padding-top:12px;">
+                <div>
+                    <div class="gantt-sub">Hover over any block for flight detail · Disrupted blocks highlighted in amber</div>
+                </div>
+                <div class="legend-inline">
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:rgba(56,189,248,.8);border:1px solid #38bdf8"></div>
+                        Quick
+                        Turn &lt;60m
+                    </div>
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:rgba(245,158,11,.8);border:1px solid #f59e0b"></div>
+                        Standard 60–180m
+                    </div>
+                    <div class="leg-item">
+                        <div class="leg-dot" style="background:rgba(139,92,246,.8);border:1px solid #8b5cf6"></div>
+                        Long
+                        Park / Night
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="loader-ring"></div>
+                Running Allocation Engine…
+            </div>
+            <div id="ganttWrap" style="display:none; padding: 0 0 8px 0;">
+                <div id="ganttGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <script>
+        let DATA = null;
+        let KPI_DATA = null;
+        let ALL_STANDS = [];
+        let activeDayIdx = 0;
+        let activePierLabel = 'Pier 1';
+
+        const PIERS = [
+            { label: 'Pier 1', test: s => s.pier === 'Pier 1' },
+            { label: 'Pier 2', test: s => s.pier === 'Pier 2' },
+            { label: 'Pier 3', test: s => s.pier === 'Pier 3' },
+            { label: 'Pier 4', test: s => s.pier === 'Pier 4' },
+            { label: 'Aprons', test: s => ['Central Apron', 'North Apron', 'South Apron', 'West Apron'].includes(s.pier) },
+        ];
+
+        // Init Pier Slicers
+        const pContainer = document.getElementById('pierSlicers');
+        PIERS.forEach(pier => {
+            const btn = document.createElement('button');
+            btn.className = 'slicer-btn ' + (activePierLabel === pier.label ? 'active' : '');
+            btn.innerText = pier.label;
+            btn.onclick = () => {
+                document.querySelectorAll('#pierSlicers .slicer-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activePierLabel = pier.label;
+                renderGantt();
+            };
+            pContainer.appendChild(btn);
+        });
+
+        // Init Day Slicers
+        document.querySelectorAll('#daySlicers .slicer-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                document.querySelectorAll('#daySlicers .slicer-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeDayIdx = parseInt(btn.dataset.day);
+                renderGantt();
+                updateKpiCard();
+            });
+        });
+
+        // Tooltip
+        const tt = document.getElementById('tooltip');
+        document.addEventListener('mousemove', e => {
+            if (tt.style.display === 'block') {
+                tt.style.left = (e.clientX + 18) + 'px';
+                tt.style.top = (e.clientY + 14) + 'px';
+            }
+        });
+
+        loadAllocation();
+
+        function loadAllocation(postBody) {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('ganttWrap').style.display = 'none';
+            document.getElementById('kpiBar').style.display = 'none';
+
+            const opts = postBody
+                ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(postBody) }
+                : { method: 'GET' };
+
+            fetch('/api/plan/predictive', opts)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status !== 'success') {
+                        document.getElementById('loading').innerHTML = `<span style="color:#f87171">Engine Error: ${resp.message}</span>`;
+                        return;
+                    }
+                    if (resp.all_stands) ALL_STANDS = resp.all_stands;
+                    if (resp.kpi) KPI_DATA = resp.kpi;
+
+                    DATA = processIntoDays(resp.gantt);
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('ganttWrap').style.display = 'block';
+
+                    updateKpiCard();
+                    renderGantt();
+                })
+                .catch(() => {
+                    document.getElementById('loading').innerHTML = '<span style="color:#f87171">Failed to reach engine. Is the server running?</span>';
+                });
+        }
+
+        function updateKpiCard() {
+            if (!DATA || !DATA[activeDayIdx]) return;
+            const dayBlocks = DATA[activeDayIdx];
+
+            let nb = 0, wb = 0, cbp = 0;
+            let mCount = 0, dCount = 0, eCount = 0;
+            let byPier = {};
+
+            dayBlocks.forEach(b => {
+                const standObj = ALL_STANDS.find(s => s.stand_id === b.gate);
+                let p = standObj ? standObj.pier : 'Aprons';
+                if (['Central Apron', 'North Apron', 'South Apron', 'West Apron'].includes(p)) p = 'Aprons';
+
+                byPier[p] = (byPier[p] || 0) + 1;
+
+                if (['E', 'F'].includes(b.icao_cat)) wb++;
+                else nb++;
+
+                if (b.cbp_flag) cbp++;
+
+                let hr = new Date(b.start_time).getHours();
+                if (hr >= 4 && hr < 12) mCount++;
+                else if (hr >= 12 && hr < 19) dCount++;
+                else eCount++;
+            });
+
+            let topPier = 'N/A', maxV = 0;
+            Object.entries(byPier).forEach(([k, v]) => { if (v > maxV && k !== 'Aprons') { maxV = v; topPier = k; } });
+
+            document.getElementById('kpiBar').style.display = 'grid';
+            document.getElementById('kTotal').innerText = dayBlocks.length;
+            document.getElementById('kNB').innerText = nb;
+            document.getElementById('kWB').innerText = wb;
+            document.getElementById('kCBP').innerText = cbp;
+            document.getElementById('kTopPier').innerText = topPier;
+
+            document.getElementById('kTimeOfDay').innerHTML = `<span style="color:#f87171">M: ${mCount}</span> <span style="color:#fbbf24">D: ${dCount}</span> <span style="color:#818cf8">E: ${eCount}</span>`;
+
+            const sorted = Object.entries(byPier).sort((a, b) => b[1] - a[1]);
+            document.getElementById('kPierBreakdown').innerHTML = sorted.map(([k, v]) =>
+                `<span style="color:#94a3b8">${k.replace('Pier ', 'P')}:</span> <span style="color:#f1f5f9">${v}</span>`
+            ).join(' &nbsp; ');
+        }
+
+        function processIntoDays(rawGantt) {
+            if (!rawGantt.length) return [[], [], []];
+            let earliest = new Date('2099-01-01');
+            rawGantt.forEach(b => { let d = new Date(b.start_time); if (d < earliest) earliest = d; });
+            earliest.setHours(0, 0, 0, 0);
+            let days = [[], [], []];
+            rawGantt.forEach(b => {
+                let s = new Date(b.start_time);
+                let e = new Date(b.end_time);
+                let dayIdx = Math.floor((s - earliest) / 86400000);
+                if (dayIdx >= 0 && dayIdx <= 2) {
+                    days[dayIdx].push({
+                        ...b,
+                        start_date: s, end_date: e,
+                        start_min: s.getHours() * 60 + s.getMinutes(),
+                        end_min: s.getHours() * 60 + s.getMinutes() + (e - s) / 60000
+                    });
+                }
+            });
+            return days;
+        }
+
+        function renderGantt() {
+            if (!DATA) return;
+            const dayLabels = ['Tomorrow', 'Day 2', 'Day 3'];
+            document.getElementById('ganttTitle').innerText = `Stand Gantt — ${dayLabels[activeDayIdx]}`;
+
+            const dayBlocks = DATA[activeDayIdx] || [];
+            const pierDef = PIERS.find(p => p.label === activePierLabel);
+            let gateMap = {};
+            dayBlocks.forEach(b => {
+                if (!gateMap[b.gate]) gateMap[b.gate] = [];
+                gateMap[b.gate].push(b);
+            });
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+            // Shift to 01:00 - 23:00 to save space
+            const HOURS = Array.from({ length: 23 }, (_, i) => i + 1);
+
+            // Header
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            trow.innerHTML = `<div class="g-corner">STAND</div>`;
+            HOURS.forEach(h => { trow.innerHTML += `<div class="g-hour">${String(h).padStart(2, '0')}</div>`; });
+            grid.appendChild(trow);
+
+            const pierStandObjs = ALL_STANDS.filter(pierDef.test);
+            const pierGates = pierStandObjs.map(s => s.stand_id).sort((a, b) => {
+                let na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                return na !== nb ? na - nb : a.localeCompare(b);
+            });
+
+            if (!pierGates.length) {
+                grid.innerHTML += `<div style="padding:32px;text-align:center;color:var(--t3)">No stands defined for ${activePierLabel}.</div>`;
+                return;
+            }
+
+            const GRID_MINS = 1380; // 23 hours
+
+            // Group by pier header
+            let lastPierHdr = null;
+            pierGates.forEach(gate => {
+                // Pier sub-header grouping for Aprons view
+                if (activePierLabel === 'Aprons') {
+                    const standObj = ALL_STANDS.find(s => s.stand_id === gate);
+                    const pHdr = standObj ? standObj.pier : '';
+                    if (pHdr && pHdr !== lastPierHdr) {
+                        const hdr = document.createElement('div');
+                        hdr.className = 'pier-hdr';
+                        hdr.innerHTML = `▸ ${pHdr}`;
+                        grid.appendChild(hdr);
+                        lastPierHdr = pHdr;
+                    }
+                }
+
+                const row = document.createElement('div');
+                row.className = 'g-gate-row';
+                row.innerHTML = `<div class="g-lbl">${gate}</div>`;
+                const canvas = document.createElement('div');
+                canvas.className = 'g-canvas';
+                HOURS.forEach(() => {
+                    const c = document.createElement('div');
+                    c.className = 'g-hcell';
+                    canvas.appendChild(c);
+                });
+
+                (gateMap[gate] || []).forEach(f => {
+                    // Shift starting minutes back by 60 because Gantt starts at 01:00
+                    let vS = f.start_min - 60;
+                    let vE = f.end_min - 60;
+
+                    if (vS >= GRID_MINS || vE <= 0) return;
+
+                    vS = Math.max(vS, 0);
+                    vE = Math.min(vE, GRID_MINS);
+
+                    let leftPct = (vS / GRID_MINS) * 100;
+                    let widthPct = Math.max(((vE - vS) / GRID_MINS) * 100, 0.5);
+                    let diffMins = Math.max(0, f.end_min - f.start_min);
+                    let cls = 'fb-park', dispLabel = '', tipFlight = '';
+
+                    if (f.type === 'TURN') {
+                        if (diffMins < 60) cls = 'fb-quick';
+                        else if (diffMins <= 180) cls = 'fb-slow';
+                        dispLabel = `${f.arr_flight} → ${f.dep_flight}`;
+                        tipFlight = `Arr: ${f.arr_flight} | Dep: ${f.dep_flight}`;
+                    } else if (f.type === 'ARR') {
+                        dispLabel = `${f.arr_flight} (Night Stop)`;
+                        tipFlight = `Arr: ${f.arr_flight} (No Dep)`;
+                    } else if (f.type === 'DEP') {
+                        dispLabel = `(Tow) → ${f.dep_flight}`;
+                        tipFlight = `Dep: ${f.dep_flight} (From Remote)`;
+                    }
+
+                    const fb = document.createElement('div');
+                    fb.className = `fb ${cls}`;
+                    fb.style.left = leftPct + '%';
+                    fb.style.width = widthPct + '%';
+                    fb.innerHTML = `<span>${dispLabel}</span>`;
+
+                    fb.addEventListener('mouseenter', () => {
+                        let tstr = `${f.start_date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – ${f.end_date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                        let routeInfo = '';
+                        if (f.type === 'TURN') routeInfo = `Arr from ${f.origin} | Dept to ${f.destination}`;
+                        else if (f.type === 'ARR') routeInfo = `Arr from ${f.origin}`;
+                        else if (f.type === 'DEP') routeInfo = `Dept to ${f.destination}`;
+                        tt.innerHTML = `
+                            <strong>✈️ ${f.airline}</strong>
+                            <div style="color:var(--cyan);margin-bottom:4px">${tipFlight}</div>
+                            <div style="margin-bottom:4px;opacity:.85">${routeInfo}</div>
+                            Tail: ${f.tail_reg}<br>
+                            Time: ${tstr}<br>
+                            Aircraft: ${f.aircraft_type}<br>
+                            ${f.cbp_flag ? '<span style="color:#60a5fa;font-weight:bold;">🇺🇸 US CBP Preclearance</span>' : ''}
+                        `;
+                        tt.style.display = 'block';
+                    });
+                    fb.addEventListener('mouseleave', () => tt.style.display = 'none');
+                    canvas.appendChild(fb);
+                });
+
+                row.appendChild(canvas);
+                grid.appendChild(row);
+            });
+        }
+        // ── DISRUPTION BULLETIN & SIMULATION ─────────────────────────────
+
+        const INTENSITY_MAP = {
+            notam:    [{label:'1h Stop (10:00–11:00)', key:'notam_1h'}, {label:'2h Stop (10:00–12:00)', key:'notam_2h'}, {label:'3h Stop (10:00–13:00)', key:'notam_3h'}],
+            weather:  [{label:'Mild +15% Ground Time', key:'weather_15'}, {label:'Moderate +25% Ground Time', key:'weather_25'}, {label:'Severe +40% Ground Time', key:'weather_40'}],
+            runway:   [{label:'Light −25% Capacity', key:'runway_25'}, {label:'Severe −50% Capacity', key:'runway_50'}],
+            schedule: [{label:'FR2971 Ryanair 07:52 → 09:00', key:'sched_FR2971'}, {label:'EI204 Aer Lingus 08:07 → 10:30', key:'sched_EI204'}, {label:'EI404 Aer Lingus 09:12 → 11:45', key:'sched_EI404'}, {label:'ALL 3 Flights Combined', key:'sched_all'}],
+        };
+
+        let isDisruptMode = false;
+        let BASELINE_DATA = null;
+
+        // Load bulletin cards
+        fetch('/api/disruption/status')
+            .then(r => r.json())
+            .then(resp => {
+                const container = document.getElementById('riskBulletin');
+                (resp.bulletin || []).forEach(card => {
+                    container.innerHTML += `
+                        <div class="risk-card" id="rc-${card.type}">
+                            <div class="risk-card-header">
+                                <span class="risk-icon">${card.icon}</span>
+                                <span class="risk-title">${card.title}</span>
+                                <span class="risk-badge ${card.status_color}">${card.status}</span>
+                            </div>
+                            <div class="risk-prob">Probability: <strong>${card.probability}</strong></div>
+                            <div class="risk-detail">${card.detail}</div>
+                        </div>`;
+                });
+            })
+            .catch(() => {});
+
+        function onDisruptTypeChange() {
+            const type = document.getElementById('dpType').value;
+            const intensityEl = document.getElementById('dpIntensity');
+            const runBtn = document.getElementById('btnSimDisrupt');
+
+            if (!type) { intensityEl.style.display = 'none'; runBtn.disabled = true; return; }
+
+            const opts = INTENSITY_MAP[type] || [];
+            const placeholder = type === 'schedule' ? '— Select Flight(s) —' : '— Select Intensity —';
+            intensityEl.innerHTML = `<option value="">${placeholder}</option>` +
+                opts.map(o => `<option value="${o.key}">${o.label}</option>`).join('');
+            intensityEl.style.display = 'block';
+            runBtn.disabled = true;
+
+            intensityEl.onchange = () => { runBtn.disabled = !intensityEl.value; };
+
+            // Highlight matching bulletin card
+            document.querySelectorAll('.risk-card').forEach(c => c.classList.remove('active-sim'));
+            const rc = document.getElementById('rc-' + type);
+            if (rc) rc.classList.add('active-sim');
+        }
+
+        function runDisruption() {
+            const key = document.getElementById('dpIntensity').value;
+            if (!key) return;
+
+            const runBtn = document.getElementById('btnSimDisrupt');
+            runBtn.disabled = true;
+            runBtn.textContent = '⏳ Loading…';
+
+            fetch(`/api/disruption/scenario/${key}`)
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status !== 'success') { alert('Scenario not found.'); return; }
+                    const d = resp.data;
+
+                    // Save baseline before overwriting
+                    if (!isDisruptMode) BASELINE_DATA = DATA;
+                    isDisruptMode = true;
+
+                    DATA = processIntoDays(d.gantt);
+                    renderGanttDisrupted(d);
+                    showImpactBar(d);
+
+                    document.getElementById('btnReset').style.display = 'inline-block';
+                    runBtn.textContent = 'Run Simulation';
+                    runBtn.disabled = false;
+                })
+                .catch(() => { runBtn.textContent = 'Run Simulation'; runBtn.disabled = false; });
+        }
+
+        function resetToBaseline() {
+            if (BASELINE_DATA) DATA = BASELINE_DATA;
+            isDisruptMode = false;
+            renderGantt();
+            document.getElementById('impactBar').classList.remove('visible');
+            document.getElementById('btnReset').style.display = 'none';
+            document.querySelectorAll('.risk-card').forEach(c => c.classList.remove('active-sim'));
+            document.getElementById('dpType').value = '';
+            document.getElementById('dpIntensity').style.display = 'none';
+            document.getElementById('btnSimDisrupt').disabled = true;
+        }
+
+        function showImpactBar(d) {
+            const bar = document.getElementById('impactBar');
+            bar.classList.add('visible');
+            document.getElementById('impactTitle').textContent = `⚡ ${d.scenario_label} — Impact Summary`;
+
+            const kpi = d.kpi || {};
+            const kpiItems = [
+                {val: kpi.conflicts_resolved ?? '—', lbl: 'Conflicts Resolved'},
+                {val: kpi.unresolved ?? '—', lbl: 'Unresolved Flights'},
+                {val: (kpi.avg_delay_min ?? kpi.delay_min ?? '—') + (kpi.avg_delay_min !== undefined ? ' min' : ''), lbl: 'Avg Delay'},
+                {val: kpi.frozen_departures ?? kpi.affected_blocks ?? kpi.delayed_arrivals ?? '—', lbl: 'Affected Flights'},
+            ];
+            document.getElementById('impactKpis').innerHTML = kpiItems.map(k =>
+                `<div class="impact-kpi"><div class="impact-kpi-val">${k.val}</div><div class="impact-kpi-lbl">${k.lbl}</div></div>`
+            ).join('');
+
+            document.getElementById('impactBullets').innerHTML = (d.impact_summary || []).slice(0, 3).map(b =>
+                `<li>${b}</li>`
+            ).join('');
+        }
+
+        function renderGanttDisrupted(scenarioData) {
+            // Collect disrupted block identifiers
+            const disruptedKeys = new Set();
+            (scenarioData.gantt || []).forEach(b => {
+                if (b._disrupted || b._reassigned) {
+                    disruptedKeys.add((b.arr_flight || '') + '|' + (b.dep_flight || ''));
+                }
+            });
+
+            renderGantt();
+
+            // After render, mark disrupted blocks
+            // We tag them via a data attribute during renderGantt override below
+        }
+
+        // Override renderGantt to support disruption highlighting
+        const _origRenderGantt = renderGantt;
+        function renderGantt() {
+            if (!DATA) return;
+            const dayLabels = ['Tomorrow', 'Day 2', 'Day 3'];
+            const modeTag = isDisruptMode ? ' <span style="color:var(--amber);font-size:11px;font-weight:700">⚡ DISRUPTED PLAN</span>' : '';
+            document.getElementById('ganttTitle').innerHTML = `Stand Gantt — ${dayLabels[activeDayIdx]}${modeTag}`;
+
+            const dayBlocks = DATA[activeDayIdx] || [];
+            const pierDef = PIERS.find(p => p.label === activePierLabel);
+            let gateMap = {};
+            dayBlocks.forEach(b => {
+                if (!gateMap[b.gate]) gateMap[b.gate] = [];
+                gateMap[b.gate].push(b);
+            });
+
+            const grid = document.getElementById('ganttGrid');
+            grid.innerHTML = '';
+            const HOURS = Array.from({ length: 23 }, (_, i) => i + 1);
+
+            const trow = document.createElement('div');
+            trow.className = 'g-timerow';
+            trow.innerHTML = `<div class="g-corner">STAND</div>`;
+            HOURS.forEach(h => { trow.innerHTML += `<div class="g-hour">${String(h).padStart(2, '0')}</div>`; });
+            grid.appendChild(trow);
+
+            const pierStandObjs = ALL_STANDS.filter(pierDef.test);
+            const pierGates = pierStandObjs.map(s => s.stand_id).sort((a, b) => {
+                let na = parseInt(a.replace(/\D/g, '')) || 0, nb = parseInt(b.replace(/\D/g, '')) || 0;
+                return na !== nb ? na - nb : a.localeCompare(b);
+            });
+
+            if (!pierGates.length) {
+                grid.innerHTML += `<div style="padding:32px;text-align:center;color:var(--t3)">No stands defined for ${activePierLabel}.</div>`;
+                return;
+            }
+
+            const GRID_MINS = 1380;
+            let lastPierHdr = null;
+
+            pierGates.forEach(gate => {
+                if (activePierLabel === 'Aprons') {
+                    const standObj = ALL_STANDS.find(s => s.stand_id === gate);
+                    const pHdr = standObj ? standObj.pier : '';
+                    if (pHdr && pHdr !== lastPierHdr) {
+                        const hdr = document.createElement('div');
+                        hdr.className = 'pier-hdr';
+                        hdr.innerHTML = `▸ ${pHdr}`;
+                        grid.appendChild(hdr);
+                        lastPierHdr = pHdr;
+                    }
+                }
+
+                const row = document.createElement('div');
+                row.className = 'g-gate-row';
+                row.innerHTML = `<div class="g-lbl">${gate}</div>`;
+                const canvas = document.createElement('div');
+                canvas.className = 'g-canvas';
+                HOURS.forEach(() => {
+                    const c = document.createElement('div');
+                    c.className = 'g-hcell';
+                    canvas.appendChild(c);
+                });
+
+                (gateMap[gate] || []).forEach(f => {
+                    let vS = f.start_min - 60;
+                    let vE = f.end_min - 60;
+
+                    if (vS >= GRID_MINS || vE <= 0) return;
+                    vS = Math.max(vS, 0);
+                    vE = Math.min(vE, GRID_MINS);
+
+                    let leftPct = (vS / GRID_MINS) * 100;
+                    let widthPct = Math.max(((vE - vS) / GRID_MINS) * 100, 0.5);
+                    let diffMins = Math.max(0, f.end_min - f.start_min);
+                    let cls = 'fb-park', dispLabel = '', tipFlight = '';
+
+                    if (f.type === 'TURN') {
+                        if (diffMins < 60) cls = 'fb-quick';
+                        else if (diffMins <= 180) cls = 'fb-slow';
+                        dispLabel = `${f.arr_flight} → ${f.dep_flight}`;
+                        tipFlight = `Arr: ${f.arr_flight} | Dep: ${f.dep_flight}`;
+                    } else if (f.type === 'ARR') {
+                        dispLabel = `${f.arr_flight} (Night Stop)`;
+                        tipFlight = `Arr: ${f.arr_flight} (No Dep)`;
+                    } else if (f.type === 'DEP') {
+                        dispLabel = `(Tow) → ${f.dep_flight}`;
+                        tipFlight = `Dep: ${f.dep_flight} (From Remote)`;
+                    }
+
+                    const fb = document.createElement('div');
+                    fb.className = `fb ${cls}${(f._disrupted || f._reassigned) ? ' fb-disrupted' : ''}`;
+                    fb.style.left = leftPct + '%';
+                    fb.style.width = widthPct + '%';
+                    fb.innerHTML = `<span>${dispLabel}</span>`;
+
+                    const delayNote = f._delay_min ? ` | ⚡ +${f._delay_min}min delay` : (f._reassigned ? ' | ↔ Reassigned stand' : '');
+
+                    fb.addEventListener('mouseenter', () => {
+                        let tstr = `${f.start_date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} – ${f.end_date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                        let routeInfo = '';
+                        if (f.type === 'TURN') routeInfo = `Arr from ${f.origin} | Dept to ${f.destination}`;
+                        else if (f.type === 'ARR') routeInfo = `Arr from ${f.origin}`;
+                        else if (f.type === 'DEP') routeInfo = `Dept to ${f.destination}`;
+                        tt.innerHTML = `
+                            <strong>✈️ ${f.airline}</strong>
+                            <div style="color:var(--cyan);margin-bottom:4px">${tipFlight}${delayNote}</div>
+                            <div style="margin-bottom:4px;opacity:.85">${routeInfo}</div>
+                            Tail: ${f.tail_reg}<br>
+                            Time: ${tstr}<br>
+                            Aircraft: ${f.aircraft_type}<br>
+                            ${f.cbp_flag ? '<span style="color:#60a5fa;font-weight:bold;">🇺🇸 US CBP Preclearance</span>' : ''}
+                        `;
+                        tt.style.display = 'block';
+                    });
+                    fb.addEventListener('mouseleave', () => tt.style.display = 'none');
+                    canvas.appendChild(fb);
+                });
+
+                row.appendChild(canvas);
+                grid.appendChild(row);
+            });
+        }
+
+        updateKpiCard;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intra-day Command Centre | DAA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a1628;--surface:#111827;--surface-light:#0f2044;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.07);
+  --amber:#f59e0b;--text:#f1f5f9;--muted:#cbd5e1;--green:#22c55e;--red:#ef4444;--blue:#2d7be5;--cyan:#38bdf8;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* CUSTOM SCROLLBARS */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+::-webkit-scrollbar-corner { background: transparent; }
+
+
+/* NAVBAR (imported from others) */
+.navbar {
+    background: #0a1628;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 52px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    flex-shrink: 0;
+}
+.nav-brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.daa-badge {
+    background: #1d5fd1;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: .08em;
+}
+.nav-links {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+.sw-btn {
+    width: 230px;
+    flex: 0 0 230px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: rgba(255, 255, 255, .5);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+.sw-btn:first-of-type { border-radius: 20px 0 0 20px; }
+.sw-btn:last-of-type { border-radius: 0 20px 20px 0; }
+.sw-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+}
+.sw-btn.active {
+    background: #1d5fd1;
+    color: #fff;
+    border-color: #1d5fd1;
+}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:linear-gradient(135deg, #060f1f 0%, #0f2044 40%, #0a1628 100%);border-bottom:1px solid var(--border);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-badge{background:var(--blue);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:0.08em}
+.brand-title{font-size:14px;font-weight:700;letter-spacing:.5px}
+.kpi-strip { display: flex; gap: 14px; align-items: center; }
+.kpi { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 18px; min-width: 90px; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s; }
+.kpi:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+.kpi-val { font-size: 22px; font-weight: 800; color: var(--cyan); line-height: 1; margin-bottom: 4px; }
+.kpi:nth-child(1) .kpi-val { color: #fff; }
+.kpi:nth-child(2) .kpi-val { color: var(--cyan); }
+.kpi:nth-child(3) .kpi-val { color: var(--amber); }
+.kpi:nth-child(4) .kpi-val { color: var(--green); }
+.kpi:nth-child(5) .kpi-val { color: var(--red); }
+.kpi-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.8px; }
+.header-actions{display:flex;gap:8px}
+.btn{padding:8px 16px;border:none;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+.btn-primary{background:linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,123,229,0.4)}
+.btn-secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:rgba(255,255,255,0.12)}
+
+/* MAIN LAYOUT */
+.main{display:flex;flex:1;overflow:hidden}
+.left-panel{width:280px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.center-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.right-panel{width:320px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+
+/* PANEL HEADERS */
+.panel-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.panel-hdr h3{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.panel-body{flex:1;overflow-y:auto;padding:12px}
+
+/* EVENT SIMULATOR */
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.form-group select,.form-group input[type=range]{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-size:12px;font-family:inherit}
+.form-group select option { background: var(--surface); color: var(--text); }
+.form-group select{appearance:none;cursor:pointer}
+.slider-val{font-size:11px;color:var(--cyan);font-weight:700;float:right}
+.btn-apply{width:100%;padding:10px;background:linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;margin-top:8px;transition:all .2s;box-shadow:0 4px 14px rgba(45,123,229,0.3)}
+.btn-apply:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,123,229,0.5)}
+.btn-apply:disabled{opacity:0.5;cursor:not-allowed;box-shadow:none}
+.event-stack{margin-top:16px;border-top:1px solid var(--border);padding-top:12px}
+.event-stack h4{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.event-item{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:11px;display:flex;align-items:center;gap:6px}
+.event-num{background:var(--blue);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;flex-shrink:0}
+
+/* GANTT */
+.gantt-wrap{flex:1;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.gantt-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--muted);font-size:14px;font-weight:500}
+.gantt-table{position:relative;min-width:100%;overflow-x:auto;overflow-y:auto;flex:1}
+.gantt-header{display:flex;position:sticky;top:0;z-index:5;background:var(--bg)}
+.gantt-label-col{width:80px;flex-shrink:0;padding:4px 6px;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.gantt-time-axis{flex:1;display:flex;border-bottom:1px solid var(--border);position:relative}
+.gantt-tick{flex:1;text-align:center;font-size:8px;font-weight:600;color:var(--muted);padding:4px 0;border-right:1px solid rgba(255,255,255,0.04)}
+.gantt-row{display:flex;height:26px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.gantt-row.separator{height:2px;background:var(--amber);border:none}
+.gantt-row-label{width:80px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;padding:0 6px;border-right:1px solid var(--border);background:var(--surface)}
+.gantt-row-label .sid{font-size:10px;font-weight:700}
+.gantt-row-label .stype{font-size:7px;color:var(--muted);font-weight:600}
+.gantt-row-track{flex:1;position:relative;background:rgba(255,255,255,0.015)}
+.flight-block{position:absolute;top:4px;height:18px;border-radius:3px;display:flex;align-items:center;padding:0 5px;font-size:8px;font-weight:700;color:#fff;cursor:pointer;transition:all .3s;overflow:hidden;white-space:nowrap;z-index:2}
+.flight-block:hover{filter:brightness(1.3);transform:scaleY(1.15);z-index:10}
+.flight-block .fno{margin-right:3px}
+.flight-block .acode{opacity:.7;font-size:7px}
+
+/* LEGEND */
+.gantt-legend{display:flex;gap:12px;padding:3px 12px;border-top:1px solid var(--border);flex-wrap:wrap;flex-shrink:0}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted);font-weight:600}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* TOOLTIP */
+.tooltip{position:fixed;background:#111827;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-size:11px;z-index:999;pointer-events:none;max-width:280px;box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+.tooltip .tt-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:3px}
+.tooltip .tt-lbl{color:var(--muted);font-weight:600}
+.tooltip .tt-val{font-weight:700}
+.tooltip .tt-badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:9px;font-weight:800;margin-top:4px}
+
+/* CONFLICT CARDS */
+.conflict-body{flex:1;overflow-x:auto;overflow-y:hidden;padding:8px 16px;display:flex;gap:12px;align-items:flex-start}
+.conflict-card{background:linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%);border:1px solid rgba(255,255,255,0.15);border-top:1px solid rgba(255,255,255,0.3);box-shadow:0 4px 15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:8px;padding:10px 14px;flex-shrink:0;width:280px;position:relative;overflow:hidden}
+.conflict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);pointer-events:none}
+.conflict-card.live{background:linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(239,68,68,0.02) 100%);border-color:rgba(239,68,68,0.5);border-top-color:rgba(239,68,68,0.8);box-shadow:0 4px 15px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.2)}
+.cc-title{font-size:11px;font-weight:800;color:#fff;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.cc-detail{font-size:10.5px;color:rgba(255,255,255,0.75);line-height:1.6}
+.cc-badge-name{display:inline-block;padding:2px 6px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:4px;font-size:9px;font-weight:800;color:var(--amber);margin:4px 0}
+
+/* BOTTOM PANEL */
+.bottom-panel{height:160px;background:var(--surface);border-top:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.bottom-panel .panel-hdr{padding:6px 16px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* DECISION LOG */
+.log-body{flex:1;overflow-y:auto;padding:12px;font-size:11px;font-family:'Inter',monospace}
+.log-entry{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:4px}
+.log-time{color:var(--muted);font-size:9px;font-weight:600}
+.log-badge{padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="nav-brand" href="/">
+        <span class="daa-badge">DAA</span>
+        Strategic Planning Suite
+    </a>
+    <div class="nav-links">
+        <a class="sw-btn" href="/seasonal/plan-ahead">2026 Long Term Plan</a>
+        <a class="sw-btn" href="/3day">3-Day Stand Allocation</a>
+        <a class="sw-btn active" href="/intraday">Intra-Day Stand Simulation</a>
+        <a class="sw-btn" href="/passenger">Short Term Passenger Plan</a>
+    </div>
+</nav>
+
+<div class="header">
+  <div class="brand">
+    <span class="brand-badge">DAA</span>
+    <span class="brand-title">Intra-day Command Centre</span>
+  </div>
+  <div class="kpi-strip" id="kpiStrip">
+    <div class="kpi"><div class="kpi-val" id="kTotal">—</div><div class="kpi-lbl">Flights</div></div>
+    <div class="kpi"><div class="kpi-val" id="kContact">—</div><div class="kpi-lbl">Contact</div></div>
+    <div class="kpi"><div class="kpi-val" id="kRemote">—</div><div class="kpi-lbl">Remote</div></div>
+    <div class="kpi"><div class="kpi-val" id="kRemPct">—</div><div class="kpi-lbl">Remote %</div></div>
+    <div class="kpi"><div class="kpi-val" id="kCBP">—</div><div class="kpi-lbl">CBP</div></div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-primary" id="btnRun" onclick="runOptimizer()">▶ Run Optimizer</button>
+    <button class="btn btn-secondary" onclick="resetSim()">↺ Reset</button>
+    <button class="btn btn-secondary" onclick="exportCSV()">↓ Export CSV</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- LEFT: Event Simulator -->
+  <div class="left-panel">
+    <div class="panel-hdr"><h3>⚡ Event Simulator</h3></div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label>Scenario</label>
+        <select id="triggerType" onchange="onTriggerChange()">
+          <option value="FLIGHT_DELAY">⏱ Delay Flight</option>
+          <option value="STAND_CLOSE">🅿️ Close a Stand</option>
+          <option value="MAYDAY">🚨 Declare Mayday</option>
+          <option value="WEATHER_STOP">🌧️ Weather Ground Stop</option>
+        </select>
+      </div>
+
+      <!-- Flight selector (Arrival Delay, Departure Delay, Mayday) -->
+      <div class="form-group" id="fgFlight" style="display:none">
+        <label id="fgFlightLabel">Flight</label>
+        <select id="flightNo"><option value="">— Run optimizer first —</option></select>
+      </div>
+
+      <!-- Delay slider (Arrival Delay, Departure Delay) -->
+      <div class="form-group" id="fgDelay" style="display:none">
+        <label>Delay (minutes) <span class="slider-val" id="delayVal">15</span></label>
+        <input type="range" id="delaySlider" min="5" max="60" value="15"
+               oninput="document.getElementById('delayVal').textContent=this.value">
+      </div>
+
+      <!-- Stand selector (Stand Close) -->
+      <div class="form-group" id="fgStand" style="display:none">
+        <label>Stand to Close</label>
+        <select id="standNo"><option value="">— Run optimizer first —</option></select>
+      </div>
+
+      <!-- Weather time range (Weather Ground Stop) -->
+      <div class="form-group" id="fgWeather" style="display:none">
+        <label>Stop Window</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="flex:1">
+            <div style="font-size:9px;color:var(--muted);margin-bottom:3px">FROM</div>
+            <input type="time" id="weatherFrom" min="07:00" max="08:30" value="07:15" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit">
+          </div>
+          <div style="flex:1">
+            <div style="font-size:9px;color:var(--muted);margin-bottom:3px">TO</div>
+            <input type="time" id="weatherTo" min="07:00" max="08:30" value="07:45" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:5px 6px;border-radius:4px;font-size:12px;font-family:inherit">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-apply" id="btnApply" onclick="applyEvent()" disabled>Apply Event</button>
+
+      <div class="event-stack">
+        <h4>Event History</h4>
+        <div id="eventHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: Gantt -->
+  <div class="center-panel">
+    <div class="gantt-wrap" id="ganttWrap">
+      <div class="gantt-empty" id="ganttEmpty">Click&nbsp;<b>Run Optimizer</b>&nbsp;to generate the MILP Golden Plan</div>
+      <div id="ganttCard" class="card" style="display:none; overflow:hidden; flex:1;">
+        <div class="gantt-table" id="ganttTable"></div>
+      </div>
+      <div class="gantt-legend" id="ganttLegend" style="display:none"></div>
+      <div id="aiRecommendation" style="display:none; padding:0 4px;"><span id="aiRecText" style="font-size:11px; color:#e2e8f0; font-style:italic;"></span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Live Updates -->
+  <div class="right-panel">
+    <div class="panel-hdr"><div class="live-dot"></div><h3>Live Updates</h3></div>
+    <div class="log-body" id="logBody">
+      <div id="logPlaceholder" style="color:var(--muted);font-size:11px;text-align:center;margin-top:20px">Awaiting optimizer run…</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM: Conflicts Resolved by Optimizer -->
+<div class="bottom-panel">
+  <div class="panel-hdr"><h3>🔍 Conflicts Resolved by Optimizer</h3></div>
+  <div class="conflict-body" id="conflictPanel">
+    <div style="color:var(--muted);font-size:12px">Run optimizer to see resolved conflicts</div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" style="display:none"></div>
+
+<script>
+
+// ── STATE ──
+let ganttData = [];
+let standRows = [];
+let eventCount = 0;
+const TOTAL_MIN = 90;
+const BADGE_COLOURS = {
+  PIER_CONTACT:'#10b981', QUICK_TURN:'#14b8a6', ARR_PARK:'#a855f7',
+  DEP_HOLD:'#06b6d4', CBP_CONTACT:'#ec4899', WIDEBODY_PIER:'#2563eb',
+  BUFFER_HOLD:'#f59e0b', AIRBORNE_HOLD:'#ef4444', GDP_ACTIVE:'#dc2626',
+  STAND_CLEAR:'#3b82f6', DIVERSION_RISK:'#374151'
+};
+const BADGE_LABELS = {
+  PIER_CONTACT:'Contact Stand', QUICK_TURN:'Quick Turnaround', ARR_PARK:'Arrival Parking',
+  DEP_HOLD:'Departure Hold', CBP_CONTACT:'CBP Preclearance', WIDEBODY_PIER:'Widebody Pier',
+  BUFFER_HOLD:'Buffer Hold', AIRBORNE_HOLD:'Airborne Hold', GDP_ACTIVE:'GDP Active',
+  STAND_CLEAR:'Stand Clear', DIVERSION_RISK:'Diversion Risk'
+};
+const STAND_ORDER = ['101','102','103','104','105','106','107','108L','108C','108R','110','R1','R2','R3','R4','R5'];
+
+// ── RUN OPTIMIZER ──
+async function runOptimizer() {
+  const btn = document.getElementById('btnRun');
+  btn.textContent = '⏳ Running MILP…'; btn.disabled = true;
+  try {
+    const res = await fetch('/api/intraday/golden-plan');
+    const d = await res.json();
+    if (d.status !== 'success') { alert('Engine error: ' + (d.message||'')); return; }
+    ganttData = d.gantt || [];
+    standRows = d.stands || [];
+    // KPIs
+    const k = d.kpi || {};
+    document.getElementById('kTotal').textContent = k.total_flights ?? '—';
+    document.getElementById('kContact').textContent = k.contact_assigned ?? '—';
+    document.getElementById('kRemote').textContent = k.remote_assigned ?? '—';
+    document.getElementById('kRemPct').textContent = k.remote_pct != null ? k.remote_pct + '%' : '—';
+    document.getElementById('kCBP').textContent = k.cbp_flights ?? '—';
+    // Populate flight dropdown
+    const sel = document.getElementById('flightNo');
+    sel.innerHTML = ganttData.map(g => `<option value="${g.flight_no}">${g.flight_no} (${g.airline})</option>`).join('');
+    document.getElementById('btnApply').disabled = false;
+    // Re-populate scenario context
+    onTriggerChange();
+    // Render
+    renderGantt();
+    renderConflicts(d.conflict_log || [], d.live_conflicts || []);
+    renderLegend();
+
+    // AI Recommendation
+    if (d.recommendation) {
+        document.getElementById('aiRecommendation').style.display = 'flex';
+        document.getElementById('aiRecText').textContent = d.recommendation;
+    } else {
+        document.getElementById('aiRecommendation').style.display = 'none';
+    }
+
+    // Curated 10-entry live feed with Gantt-matching timestamps
+    const curated = [
+      { t:'07:00', flight:'MILP',  badge:'PIER_CONTACT',  msg: ganttData.length + ' flights allocated across ' + (d.stands||[]).length + ' stands — Golden Plan active' },
+      { t:'07:05', flight:'EI101', badge:'CBP_CONTACT',   msg: 'CBP Preclearance lane open — A330 taxiing to Stand 106. US pax transfer in 8 min' },
+      { t:'07:10', flight:'DL001', badge:'WIDEBODY_PIER', msg: 'Delta A330 Cat E — MARS Stand 108C reserved. Adjacent 108L/108R blocked per MARS rules' },
+      { t:'07:10', flight:'WX',    badge:'BUFFER_HOLD',   msg: '⚠ Met Office: Low visibility 07:10–07:20. ATC spacing +3 min applied to all IFR arrivals' },
+      { t:'07:15', flight:'TK001', badge:'QUICK_TURN',    msg: 'Turkish A330 widebody — no Cat E stand in T1. Overflow to remote apron, bus transfer active' },
+      { t:'07:20', flight:'WX',    badge:'BUFFER_HOLD',   msg: 'Visibility restored at 07:20. Normal IFR minima resumed. Held flights now sequenced' },
+      { t:'07:35', flight:'BA001', badge:'WIDEBODY_PIER', msg: 'BA B787 inbound 08:00 — 108C pre-cleared, MARS adjacency check passed' },
+      { t:'07:45', flight:'UA001', badge:'CBP_CONTACT',   msg: 'United B787 CBP rotation — Stand 106 transitions from EI101 after 07:40 buffer gap confirmed' },
+      { t:'08:05', flight:'EK001', badge:'WIDEBODY_PIER', msg: 'Emirates B777 heavy — wake turbulence advisory issued. Following arrivals spaced +3 min on final' },
+      { t:'08:20', flight:'QR001', badge:'ARR_PARK',      msg: 'Qatar A350 arrival park — 20 min deboarding slot, tow to remote scheduled 08:42' },
+    ];
+    curated.forEach((e, i) => setTimeout(() => addLog(e.flight, e.badge, e.msg, e.badge, e.t), i * 120));
+  } catch(e) { alert('Fetch failed: ' + e.message); }
+  finally { btn.textContent = '▶ Run Optimizer'; btn.disabled = false; }
+}
+
+// ── RENDER GANTT ──
+function renderGantt() {
+  document.getElementById('ganttEmpty').style.display = 'none';
+  const card = document.getElementById('ganttCard');
+  card.style.display = 'block';
+  const table = document.getElementById('ganttTable');
+  table.style.display = 'block';
+  // Build header
+  let html = '<div class="gantt-header"><div class="gantt-label-col">Stand</div><div class="gantt-time-axis">';
+  for (let m = 0; m <= 80; m += 10) {
+    const h = Math.floor((420 + m) / 60);
+    const mm = String((420 + m) % 60).padStart(2, '0');
+    html += '<div class="gantt-tick">' + String(h).padStart(2,'0') + ':' + mm + '</div>';
+  }
+  html += '</div></div>';
+  // Rows
+  let prevType = null;
+  STAND_ORDER.forEach(sid => {
+    const sInfo = standRows.find(s => s.stand_id === sid);
+    const stype = sInfo ? sInfo.type : (sid.startsWith('R') ? 'Remote' : 'Contact');
+    const isRemote = sid.startsWith('R');
+    // Separator between contact and remote
+    if (isRemote && prevType === 'Contact') {
+      html += '<div class="gantt-row separator"></div>';
+    }
+    prevType = isRemote ? 'Remote' : 'Contact';
+    
+    let attrs = '';
+    if (!isRemote && sInfo) {
+      let b = [];
+      if (sInfo.cbp) b.push('<span style="color:var(--cyan)" title="US Preclearance Eligible">CBP</span>');
+      if (sInfo.mars) b.push('<span style="color:var(--amber)" title="MARS Multi-Aircraft Ramp System">MARS</span>');
+      if (['D','E','F'].includes(sInfo.icao_max)) b.push('<span style="color:var(--green)" title="Widebody Compatible">WB</span>');
+      else b.push('<span style="color:var(--muted)" title="Narrowbody Only">NB</span>');
+      attrs = '<div style="font-size:7px;margin-left:4px;display:flex;gap:3px;font-weight:800;letter-spacing:0.3px;opacity:0.9">' + b.join('') + '</div>';
+    }
+    
+    html += '<div class="gantt-row"><div class="gantt-row-label"><div style="display:flex;align-items:center"><span class="sid">' + sid + '</span>' + attrs + '</div><span class="stype">' + stype + '</span></div>';
+    html += '<div class="gantt-row-track" id="track-' + sid + '"></div></div>';
+  });
+  table.innerHTML = html;
+  // Place blocks
+  ganttData.forEach(g => placeBlock(g));
+}
+
+function placeBlock(g) {
+  const track = document.getElementById('track-' + g.stand);
+  if (!track) return;
+  const pct_left = (g.start_min / TOTAL_MIN) * 100;
+  const pct_w = ((g.end_min - g.start_min) / TOTAL_MIN) * 100;
+  const colour = g.colour || BADGE_COLOURS[g.badge] || '#6b7280';
+  const blk = document.createElement('div');
+  blk.className = 'flight-block';
+  blk.id = 'blk-' + g.flight_no;
+  blk.style.cssText = 'left:'+pct_left+'%;width:'+pct_w+'%;background:'+colour;
+  blk.innerHTML = '<span class="fno">'+g.flight_no+'</span><span class="acode">'+g.airline_code+'</span>';
+  blk.addEventListener('mouseenter', e => showTooltip(e, g));
+  blk.addEventListener('mouseleave', hideTooltip);
+  // Remove old block if exists
+  const old = document.getElementById('blk-' + g.flight_no);
+  if (old) old.remove();
+  track.appendChild(blk);
+}
+
+// ── TOOLTIP ──
+function showTooltip(e, g) {
+  const tt = document.getElementById('tooltip');
+  const badgeLabel = BADGE_LABELS[g.badge] || g.badge;
+  tt.innerHTML = '<div class="tt-row"><span class="tt-lbl">Flight</span><span class="tt-val">'+g.flight_no+' | '+g.airline+'</span></div>'
+    + '<div class="tt-row"><span class="tt-lbl">Type</span><span class="tt-val">'+g.ftype+' | '+g.aircraft+' | Cat '+g.icao_cat+'</span></div>'
+    + '<div class="tt-row"><span class="tt-lbl">ETA → ETD</span><span class="tt-val">'+g.eta+' → '+g.etd+'</span></div>'
+    + '<div class="tt-row"><span class="tt-lbl">Preferred</span><span class="tt-val">'+(g.preferred||'—')+'</span></div>'
+    + '<div class="tt-row"><span class="tt-lbl">Assigned</span><span class="tt-val" style="color:'+(g.colour||'#fff')+'"><b>'+g.stand+'</b></span></div>'
+    + '<div class="tt-badge" style="background:'+(g.colour||'#666')+'">'+badgeLabel+'</div>'
+    + (g.cbp ? '<div style="margin-top:4px;color:#ec4899;font-weight:700;font-size:10px">🔴 CBP Preclearance Required</div>' : '')
+    + (g.milp_reason ? '<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1)"><div style="color:#f59e0b;font-weight:700;font-size:10px;margin-bottom:3px">MILP Reasoning</div>' + g.milp_reason.split(' | ').map(r => '<div style="color:#94a3b8;font-size:10px;line-height:1.5">' + r + '</div>').join('') + '</div>' : '');
+  tt.style.display = 'block';
+  tt.style.left = (e.clientX + 12) + 'px';
+  tt.style.top = (e.clientY + 12) + 'px';
+}
+function hideTooltip() { document.getElementById('tooltip').style.display = 'none'; }
+
+function renderConflicts(conflicts, live) {
+  const panel = document.getElementById('conflictPanel');
+  if (!conflicts.length && !live.length) { panel.innerHTML = '<div style="color:var(--muted);font-size:12px">No conflicts — clean allocation</div>'; return; }
+  let html = '';
+  conflicts.slice(0, 5).forEach(c => {
+    html += '<div class="conflict-card"><div class="cc-title">'+c.flight+' — Stand '+c.wanted+' contention</div>'
+      + '<div class="cc-detail">Wanted <b>'+c.wanted+'</b>, assigned <b>'+c.assigned+'</b><br>'
+      + '<span class="cc-badge-name">'+( BADGE_LABELS[c.badge]||c.badge)+'</span><br>'
+      + c.reason+'</div></div>';
+  });
+  live.forEach(c => {
+    html += '<div class="conflict-card live"><div class="cc-title">Buffer violation</div>'
+      + '<div class="cc-detail">'+(c.description || (c.flight_a+' & '+c.flight_b+' overlap on Stand '+c.stand))+'</div></div>';
+  });
+  panel.innerHTML = html;
+}
+
+// ── EVENT SIMULATOR ──
+function onTriggerChange() {
+  const t = document.getElementById('triggerType').value;
+  const show = (id, vis) => document.getElementById(id).style.display = vis ? 'block' : 'none';
+
+  // Reset all
+  show('fgFlight', false); show('fgDelay', false);
+  show('fgStand', false);  show('fgWeather', false);
+
+  if (t === 'FLIGHT_DELAY') {
+    show('fgFlight', true); show('fgDelay', true);
+    document.getElementById('fgFlightLabel').textContent = 'Delayed Flight';
+    document.getElementById('delaySlider').min = 5;
+    document.getElementById('delaySlider').max = 60;
+    populateFlights(['ARR','TURN','DEP']);
+  } else if (t === 'STAND_CLOSE') {
+    show('fgStand', true);
+    populateStands();
+  } else if (t === 'MAYDAY') {
+    show('fgFlight', true);
+    document.getElementById('fgFlightLabel').textContent = 'Flight Declaring Emergency';
+    populateFlights(['ARR','TURN','DEP']);
+  } else if (t === 'WEATHER_STOP') {
+    show('fgWeather', true);
+  }
+}
+
+function populateFlights(ftypes) {
+  const sel = document.getElementById('flightNo');
+  if (!ganttData.length) return;
+  sel.innerHTML = ganttData
+    .filter(g => !ftypes.length || ftypes.includes(g.ftype))
+    .map(g => `<option value="${g.flight_no}">${g.flight_no} — ${g.airline}</option>`)
+    .join('');
+}
+
+function populateStands() {
+  const sel = document.getElementById('standNo');
+  if (!standRows.length) return;
+  sel.innerHTML = standRows
+    .filter(s => s.type === 'Contact' && s.active !== false)
+    .map(s => `<option value="${s.stand_id}">${s.stand_id} (${s.icao_max}${s.cbp?' · CBP':''})</option>`)
+    .join('');
+}
+
+async function applyEvent() {
+  const trigger  = document.getElementById('triggerType').value;
+  const flight_no = document.getElementById('flightNo').value;
+  const delta    = parseInt(document.getElementById('delaySlider').value) || 0;
+  const stand_id = document.getElementById('standNo').value;
+  const w_from   = document.getElementById('weatherFrom').value;
+  const w_to     = document.getElementById('weatherTo').value;
+
+  const body = { trigger, flight_no, delta_minutes: delta, stand_id, weather_start: w_from, weather_end: w_to };
+
+  const btn = document.getElementById('btnApply');
+  if (trigger === 'WEATHER_STOP') {
+    if (w_from < '07:00' || w_from > '08:30' || w_to < '07:00' || w_to > '08:30') {
+      alert("Weather Ground Stop must be within the simulation window: 07:00 to 08:30.");
+      return;
+    }
+  }
+
+  btn.disabled = true; btn.textContent = '⏳ Replanning…';
+  try {
+    const res = await fetch('/api/intraday/event', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const d = await res.json();
+    if (d.status !== 'success') { alert('Error: '+(d.message||'')); return; }
+
+    // Full Gantt reload
+    if (d.gantt) {
+      ganttData = d.gantt;
+      renderGantt();
+      renderLegend();
+    }
+
+    // AI Recommendation update
+    if (d.recommendation) {
+      document.getElementById('aiRecommendation').style.display = 'block';
+      document.getElementById('aiRecText').textContent = d.recommendation;
+    }
+
+    // Conflicts
+    renderConflicts([], d.live_conflicts || []);
+
+    // Decision log
+    const logLabel = {
+      ARRIVAL_DELAY:'Arrival Delay', DEPARTURE_DELAY:'Departure Delay',
+      STAND_CLOSE:'Stand Closed', MAYDAY:'Mayday', WEATHER_STOP:'Weather Stop'
+    }[trigger] || trigger;
+    const subject = trigger === 'STAND_CLOSE' ? stand_id :
+                    trigger === 'WEATHER_STOP' ? `${w_from}–${w_to}` : flight_no;
+    const entries = d.log_entries || (d.log_entry ? [d.log_entry] : []);
+    entries.forEach(le => {
+      const reasonObj = le.reason || {};
+      const reasonText = reasonObj.step_1_pass || reasonObj.step_2_pass || reasonObj.step_3_pass ||
+                         reasonObj.step_4a || reasonObj.step_4b || reasonObj.step_5 || 'Replanned';
+      const standInfo = le.stand ? ` → Stand ${le.stand}` : '';
+      addLog(le.flight || subject, logLabel, reasonText + standInfo, le.badge || 'QUICK_TURN');
+    });
+    if (!entries.length) addLog(subject, logLabel, 'Scenario applied — Gantt updated', 'PIER_CONTACT');
+
+    // Event history chip
+    eventCount++;
+    const hist = document.getElementById('eventHistory');
+    const item = document.createElement('div');
+    item.className = 'event-item';
+    item.innerHTML = `<span class="event-num">#${eventCount}</span> ${logLabel}: ${subject}${delta ? ' +'+delta+'min' : ''}`;
+    hist.prepend(item);
+
+  } catch(e) { alert('Error: '+e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Apply Event'; }
+}
+
+// ── LIVE UPDATES ──
+function addLog(flight, eventType, reason, badge, simTime) {
+  const body = document.getElementById('logBody');
+  const ph = document.getElementById('logPlaceholder');
+  if (ph) ph.remove();
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  const ts = simTime || (() => { const n = new Date(); return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); })();
+  entry.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><b style="color:var(--cyan);font-size:12px">'+flight+'</b><span class="log-time">'+ts+'</span></div>'
+    + '<span style="color:var(--text);line-height:1.4">'+reason+'</span>';
+  body.prepend(entry);
+}
+
+// ── LEGEND ──
+function renderLegend() {
+  const el = document.getElementById('ganttLegend');
+  const items = [
+    ['#14b8a6','Quick Turn'],['#a855f7','Arrival Park'],
+    ['#06b6d4','Departure Hold'],['#ec4899','CBP'],['#2563eb','Widebody'],
+    ['#f59e0b','Buffer Hold']
+  ];
+  el.innerHTML = items.map(([c,l]) => '<div class="legend-item"><div class="legend-dot" style="background:'+c+'"></div>'+l+'</div>').join('');
+  el.style.display = 'flex';
+}
+
+// ── RESET ──
+async function resetSim() {
+  await fetch('/api/intraday/reset', {method:'POST'});
+  ganttData = []; standRows = []; eventCount = 0;
+  document.getElementById('ganttTable').style.display = 'none';
+  document.getElementById('ganttEmpty').style.display = 'flex';
+  document.getElementById('ganttLegend').style.display = 'none';
+  document.getElementById('conflictPanel').innerHTML = '<div style="color:var(--muted);font-size:12px">Run optimizer to see resolved conflicts</div>';
+  document.getElementById('logBody').innerHTML = '<div id="logPlaceholder" style="color:var(--muted);font-size:11px;text-align:center;margin-top:20px">Awaiting optimizer run…</div>';
+  document.getElementById('eventHistory').innerHTML = '';
+  ['kTotal','kContact','kRemote','kRemPct','kCBP'].forEach(id => document.getElementById(id).textContent = '—');
+  document.getElementById('flightNo').innerHTML = '<option value="">— Run optimizer first —</option>';
+  document.getElementById('btnApply').disabled = true;
+}
+
+// ── EXPORT ──
+function exportCSV() { window.location.href = '/api/intraday/export'; }
+
+// Init trigger UI
+onTriggerChange();
+
+</script>
+</body>
+</html>

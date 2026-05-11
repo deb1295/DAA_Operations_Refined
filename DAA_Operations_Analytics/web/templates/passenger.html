@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Passenger Flow Pulse | DAA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a1628;--surface:#111827;--surface-light:#0f2044;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.07);
+  --amber:#f59e0b;--text:#f1f5f9;--muted:#cbd5e1;--green:#10b981;--red:#ef4444;--blue:#2d7be5;--cyan:#00f2ff;
+  --purple:#a855f7;--pink:#ec4899;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* NAVBAR */
+.navbar {
+    background: #0a1628;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 52px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    flex-shrink: 0;
+}
+.nav-brand { font-size: 13px; font-weight: 700; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 12px; }
+.daa-badge { background: #1d5fd1; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: .08em; }
+.nav-links { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 0; }
+.sw-btn {
+    width: 230px;
+    flex: 0 0 230px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: rgba(255, 255, 255, .5);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+.sw-btn:first-of-type { border-radius: 20px 0 0 20px; }
+.sw-btn:last-of-type { border-radius: 0 20px 20px 0; }
+.sw-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+}
+.sw-btn.active {
+    background: #1d5fd1;
+    color: #fff;
+    border-color: #1d5fd1;
+}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:linear-gradient(135deg, #060f1f 0%, #0f2044 40%, #0a1628 100%);border-bottom:1px solid var(--border);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-badge{background:var(--cyan);color:#0a1628;font-size:11px;font-weight:800;padding:4px 10px;border-radius:4px;letter-spacing:0.08em}
+.brand-title{font-size:18px;font-weight:800;letter-spacing:.5px; color:#fff;}
+.header-actions{display:flex;gap:12px}
+.btn{padding:8px 16px;border:none;border-radius:6px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);color:#0a1628;box-shadow:0 4px 14px rgba(0,242,255,0.2)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,242,255,0.4)}
+.btn-secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:rgba(255,255,255,0.12)}
+
+/* MAIN LAYOUT */
+.main{display:flex;flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 24px;gap:16px;flex-direction:column;}
+
+/* INSIGHT CARDS */
+.insight-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; flex-shrink:0;}
+.insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); position:relative; overflow:hidden;}
+.insight-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--cyan), var(--blue)); }
+.ic-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;}
+.ic-val { font-size: 20px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 4px;}
+.ic-sub { font-size: 10px; color: var(--cyan); font-weight:600; margin-bottom: 6px;}
+.ic-row { display:flex; justify-content:space-between; align-items:center; margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.07); }
+.ic-row-label { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+.ic-row-val { font-size:11px; font-weight:700; color:#fff; }
+
+/* SECTIONS */
+.section-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 16px; display:flex; align-items:center; gap:8px;}
+.section-subtitle { font-size: 11px; font-weight: 500; color: var(--muted); margin-left: 4px; text-transform: none; letter-spacing: 0; opacity: 0.9; font-style: italic; }
+.section-title::before { content:''; display:inline-block; width:4px; height:16px; background:var(--cyan); border-radius:2px;}
+.chart-container { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); height: 350px; position:relative;}
+
+.layout-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.split-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 24px; align-items: stretch; height: 100%; }
+.data-table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); overflow-y: auto; height: 100%; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: right; }
+.data-table th { position: sticky; top: -12px; background: var(--surface); color: var(--muted); padding: 8px 4px; border-bottom: 1px solid var(--border); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; z-index: 2;}
+.data-table th:first-child { text-align: left; }
+.data-table td { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #fff; }
+.data-table td:first-child { text-align: left; font-weight: 600; color: var(--cyan); }
+
+/* SPINNER */
+.spinner { border: 3px solid rgba(255,255,255,0.1); width: 24px; height: 24px; border-radius: 50%; border-left-color: var(--cyan); animation: spin 1s linear infinite; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);}
+@keyframes spin { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* VIEW SLICER */
+.view-slicer { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+.view-tab { padding: 7px 16px; border-radius: 7px; border: none; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 8px; }
+.view-tab .tab-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: 0.5; }
+.view-tab:hover:not(.active) { background: rgba(255,255,255,0.06); color: #fff; }
+.view-tab.active { background: linear-gradient(135deg, #1d5fd1 0%, #0f2044 100%); color: #fff; box-shadow: 0 2px 12px rgba(29,95,209,0.35); }
+.view-tab.active .tab-dot { opacity: 1; background: var(--cyan); }
+.view-tab.active[data-view="intraday"] { background: linear-gradient(135deg, #7c3aed 0%, #1d5fd1 100%); box-shadow: 0 2px 12px rgba(124,58,237,0.35); }
+.view-tab.active[data-view="intraday"] .tab-dot { background: var(--pink); }
+
+/* SIMULATION TABS */
+.sim-tab { padding: 7px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #64748b; font-size: 11px; font-weight: 700; font-family: inherit; cursor: pointer; transition: all .2s; white-space: nowrap; }
+.sim-tab:hover:not(.active) { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.2); }
+.sim-tab.active { background: linear-gradient(135deg, rgba(0,242,255,0.15) 0%, rgba(29,95,209,0.2) 100%); color: #00f2ff; border-color: rgba(0,242,255,0.4); }
+
+/* SIM INPUT */
+.sim-field { display:flex; flex-direction:column; gap:4px; flex: 1; }
+.sim-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+.sim-input { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:7px; color:#fff; font-size:12px; font-weight:600; font-family:inherit; padding:8px 12px; width:100%; outline:none; transition: border-color .2s; }
+.sim-input:focus { border-color:rgba(0,242,255,0.5); }
+.sim-input option { background:#111827; color:#fff; }
+/* DELTA BADGE */
+.delta-badge { display:inline-block; font-size:9px; font-weight:700; padding:1px 5px; border-radius:4px; margin-left:4px; }
+.delta-up { background:rgba(239,68,68,0.2); color:#f87171; }
+.delta-dn { background:rgba(16,185,129,0.2); color:#34d399; }
+
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+.sim-pulse { animation: pulse 2s infinite ease-in-out; }
+
+/* VIEW PANELS */
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+/* DAY MATRIX BOXES */
+.day-matrix-section { margin-top: 20px; }
+.day-matrix-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+}
+.day-matrix-header h3 {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px; margin: 0;
+}
+.day-matrix-header::before { content:''; flex: 1; height: 1px; background: var(--border); }
+.day-matrix-header::after  { content:''; flex: 1; height: 1px; background: var(--border); }
+.day-boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.day-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.day-box-header {
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(29,95,209,0.3) 0%, rgba(0,242,255,0.08) 100%);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 1px;
+}
+.day-box-scroll { max-height: 220px; overflow-y: auto; }
+
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="nav-brand" href="/">
+        <span class="daa-badge">DAA</span>
+        Strategic Planning Suite
+    </a>
+    <div class="nav-links">
+        <a class="sw-btn" href="/seasonal/plan-ahead">2026 Long Term Plan</a>
+        <a class="sw-btn" href="/3day">3-Day Stand Allocation</a>
+        <a class="sw-btn" href="/intraday">Intra-Day Stand Simulation</a>
+        <a class="sw-btn active" href="/passenger">Short Term Passenger Plan</a>
+    </div>
+</nav>
+
+<div class="header">
+  <div class="brand">
+    <span class="brand-badge">PULSE</span>
+    <span class="brand-title">PAX Flow Digital Twin</span>
+  </div>
+  <div class="header-actions" style="display:flex;align-items:center;gap:16px;">
+    <div class="view-slicer">
+        <button class="view-tab active" data-view="threeday" onclick="switchView('threeday')">
+            <span class="tab-dot"></span> 3-Day Outlook
+        </button>
+        <button class="view-tab" data-view="intraday" onclick="switchView('intraday')">
+            <span class="tab-dot"></span> Intra-Day Pulse
+        </button>
+    </div>
+    <button class="btn btn-secondary" onclick="loadData()">↺ Refresh Data</button>
+  </div>
+</div>
+
+<div class="main">
+    
+
+
+    <div class="layout-grid">
+
+        <!-- ============ 3-DAY PANEL ============ -->
+        <div class="view-panel active" id="panel-threeday">
+            <!-- Full-width chart -->
+            <div class="section-title">
+                3-Day Strategic Outlook 
+                <span class="section-subtitle">| passenger numbers engineered based on actual next 3-day flight schedules</span>
+            </div>
+            <div class="chart-container" style="height:380px; width:100%; margin-bottom:20px;">
+                <div class="spinner" id="spin-3day"></div>
+                <canvas id="threeDayChart"></canvas>
+            </div>
+
+            <!-- KPI strip: 6 touchpoint cards -->
+            <div class="insight-strip" id="strip-threeday" style="margin-bottom:20px;">
+                <!-- Check-in -->
+                <div class="insight-card" style="--cyan:#00f2ff">
+                    <div class="ic-title">✈ Check-In</div>
+                    <div class="ic-val" id="ic-chk-val">--</div>
+                    <div class="ic-sub" id="ic-chk-sub">Peak Pax / 15-min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-chk-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Avg (all day)</span>
+                        <span class="ic-row-val" id="ic-chk-avg">--</span>
+                    </div>
+                </div>
+                <!-- Security -->
+                <div class="insight-card" style="--cyan:#a855f7">
+                    <div class="ic-title">🛡 Security</div>
+                    <div class="ic-val" id="ic-sec-val">--</div>
+                    <div class="ic-sub" id="ic-sec-sub">Peak Pax / 15-min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-sec-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Pressure Index</span>
+                        <span class="ic-row-val" id="ic-sec-idx">--</span>
+                    </div>
+                </div>
+                <!-- CBP -->
+                <div class="insight-card" style="--cyan:#f43f5e">
+                    <div class="ic-title">🇺🇸 CBP Preclearance</div>
+                    <div class="ic-val" id="ic-cbp-val">--</div>
+                    <div class="ic-sub" id="ic-cbp-sub">Peak Pax / 15-min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-cbp-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">% of Security</span>
+                        <span class="ic-row-val" id="ic-cbp-pct">--</span>
+                    </div>
+                </div>
+                <!-- Lounge -->
+                <div class="insight-card" style="--cyan:#f59e0b">
+                    <div class="ic-title">🛋 Lounge / Retail</div>
+                    <div class="ic-val" id="ic-lng-val">--</div>
+                    <div class="ic-sub" id="ic-lng-sub">Peak Concurrent Pax</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-lng-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Avg Occupancy</span>
+                        <span class="ic-row-val" id="ic-lng-avg">--</span>
+                    </div>
+                </div>
+                <!-- Boarding -->
+                <div class="insight-card" style="--cyan:#ec4899">
+                    <div class="ic-title">🚪 Boarding Gates</div>
+                    <div class="ic-val" id="ic-brd-val">--</div>
+                    <div class="ic-sub" id="ic-brd-sub">Peak Pax / 15-min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-brd-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Gate Pressure</span>
+                        <span class="ic-row-val" id="ic-brd-prs">--</span>
+                    </div>
+                </div>
+                <!-- Immigration -->
+                <div class="insight-card" style="--cyan:#10b981">
+                    <div class="ic-title">🛂 Immigration</div>
+                    <div class="ic-val" id="ic-imm-val">--</div>
+                    <div class="ic-sub" id="ic-imm-sub">Peak Pax / 15-min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Window</span>
+                        <span class="ic-row-val" id="ic-imm-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Intl. Arrival Share</span>
+                        <span class="ic-row-val" id="ic-imm-pct">--</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 3-Day PAX Matrix: 3 separate day boxes -->
+            <div class="day-matrix-section">
+                <div class="day-matrix-header">
+                    <h3>PAX Count by Touchpoint &mdash; 30-min Intervals</h3>
+                </div>
+                <div class="day-boxes" id="dayBoxes">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ INTRA-DAY PANEL ============ -->
+        <div class="view-panel" id="panel-intraday">
+
+            <!-- SIMULATION PANEL (above KPIs) -->
+            <div id="sim-panel" style="
+                background: linear-gradient(135deg, rgba(15,32,68,0.95) 0%, rgba(10,22,40,0.98) 100%);
+                border: 1px solid rgba(0,242,255,0.2);
+                border-radius: 12px;
+                padding: 10px 16px;
+                margin-bottom: 12px;
+                position: relative;
+            ">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                    <span style="font-size:13px; font-weight:800; color:#fff; letter-spacing:.5px;">⚡ SCENARIO SIMULATION</span>
+                    <span style="font-size:10px; color:rgba(0,242,255,0.7); background:rgba(0,242,255,0.08); padding:3px 9px; border-radius:10px; border:1px solid rgba(0,242,255,0.15);">WHAT-IF ENGINE</span>
+                    <div id="sim-status-badge" style="display:none; margin-left:auto; font-size:11px; font-weight:700; color:#fbbf24; background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.3); padding:4px 12px; border-radius:8px;"></div>
+                </div>
+
+                <!-- Scenario Selector Tabs -->
+                <div style="display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                    <button class="sim-tab active" data-sim="flight_delay" onclick="selectScenario('flight_delay')">✈ Flight Delay</button>
+                    <button class="sim-tab" data-sim="ground_stop" onclick="selectScenario('ground_stop')">⛈ Weather Ground Stop</button>
+                    <button class="sim-tab" data-sim="security_reduction" onclick="selectScenario('security_reduction')">🛡 Security Lane Closure</button>
+                    <button class="sim-tab" data-sim="checkin_reduction" onclick="selectScenario('checkin_reduction')">🎫 Check-In Reduction</button>
+                </div>
+
+                <!-- Horizontal Layout for Inputs + Buttons -->
+                <div style="display:flex; align-items:flex-end; gap:24px; justify-content:space-between;">
+                    <div id="sim-params" style="display:flex; gap:16px; flex:1; max-width:800px;">
+                        <!-- Populated by selectScenario() -->
+                    </div>
+
+                    <div style="display:flex; gap:10px; align-items:center; flex-shrink:0;">
+                        <span id="sim-loading" style="display:none; color:var(--cyan); font-size:11px; font-weight:600; margin-right:8px;">⟳ Processing…</span>
+                        <button onclick="runSimulation()" style="
+                            padding: 10px 24px;
+                            background: linear-gradient(135deg, #00f2ff 0%, #1d5fd1 100%);
+                            color: #0a1628; font-size: 12px; font-weight: 800;
+                            border: none; border-radius: 8px; cursor: pointer;
+                            font-family: inherit; letter-spacing: .5px;
+                            box-shadow: 0 4px 14px rgba(0,242,255,0.25);
+                            transition: all .2s;
+                        " onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">▶ RUN SIMULATION</button>
+                        <button onclick="clearSimulation()" style="
+                            padding: 10px 16px;
+                            background: rgba(255,255,255,0.06); color: #94a3b8;
+                            font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);
+                            border-radius: 8px; cursor: pointer; font-family: inherit;
+                            transition: all .2s;
+                        " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">✕ Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:24px; margin-bottom:12px;">
+                Intra-Day Tactical Pulse 
+                <span class="section-subtitle">| PAX flow aligned to flights between 7 AM to 8:30 AM based on touchpoint-wise probability distributions</span>
+            </div>
+
+            <!-- Chart.js recommended pattern: position:relative wrapper with explicit px height -->
+            <div style="display:grid; grid-template-columns:3fr 1fr; gap:16px; margin-bottom:12px;">
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 16px; box-shadow:0 4px 20px rgba(0,0,0,0.2); position:relative;">
+                    <div class="spinner" id="spin-intra"></div>
+                    <div id="intraChartContainer" style="position:relative; height:360px; width:100%;">
+                        <canvas id="intraChart"></canvas>
+                    </div>
+                </div>
+                <div class="data-table-wrapper" style="height:386px;">
+                    <div style="font-size:11px; font-weight:600; color:var(--muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; border-bottom:1px solid var(--border); padding-bottom:4px;">PAX Count by touchpoint</div>
+                    <table class="data-table" id="intraTable">
+                        <thead><tr><th>Time</th><th style="color:var(--cyan)">Chk</th><th style="color:var(--purple)">Sec</th><th style="color:#f43f5e">CBP</th><th style="color:var(--amber)">Lng</th><th style="color:var(--pink)">Brd</th><th style="color:var(--emerald)">Imm</th><th style="color:var(--blue)">Bag</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6-CARD KPI STRIP -->
+            <div class="insight-strip" id="strip-intraday" style="margin-bottom:12px; gap:10px;">
+                <div class="insight-card" style="--cyan:#00f2ff">
+                    <div class="ic-title">✈ Check-In</div>
+                    <div class="ic-val" id="intra-chk-val">--</div>
+                    <div class="ic-sub" id="intra-chk-sub">Peak Pax / min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-chk-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Avg / min</span>
+                        <span class="ic-row-val" id="intra-chk-avg">--</span>
+                    </div>
+                </div>
+                <div class="insight-card" style="--cyan:#a855f7">
+                    <div class="ic-title">🛡 Security</div>
+                    <div class="ic-val" id="intra-sec-val">--</div>
+                    <div class="ic-sub" id="intra-sec-sub">Peak Pax / min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-sec-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Pressure Index</span>
+                        <span class="ic-row-val" id="intra-sec-idx">--</span>
+                    </div>
+                </div>
+                <div class="insight-card" style="--cyan:#f43f5e">
+                    <div class="ic-title">🇺🇸 CBP</div>
+                    <div class="ic-val" id="intra-cbp-val">--</div>
+                    <div class="ic-sub" id="intra-cbp-sub">Peak Pax / min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-cbp-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">% of Security</span>
+                        <span class="ic-row-val" id="intra-cbp-pct">--</span>
+                    </div>
+                </div>
+                <div class="insight-card" style="--cyan:#f59e0b">
+                    <div class="ic-title">🛋 Lounge</div>
+                    <div class="ic-val" id="intra-lng-val">--</div>
+                    <div class="ic-sub" id="intra-lng-sub">Peak Concurrent</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-lng-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Avg Occupancy</span>
+                        <span class="ic-row-val" id="intra-lng-avg">--</span>
+                    </div>
+                </div>
+                <div class="insight-card" style="--cyan:#ec4899">
+                    <div class="ic-title">🚪 Boarding</div>
+                    <div class="ic-val" id="intra-brd-val">--</div>
+                    <div class="ic-sub" id="intra-brd-sub">Peak Pax / min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-brd-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Gate Pressure</span>
+                        <span class="ic-row-val" id="intra-brd-prs">--</span>
+                    </div>
+                </div>
+                <div class="insight-card" style="--cyan:#10b981">
+                    <div class="ic-title">🛂 Immigration</div>
+                    <div class="ic-val" id="intra-imm-val">--</div>
+                    <div class="ic-sub" id="intra-imm-sub">Peak Pax / min</div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Peak Time</span>
+                        <span class="ic-row-val" id="intra-imm-time">--</span>
+                    </div>
+                    <div class="ic-row">
+                        <span class="ic-row-label">Intl. Share</span>
+                        <span class="ic-row-val" id="intra-imm-pct">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASCADE NARRATIVE (shown during simulation) -->
+            <div id="cascade-box" style="display:none; background:rgba(251,191,36,0.05); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:12px 16px; margin-bottom:8px;">
+                <div style="font-size:11px; font-weight:700; color:#fbbf24; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">⚡ Cascade Impact — How This Affects Passenger Flow</div>
+                <div id="cascade-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                <div id="at-risk-box" style="margin-top:12px; display:none;">
+                    <div style="font-size:10px; font-weight:700; color:#f43f5e; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">⚠ Flights at Risk</div>
+                    <div id="at-risk-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Chart.js Default configuration for dark mode
+Chart.defaults.color = '#cbd5e1';
+Chart.defaults.font.family = 'Inter';
+const gridConfig = { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false };
+
+let threeDayChartInstance = null;
+let intraChartInstance = null;
+
+const colors = {
+    checkin: '#00f2ff',
+    security: '#a855f7',
+    cbp: '#f43f5e',
+    lounge: '#f59e0b',
+    boarding: '#ec4899',
+    immigration: '#10b981',
+    baggage: '#3b82f6'
+};
+
+// Custom plugin: draws a subtle hint "Click legend to toggle" on the right side of the legend row
+Chart.register({
+    id: 'legendHint',
+    afterDraw(chart) {
+        if (!chart.options.plugins.legendHint) return;
+        const leg = chart.legend;
+        if (!leg || !leg.legendItems || leg.legendItems.length === 0) return;
+        const ctx = chart.ctx;
+        const x = chart.width - 8;
+        const y = leg.top + (leg.bottom - leg.top) / 2;
+        ctx.save();
+        ctx.font = 'italic 10px Inter, sans-serif';
+        ctx.fillStyle = 'rgba(148,163,184,0.6)';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('↑ click legend to toggle', x, y);
+        ctx.restore();
+    }
+});
+
+// Custom plugin: draws glossy date labels as a TRUE second line below the hour tick numbers
+// Only at the MIDDLE 3-hour tick of each day
+Chart.register({
+    id: 'xDateLabels',
+    afterDraw(chart) {
+        const opts = chart.options.plugins.xDateLabels;
+        if (!opts || !opts.dateAtIndex) return;
+        const { dateAtIndex } = opts;
+        const xScale = chart.scales.x;
+        const ctx = chart.ctx;
+        const bottom = chart.chartArea.bottom + 24;  // below the hour number ticks
+
+        ctx.save();
+        ctx.font = '700 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+
+        Object.entries(dateAtIndex).forEach(([idx, shortDate]) => {
+            const x = xScale.getPixelForValue(parseInt(idx));
+            // Glossy gradient: cyan → blue
+            const grad = ctx.createLinearGradient(x - 30, bottom, x + 30, bottom + 14);
+            grad.addColorStop(0, '#00f2ff');
+            grad.addColorStop(1, '#60a5fa');
+            ctx.fillStyle = grad;
+            ctx.fillText(shortDate, x, bottom);
+        });
+        ctx.restore();
+    }
+});
+
+async function loadData() {
+    document.getElementById('spin-intra').style.display = 'block';
+    document.getElementById('spin-3day').style.display = 'block';
+    
+    try {
+        const [resIntra, res3Day] = await Promise.all([
+            fetch('/api/passenger/intraday').then(r => r.json()),
+            fetch('/api/passenger/3day').then(r => r.json())
+        ]);
+        
+        if(resIntra.status === 'success') {
+            _baselineData = resIntra.data;
+            // Always populate the table immediately — it doesn't need the panel to be visible
+            populateIntraTable(resIntra.data);
+            updateIntraInsights(resIntra.data, null);
+            // Only render the chart if its panel is already visible;
+            // otherwise switchView will lazy-render it once the canvas has correct dimensions.
+            const intraPanel = document.getElementById('panel-intraday');
+            if (intraPanel && intraPanel.classList.contains('active')) {
+                renderIntraChart(resIntra.data);
+            }
+        }
+        
+        if(res3Day.status === 'success') {
+            render3DayChart(res3Day.data);
+            update3DayInsights(res3Day.data);
+        }
+    } catch(err) {
+        console.error("Failed to load passenger data:", err);
+    } finally {
+        document.getElementById('spin-intra').style.display = 'none';
+        document.getElementById('spin-3day').style.display = 'none';
+    }
+}
+
+function renderIntraChart(data) {
+    const spinner = document.getElementById('spin-intra');
+    if (spinner) spinner.style.display = 'none';
+
+    // NUCLEAR OPTION: Destroy existing chart instance, then destroy and recreate the canvas DOM element itself.
+    // This absolutely guarantees we avoid the "Canvas is already in use" error.
+    if (intraChartInstance) { intraChartInstance.destroy(); intraChartInstance = null; }
+    Chart.helpers?.each(Chart.instances, function(instance){
+      if (instance.canvas.id === 'intraChart') { instance.destroy(); }
+    });
+
+    const container = document.getElementById('intraChartContainer');
+    if (container) { container.innerHTML = '<canvas id="intraChart"></canvas>'; }
+    
+    const ctx = document.getElementById('intraChart').getContext('2d');
+
+    intraChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                { label:'Check-in',     data:data.checkin,     borderColor:colors.checkin,     backgroundColor:colors.checkin+'20',     fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  },
+                { label:'Security',     data:data.security,    borderColor:colors.security,    backgroundColor:colors.security+'20',    fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  },
+                { label:'CBP',          data:data.cbp,         borderColor:colors.cbp,         backgroundColor:colors.cbp+'20',         fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  },
+                { label:'Lounge',       data:data.lounge,      borderColor:colors.lounge,      backgroundColor:colors.lounge+'15',      fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y1', borderDash:[5,5] },
+                { label:'Boarding',     data:data.boarding,    borderColor:colors.boarding,    backgroundColor:colors.boarding+'20',    fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  },
+                { label:'Immigration',  data:data.immigration, borderColor:colors.immigration, backgroundColor:colors.immigration+'20', fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  },
+                { label:'Baggage',      data:data.baggage,     borderColor:colors.baggage,     backgroundColor:colors.baggage+'20',     fill:true, tension:0.4, borderWidth:2, pointRadius:0, yAxisID:'y'  }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 0 },
+            interaction: { mode: 'index', intersect: false },
+            elements: { point: { radius: 0, hitRadius: 10, hoverRadius: 4 } },
+            plugins: {
+                legend: { position:'top', labels:{ usePointStyle:true, pointStyle:'rectRounded', boxWidth:14, boxHeight:5, padding:20, font:{size:12} } },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(17,24,39,0.9)', 
+                    titleColor: '#fff', 
+                    bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(255,255,255,0.1)', 
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                x: { grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ maxTicksLimit:12, maxRotation:0, font:{size:10,weight:'600'} } },
+                y: { grid:{ color:'rgba(255,255,255,0.05)' }, title:{ display:true, text:'Pax / min', color:'#94a3b8', font:{size:11} }, min:0 },
+                y1:{ position:'right', grid:{ drawOnChartArea:false }, title:{ display:true, text:'Lounge Concurrent', color:'#94a3b8', font:{size:11} }, min:0 }
+            }
+        }
+    });
+
+    populateIntraTable(data);
+}
+
+function populateIntraTable(data) {
+    if (!data || !data.table_labels) return;
+    const tbody = document.querySelector('#intraTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    data.table_labels.forEach((label, i) => {
+        tbody.innerHTML += `<tr>
+            <td>${label}</td>
+            <td>${data.table_data.checkin[i]}</td>
+            <td>${data.table_data.security[i]}</td>
+            <td>${data.table_data.cbp[i]}</td>
+            <td>${data.table_data.lounge[i]}</td>
+            <td>${data.table_data.boarding[i]}</td>
+            <td>${data.table_data.immigration[i]}</td>
+            <td>${data.table_data.baggage[i]}</td>
+        </tr>`;
+    });
+}
+
+function render3DayChart(data) {
+    const ctx = document.getElementById('threeDayChart').getContext('2d');
+    if(threeDayChartInstance) threeDayChartInstance.destroy();
+
+    // Pre-compute: which data-point index gets the date label (MIDDLE 3-hr tick of each day only)
+    const dayTickGroups = {};
+    data.day_labels.forEach((dayLabel, i) => {
+        const hm  = data.labels[i];
+        const hrs = parseInt(hm.split(':')[0]);
+        const min = parseInt(hm.split(':')[1]);
+        if (min !== 0 || hrs % 3 !== 0) return;
+        if (!dayTickGroups[dayLabel]) dayTickGroups[dayLabel] = [];
+        dayTickGroups[dayLabel].push(i);
+    });
+    // Map index -> short date string (only for the middle tick of each day)
+    const dateAtIndex = {};
+    Object.entries(dayTickGroups).forEach(([dayLabel, idxArr]) => {
+        const mid = idxArr[Math.floor(idxArr.length / 2)];
+        dateAtIndex[mid] = dayLabel.split(' ').slice(1).join(' '); // "31 Mar"
+    });
+
+    threeDayChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,   // raw "HH:MM" — tick callback controls display
+            datasets: [
+                { label: 'Check-in (Inflow)',       data: data.checkin,     borderColor: colors.checkin,     backgroundColor: colors.checkin     + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                { label: 'Security Queueing',        data: data.security,    borderColor: colors.security,    backgroundColor: colors.security    + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                { label: 'US Preclearance (CBP)',    data: data.cbp,         borderColor: colors.cbp,         backgroundColor: colors.cbp         + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                { label: 'Lounge/Retail Occupancy', data: data.lounge,      borderColor: colors.lounge,      backgroundColor: colors.lounge      + '10', fill: true, tension: 0.4, borderWidth: 2, borderDash: [5,5], yAxisID: 'y1' },
+                { label: 'Boarding Gate Pulse',      data: data.boarding,    borderColor: colors.boarding,    backgroundColor: colors.boarding    + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                { label: 'Immigration',              data: data.immigration, borderColor: colors.immigration, backgroundColor: colors.immigration + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                { label: 'Baggage Reclaim Surge',    data: data.baggage,     borderColor: colors.baggage,     backgroundColor: colors.baggage     + '18', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            layout: { padding: { bottom: 22 } },
+            interaction: { mode: 'index', intersect: false },
+            elements: { point: { radius: 0, hitRadius: 10, hoverRadius: 4 } },
+            plugins: {
+                legend: { 
+                    position: 'top', 
+                    labels: { 
+                        usePointStyle: true, 
+                        pointStyle: 'rectRounded', 
+                        boxWidth: 16, 
+                        boxHeight: 6, 
+                        padding: 24, 
+                        font: { size: 13, weight: '500' } 
+                    } 
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(17,24,39,0.9)', titleColor: '#fff', bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+                    callbacks: { title: (items) => data.day_labels[items[0].dataIndex] + '  ' + data.labels[items[0].dataIndex] }
+                },
+                legendHint: {},
+                // Pass dateAtIndex so afterDraw plugin can read it
+                xDateLabels: { dateAtIndex }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                    ticks: {
+                        maxRotation: 0,
+                        autoSkip: false,
+                        color: '#64748b',
+                        font: { size: 11, weight: '600' },
+                        callback: function(value, index) {
+                            const hm  = data.labels[index];
+                            if (!hm) return '';
+                            const hrs = parseInt(hm.split(':')[0]);
+                            const min = parseInt(hm.split(':')[1]);
+                            // Only show at 3-hour marks
+                            if (min !== 0 || hrs % 3 !== 0) return '';
+                            // Return just the hour number — date drawn by plugin
+                            return String(hrs);
+                        }
+                    }
+                },
+                y:  { grid: gridConfig, title: { display: true, text: 'Pax / 15-min' }, min: 0 },
+                y1: { position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Lounge Occupancy' }, min: 0 }
+            }
+        }
+    });
+
+    // Render 3 per-day matrix boxes from days_data
+    const container = document.getElementById('dayBoxes');
+    container.innerHTML = '';
+    const colDefs = [
+        { key: 'checkin',     label: 'Chk',  color: colors.checkin },
+        { key: 'security',    label: 'Sec',  color: colors.security },
+        { key: 'cbp',         label: 'CBP',  color: '#f43f5e' },
+        { key: 'lounge',      label: 'Lng',  color: colors.lounge },
+        { key: 'boarding',    label: 'Brd',  color: colors.boarding },
+        { key: 'immigration', label: 'Imm',  color: colors.immigration },
+        { key: 'baggage',     label: 'Bag',  color: colors.baggage },
+    ];
+    data.days_data.forEach(day => {
+        const thCells = colDefs.map(c => `<th style="color:${c.color}">${c.label}</th>`).join('');
+        let rows = '';
+        day.labels.forEach((lbl, i) => {
+            rows += `<tr><td>${lbl}</td>${colDefs.map(c => `<td>${day[c.key][i] ?? 0}</td>`).join('')}</tr>`;
+        });
+        container.innerHTML += `
+        <div class="day-box">
+            <div class="day-box-header">${day.date}</div>
+            <div class="day-box-scroll">
+                <table class="data-table">
+                    <thead><tr><th>Time</th>${thCells}</tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        </div>`;
+    });
+}
+
+
+
+function update3DayInsights(data) {
+    // Helper: find index of max value
+    function peakIdx(arr) { return arr.indexOf(Math.max(...arr)); }
+    // Helper: label at index — uses data.labels (HH:MM) + day_labels
+    function peakTimeLabel(arr) {
+        const i = peakIdx(arr);
+        const hm = data.labels[i] || '--';
+        const dy = data.day_labels[i] || '';
+        // Extract short date e.g. "31 Mar" from "Tue 31 Mar"
+        const shortDay = dy.split(' ').slice(1).join(' ');
+        return shortDay ? shortDay + ' · ' + hm : hm;
+    }
+    // Helper: 3-hour window label (peak ± 1.5h)
+    function peakWindow(arr) {
+        const i = peakIdx(arr);
+        const hm = data.labels[i];
+        if (!hm) return '--';
+        const [h, m] = hm.split(':').map(Number);
+        const totalMin = h * 60 + m;
+        const pad = (t) => { const hh = Math.floor(((t % 1440) + 1440) % 1440 / 60); const mm = ((t % 1440) + 1440) % 1440 % 60; return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0'); };
+        return pad(totalMin - 90) + ' – ' + pad(totalMin + 90);
+    }
+    function avg(arr) { const v = arr.filter(x => x > 0); return v.length ? Math.round(v.reduce((a,b)=>a+b,0)/v.length) : 0; }
+    function fmt(n) { return Math.round(n).toLocaleString(); }
+    function pct(a, b) { return b > 0 ? Math.round(a / b * 100) + '%' : '--'; }
+
+    const maxChk = Math.max(...data.checkin);
+    const maxSec = Math.max(...data.security);
+    const maxCbp = Math.max(...data.cbp);
+    const maxLng = Math.max(...data.lounge);
+    const maxBrd = Math.max(...data.boarding);
+    const maxImm = Math.max(...data.immigration);
+    const maxBag = Math.max(...data.baggage);
+
+    // Check-in
+    document.getElementById('ic-chk-val').textContent  = fmt(maxChk);
+    document.getElementById('ic-chk-sub').textContent  = 'Peak Pax / 15-min';
+    document.getElementById('ic-chk-time').textContent = peakTimeLabel(data.checkin);
+    document.getElementById('ic-chk-avg').textContent  = fmt(avg(data.checkin)) + ' pax';
+
+    // Security
+    document.getElementById('ic-sec-val').textContent  = fmt(maxSec);
+    document.getElementById('ic-sec-sub').textContent  = 'Peak Pax / 15-min';
+    document.getElementById('ic-sec-time').textContent = peakTimeLabel(data.security);
+    // Pressure index: ratio of peak to avg (>2 = high pressure)
+    const secPressure = avg(data.security) > 0 ? (maxSec / avg(data.security)).toFixed(1) + '× avg' : '--';
+    document.getElementById('ic-sec-idx').textContent  = secPressure;
+
+    // CBP
+    document.getElementById('ic-cbp-val').textContent  = fmt(maxCbp);
+    document.getElementById('ic-cbp-sub').textContent  = 'Peak Pax / 15-min';
+    document.getElementById('ic-cbp-time').textContent = peakTimeLabel(data.cbp);
+    document.getElementById('ic-cbp-pct').textContent  = pct(maxCbp, maxSec) + ' of security peak';
+
+    // Lounge
+    document.getElementById('ic-lng-val').textContent  = fmt(maxLng);
+    document.getElementById('ic-lng-sub').textContent  = 'Peak Concurrent Pax';
+    document.getElementById('ic-lng-time').textContent = peakTimeLabel(data.lounge);
+    document.getElementById('ic-lng-avg').textContent  = fmt(avg(data.lounge)) + ' pax';
+
+    // Boarding
+    document.getElementById('ic-brd-val').textContent  = fmt(maxBrd);
+    document.getElementById('ic-brd-sub').textContent  = 'Peak Pax / 15-min';
+    document.getElementById('ic-brd-time').textContent = peakTimeLabel(data.boarding);
+    // Gate pressure: boarding as % of check-in peak (shows how many reach gates)
+    document.getElementById('ic-brd-prs').textContent  = pct(maxBrd, maxChk) + ' of check-in';
+
+    // Immigration
+    document.getElementById('ic-imm-val').textContent  = fmt(maxImm);
+    document.getElementById('ic-imm-sub').textContent  = 'Peak Pax / 15-min';
+    document.getElementById('ic-imm-time').textContent = peakTimeLabel(data.immigration);
+    // Intl share: immigration as % of baggage (proxy for intl arrivals needing passport ctrl)
+    document.getElementById('ic-imm-pct').textContent  = pct(maxImm, maxBag) + ' of arrivals';
+}
+
+function updateIntraInsights(data, simData) {
+    const isSimMode = !!simData;
+    const src = isSimMode ? simData.simulated : data;
+
+    function peakIdx(arr) { return arr.indexOf(Math.max(...arr)); }
+    function peakTime(arr, labels) { const i = peakIdx(arr); return labels[i] || '--'; }
+    function avg(arr) { const v = arr.filter(x => x > 0); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length).toFixed(1) : '0'; }
+    function fmt(n) { return Math.round(n).toLocaleString(); }
+    function pct(a, b) { return b > 0 ? Math.round(a/b*100) + '%' : '--'; }
+    function deltaBadge(key) {
+        if (!isSimMode || !simData.impact[key]) return '';
+        const d = simData.impact[key].delta_pct;
+        if (Math.abs(d) < 0.5) return '';
+        const cls = d > 0 ? 'delta-up' : 'delta-dn';
+        const sign = d > 0 ? '▲' : '▼';
+        return `<span class="delta-badge ${cls}">${sign}${Math.abs(d).toFixed(1)}%</span>`;
+    }
+
+    const labels = data.labels;
+    const maxChk = Math.max(...src.checkin);
+    const maxSec = Math.max(...src.security);
+    const maxCbp = Math.max(...src.cbp);
+    const maxLng = Math.max(...src.lounge);
+    const maxBrd = Math.max(...src.boarding);
+    const maxImm = Math.max(...src.immigration);
+    const maxBag = Math.max(...src.baggage);
+
+    document.getElementById('intra-chk-val').innerHTML  = fmt(maxChk) + deltaBadge('checkin');
+    document.getElementById('intra-chk-sub').textContent = isSimMode ? 'Simulated Peak Pax/min' : 'Peak Pax / min';
+    document.getElementById('intra-chk-time').textContent = peakTime(src.checkin, labels);
+    document.getElementById('intra-chk-avg').textContent  = avg(src.checkin) + ' pax';
+
+    document.getElementById('intra-sec-val').innerHTML  = fmt(maxSec) + deltaBadge('security');
+    document.getElementById('intra-sec-sub').textContent = isSimMode ? 'Simulated Peak Pax/min' : 'Peak Pax / min';
+    document.getElementById('intra-sec-time').textContent = peakTime(src.security, labels);
+    const pressure = parseFloat(avg(src.security)) > 0 ? (maxSec / parseFloat(avg(src.security))).toFixed(1) + '× avg' : '--';
+    document.getElementById('intra-sec-idx').textContent  = pressure;
+
+    document.getElementById('intra-cbp-val').innerHTML  = fmt(maxCbp) + deltaBadge('cbp');
+    document.getElementById('intra-cbp-sub').textContent = isSimMode ? 'Simulated Peak Pax/min' : 'Peak Pax / min';
+    document.getElementById('intra-cbp-time').textContent = peakTime(src.cbp, labels);
+    document.getElementById('intra-cbp-pct').textContent  = pct(maxCbp, maxSec) + ' of sec peak';
+
+    document.getElementById('intra-lng-val').innerHTML  = fmt(maxLng) + deltaBadge('lounge');
+    document.getElementById('intra-lng-sub').textContent = isSimMode ? 'Simulated Concurrent' : 'Peak Concurrent';
+    document.getElementById('intra-lng-time').textContent = peakTime(src.lounge, labels);
+    document.getElementById('intra-lng-avg').textContent  = fmt(parseFloat(avg(src.lounge))) + ' pax';
+
+    document.getElementById('intra-brd-val').innerHTML  = fmt(maxBrd) + deltaBadge('boarding');
+    document.getElementById('intra-brd-sub').textContent = isSimMode ? 'Simulated Peak Pax/min' : 'Peak Pax / min';
+    document.getElementById('intra-brd-time').textContent = peakTime(src.boarding, labels);
+    document.getElementById('intra-brd-prs').textContent  = pct(maxBrd, maxChk) + ' of check-in';
+
+    document.getElementById('intra-imm-val').innerHTML  = fmt(maxImm) + deltaBadge('immigration');
+    document.getElementById('intra-imm-sub').textContent = isSimMode ? 'Simulated Peak Pax/min' : 'Peak Pax / min';
+    document.getElementById('intra-imm-time').textContent = peakTime(src.immigration, labels);
+    document.getElementById('intra-imm-pct').textContent  = pct(maxImm, maxBag) + ' of arrivals';
+}
+
+// ── SIMULATION UI ─────────────────────────────────────────────────
+let _currentScenario = 'flight_delay';
+let _flightList = [];
+let _baselineData = null;
+
+// Load flight list for flight selector
+fetch('/api/passenger/flights').then(r=>r.json()).then(d=>{ if(d.status==='success') _flightList = d.flights; });
+
+const SCENARIO_FORMS = {
+    flight_delay: () => {
+        const opts = _flightList.map(f => `<option value="${f.flight_no}">${f.flight_no} — ETD ${f.etd}</option>`).join('');
+        return `
+            <div class="sim-field">
+                <label class="sim-label">Select Flight</label>
+                <select class="sim-input" id="sp-flight">${opts || '<option>Loading...</option>'}</select>
+            </div>
+            <div class="sim-field">
+                <label class="sim-label">Delay (minutes)</label>
+                <input class="sim-input" id="sp-delay" type="number" min="5" max="180" value="30" placeholder="e.g. 45">
+            </div>`;
+    },
+    ground_stop: () => `
+        <div class="sim-field">
+            <label class="sim-label">Stop Start Time (HH:MM)</label>
+            <input class="sim-input" id="sp-gs-start" type="time" value="07:30">
+        </div>
+        <div class="sim-field">
+            <label class="sim-label">Duration (minutes)</label>
+            <input class="sim-input" id="sp-gs-dur" type="number" min="10" max="120" value="45" placeholder="e.g. 45">
+        </div>`,
+    security_reduction: () => `
+        <div class="sim-field">
+            <label class="sim-label">Throughput Reduction (%)</label>
+            <input class="sim-input" id="sp-sec-pct" type="number" min="10" max="90" value="40" placeholder="e.g. 40">
+        </div>
+        <div class="sim-field">
+            <label class="sim-label">From (HH:MM)</label>
+            <input class="sim-input" id="sp-sec-start" type="time" value="06:00">
+        </div>
+        <div class="sim-field">
+            <label class="sim-label">Until (HH:MM)</label>
+            <input class="sim-input" id="sp-sec-end" type="time" value="08:30">
+        </div>`,
+    checkin_reduction: () => `
+        <div class="sim-field">
+            <label class="sim-label">Desk Capacity Reduction (%)</label>
+            <input class="sim-input" id="sp-chk-pct" type="number" min="10" max="90" value="40" placeholder="e.g. 40">
+        </div>
+        <div class="sim-field">
+            <label class="sim-label">From (HH:MM)</label>
+            <input class="sim-input" id="sp-chk-start" type="time" value="06:00">
+        </div>
+        <div class="sim-field">
+            <label class="sim-label">Until (HH:MM)</label>
+            <input class="sim-input" id="sp-chk-end" type="time" value="08:00">
+        </div>`
+};
+
+function selectScenario(sc) {
+    _currentScenario = sc;
+    document.querySelectorAll('.sim-tab').forEach(t => t.classList.toggle('active', t.dataset.sim === sc));
+    document.getElementById('sim-params').innerHTML = SCENARIO_FORMS[sc] ? SCENARIO_FORMS[sc]() : '';
+}
+
+function getParams() {
+    const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    if (_currentScenario === 'flight_delay')       return { flight_no: g('sp-flight'), delay_min: g('sp-delay') };
+    if (_currentScenario === 'ground_stop')        return { start: g('sp-gs-start'), duration_min: g('sp-gs-dur') };
+    if (_currentScenario === 'security_reduction') return { reduction_pct: g('sp-sec-pct'), start: g('sp-sec-start'), end: g('sp-sec-end') };
+    if (_currentScenario === 'checkin_reduction')  return { reduction_pct: g('sp-chk-pct'), start: g('sp-chk-start'), end: g('sp-chk-end') };
+    return {};
+}
+
+async function runSimulation() {
+    document.getElementById('sim-loading').style.display = 'inline';
+    try {
+        const res = await fetch('/api/passenger/simulate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scenario: _currentScenario, params: getParams() })
+        });
+        const json = await res.json();
+        if (json.status !== 'success') throw new Error(json.message);
+        const sd = json.data;
+
+        // Update chart overlay
+        renderSimulationOverlay(sd);
+
+        // Update KPI cards with simulated data
+        if (_baselineData) updateIntraInsights(_baselineData, sd);
+
+        // Update Table with simulated data
+        populateIntraTable(sd);
+
+        // Show cascade narrative
+        const cascBox = document.getElementById('cascade-box');
+        const cascList = document.getElementById('cascade-list');
+        cascBox.style.display = 'block';
+        cascList.innerHTML = sd.cascade.map(c => {
+            return `<div style="font-size:12px; color:#e2e8f0; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">${c}</div>`;
+        }).join('');
+
+        // At-risk flights
+        const arBox = document.getElementById('at-risk-box');
+        const arList = document.getElementById('at-risk-list');
+        if (sd.at_risk_flights && sd.at_risk_flights.length > 0) {
+            arBox.style.display = 'block';
+            arList.innerHTML = sd.at_risk_flights.map(f =>
+                `<div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:6px; padding:4px 10px; font-size:11px; font-weight:700; color:#fca5a5;">${f.flight} <span style="font-weight:400; color:#94a3b8;">${f.detail}</span></div>`
+            ).join('');
+        } else { arBox.style.display = 'none'; }
+
+        // Status badge
+        const labels = { flight_delay:'✈ Flight Delay Active', ground_stop:'⛈ Ground Stop Active', security_reduction:'🛡 Security Reduction Active', checkin_reduction:'🎫 Check-In Reduction Active' };
+        const badge = document.getElementById('sim-status-badge');
+        badge.textContent = labels[_currentScenario] || 'Simulation Active';
+        badge.style.display = 'block';
+        badge.classList.add('sim-pulse');
+    } catch(e) {
+        console.error('Simulation error:', e);
+        alert('Simulation error: ' + e.message);
+    } finally {
+        document.getElementById('sim-loading').style.display = 'none';
+    }
+}
+
+function renderSimulationOverlay(sd) {
+    // NUCLEAR OPTION: Destroy chart and recreate canvas DOM element
+    if (intraChartInstance) { intraChartInstance.destroy(); intraChartInstance = null; }
+    Chart.helpers?.each(Chart.instances, function(instance){
+      if (instance.canvas.id === 'intraChart') { instance.destroy(); }
+    });
+
+    const container = document.getElementById('intraChartContainer');
+    if (container) { container.innerHTML = '<canvas id="intraChart"></canvas>'; }
+
+    const ctx = document.getElementById('intraChart').getContext('2d');
+    const keys  = ['checkin','security','cbp','lounge','boarding','immigration','baggage'];
+    const yAxes = { checkin:'y', security:'y', cbp:'y', lounge:'y1', boarding:'y', immigration:'y', baggage:'y' };
+    const lbls  = { checkin:'Check-in', security:'Security', cbp:'CBP', lounge:'Lounge', boarding:'Boarding', immigration:'Immigration', baggage:'Baggage' };
+
+    const baseDs = keys.map(k => ({
+        label: lbls[k] + ' (Baseline)',
+        data:  sd.baseline[k],
+        borderColor: colors[k] + '55',
+        backgroundColor: 'transparent',
+        fill: false, tension: 0.4, borderWidth: 1.5, pointRadius: 0, yAxisID: yAxes[k]
+    }));
+    const simDs = keys.map(k => ({
+        label: lbls[k] + ' (Sim)',
+        data:  sd.simulated[k],
+        borderColor: colors[k],
+        backgroundColor: colors[k] + '18',
+        fill: true, tension: 0.4, borderWidth: 3, pointRadius: 0,
+        borderDash: [7,3], yAxisID: yAxes[k]
+    }));
+
+    intraChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: sd.labels, datasets: [...baseDs, ...simDs] },
+        options: {
+            responsive: true, maintainAspectRatio: false, animation: {duration: 0},
+            interaction: { mode: 'index', intersect: false },
+            elements: { point: { radius: 0, hitRadius: 10, hoverRadius: 4 } },
+            plugins: {
+                legend: { position:'top', labels:{ usePointStyle:true, pointStyle:'rectRounded', boxWidth:14, boxHeight:5, padding:16, font:{size:11} } },
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: 'rgba(17,24,39,0.9)', 
+                    titleColor: '#fbbf24', 
+                    bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(251,191,36,0.3)', 
+                    borderWidth: 1,
+                    callbacks: {
+                        title: (items) => `Time: ${items[0].label} (SIMULATION)`
+                    }
+                }
+            },
+            scales: {
+                x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{maxTicksLimit:12, maxRotation:0, font:{size:10,weight:'600'}} },
+                y: { grid:{color:'rgba(255,255,255,0.05)'}, title:{display:true, text:'Pax / min', color:'#94a3b8', font:{size:11}}, min:0 },
+                y1:{ position:'right', grid:{drawOnChartArea:false}, title:{display:true, text:'Lounge Concurrent', color:'#94a3b8', font:{size:11}}, min:0 }
+            }
+        }
+    });
+
+    if (sd.table_labels) populateIntraTable(sd);
+}
+
+function clearSimulation() {
+    if (_baselineData) {
+        renderIntraChart(_baselineData);
+        populateIntraTable(_baselineData); 
+        updateIntraInsights(_baselineData, null);
+    }
+    document.getElementById('cascade-box').style.display = 'none';
+    document.getElementById('sim-status-badge').style.display = 'none';
+}
+
+function switchView(view) {
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + view).classList.add('active');
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-view="' + view + '"]').classList.add('active');
+
+    if (view === 'intraday' && _baselineData) {
+        // Always destroy + re-render so Chart.js reads correct canvas dimensions
+        // after the panel transitions from display:none to display:block.
+        // 50ms is enough for one browser paint cycle.
+        setTimeout(() => {
+            renderIntraChart(_baselineData);
+            updateIntraInsights(_baselineData, null);
+        }, 50);
+    }
+    if (view === 'threeday' && threeDayChartInstance) {
+        requestAnimationFrame(() => { threeDayChartInstance.resize(); threeDayChartInstance.update('none'); });
+    }
+}
+
+// Initial Load
+document.addEventListener("DOMContentLoaded", () => {
+    loadData();
+    // Initialise scenario form with default scenario
+    setTimeout(() => selectScenario('flight_delay'), 500);
+});
+</script>
+</body>
+</html>

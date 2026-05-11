@@ -1,0 +1,29 @@
+[
+  {
+    "accepted": true,
+    "policy": {
+      "action": "Reclassify 15 proximate Cat D/E stands to Cat C \u2014 prioritise Pier 1 & Pier 3 contact gates.",
+      "icon": "\ud83d\udcd0",
+      "title": "Cat C Gate Shortage \u2014 245 flights/day, only 45 dedicated Cat C stands",
+      "type": "warn"
+    }
+  },
+  {
+    "accepted": true,
+    "policy": {
+      "action": "Activate MARS L/R twin mode off-peak to convert widebody centres into paired narrowbody slots.",
+      "icon": "\ud83d\udeeb",
+      "title": "Widebody Stands Over-Provisioned \u2014 24 flights/day across 124 capable stands",
+      "type": "info"
+    }
+  },
+  {
+    "accepted": false,
+    "policy": {
+      "action": "Redistribute narrowbody overflow from Pier 2 to Pier 1 \u2014 26 contact stands available.",
+      "icon": "\ud83d\udd25",
+      "title": "Pier 2 overloaded \u2014 15.2 movements/stand/day across 14 stands",
+      "type": "danger"
+    }
+  }
+]

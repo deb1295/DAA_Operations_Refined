@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --navy: #1e293b;
+    --blue: #2563eb;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --bg: #f5f5f7;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── TOP RIBBON ── */
+.top-ribbon {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    color: var(--text);
+    z-index: 1000;
+}
+
+.ribbon-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 250px;
+}
+
+.ribbon-logo {
+    width: 32px;
+    height: 32px;
+    background: #000;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.ribbon-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #000;
+    line-height: 1.2;
+}
+
+.ribbon-subtitle {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.ribbon-meta {
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 200px;
+    justify-content: flex-end;
+}
+
+/* ── TAB SWITCHER ── */
+.tab-pill-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.tab-switcher {
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.25rem;
+    border-radius: 10px;
+    display: inline-flex;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    padding: 0.4rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tab-btn:hover:not(.disabled) {
+    color: #1e293b;
+}
+
+.tab-btn.active {
+    background: #fff;
+    color: #0f172a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── MAIN CONTENT & TABS ── */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.5rem 3rem;
+}
+
+.tab-content.active-tab {
+    display: block;
+}
+
+/* ── GRIDS ── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.row-cols-2-mix {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* ── APPLE CARDS ── */
+.card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.08);
+    transform: translateY(-2px);
+}
+
+.card-head {
+    padding: 1.5rem 2rem 0.5rem 2rem;
+    background: transparent;
+}
+
+.card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.card-sub {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.card-body {
+    padding: 1.5rem 2rem;
+    flex: 1;
+}
+
+/* ── KPI SPECIFIC ── */
+.kpi-card {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.kpi-value {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+/* ── INSIGHTS RIBBON ── */
+.insights-ribbon {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 3rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    overflow-x: auto;
+    white-space: nowrap;
+    backdrop-filter: blur(10px);
+}
+
+.insight-ticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.insight-ticker-badge {
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+}
+
+.insight-ticker-badge.INFO {
+    background: #3b82f6;
+}
+
+.insight-ticker-badge.WARNING {
+    background: #f59e0b;
+}
+
+.insight-ticker-badge.CRITICAL {
+    background: #ef4444;
+}
+
+/* Simulator Controls */
+.forecast-controls {
+    padding: 2rem 3rem;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 160px;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0f172a;
+    cursor: pointer;
+}
+
+input[type="number"] {
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 100px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: #0f172a;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
