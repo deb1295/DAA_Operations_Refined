@@ -1,0 +1,23 @@
+To replicate the 2026 Long-Term Strategic Forecast section shown in your image, you will need the HTML from plan_ahead_2026.html and the corresponding CSS.
+
+1. The HTML Code (plan_ahead_2026.html)
+Here are the exact line ranges for the visual components in your image:
+
+Component	Line Range	Description
+Section Header	1492 – 1496	Contains the Title, Subtitle, and the 3-year regression description text.
+KPI Strip	1497 – 1524	The 5 glossy KPI cards (P50, P10, P90, Peak Week, Load Factor).
+Forecast Chart Card	1528 – 1532	The container for the 52-week ltForecastChart canvas.
+Algorithm Accuracy	1533 – 1585	The right-hand card containing the 5 progress bars (LSTM, Monte Carlo, etc.).
+Bottom Intelligence Banner	1590 – 1597	The blue-tinted summary box at the very bottom of your image.
+2. The Styling (CSS)
+These visuals rely on global classes defined at the top of the same file. You should look for these specific CSS blocks:
+
+.kpi-strip & .kpi: Lines 250 – 300 (approx). Handles the layout and "glossy" background of the KPI cards.
+.acc-row & .acc-bar: Lines 350 – 400 (approx). Handles the layout and animation of the accuracy progress bars.
+.card-highlight: Adds the subtle border and deeper background used for the main chart area.
+3. The JS Rendering (plan_ahead_lt.js)
+If you want the charts to actually draw, you need the Javascript logic:
+
+Main Forecast Chart: Function renderLT() starting at line 201.
+Accuracy Toggles: Lines 120 – 154 (handles the dynamic swapping of numbers/bars when you click "Passenger Flow").
+Note: The section is wrapped in a container <div class="sp active" id="sp-m1"> (starting at line 1469), which provides the main structural padding for the dashboard module.
